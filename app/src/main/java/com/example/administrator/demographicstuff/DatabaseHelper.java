@@ -13,13 +13,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //FOR TICKETS
     public static final String ticket_table = "ticket_table";
     public static final String COL_1 = "ID";
+    public static final String COL_5 = "ANDROID_ID";
     public static final String COL_2 = "CATEGORY";
     public static final String COL_3 = "SUBCATEGORY";
     public static final String COL_4 = "QUESTION";
 
     //FOR DEMOGRAPHIC
     public static final String demographic_table = "demographic_table";
-    public static final String DOL_1 = "ID";
+    public static final String DOL_1 = "ANDROID_ID";
     public static final String DOL_2 = "GENDER";
     public static final String DOL_3 = "AGE";
     public static final String DOL_4 = "OCCUPATION";
@@ -33,8 +34,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("Create table " + ticket_table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, CATEGORY TEXT, SUBCATEGORY TEXT, QUESTION TEXT)");
-        db.execSQL("Create table " + demographic_table + " (ID TEXT PRIMARY KEY, GENDER TEXT, AGE INT, OCCUPATION TEXT, BROADBAND TEXT, POSTAL TEXT)");
+        db.execSQL("Create table " + ticket_table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, CATEGORY TEXT, SUBCATEGORY TEXT, QUESTION TEXT, ANDROID_ID TEXT)");
+        db.execSQL("Create table " + demographic_table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,ANDROID_ID TEXT, GENDER TEXT, AGE TEXT, OCCUPATION TEXT, BROADBAND TEXT, POSTAL TEXT)");
     }
 
     @Override
@@ -44,13 +45,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //unosenje podataka za tickete
-    public boolean insertTicketData(String category, String subcategory, String question)
+    public boolean insertTicketData(String category, String subcategory, String question, String android_id)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_2, category);
         contentValues.put(COL_3, subcategory);
         contentValues.put(COL_4, question);
+        contentValues.put(COL_5, android_id);
 
         long result = db.insert(ticket_table, null, contentValues);
         if(result == -1) {
@@ -61,7 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //unosenje demografskih podataka
-    public boolean insertDemographicData(String id, String gender, int age, String occupation, String broadband, String postal)
+    public boolean insertDemographicData(String id, String gender, String age, String occupation, String broadband, String postal)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -93,6 +95,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select * from " + demographic_table, null);
+        return res;
+    }
+
+    public Cursor findByAndroidId(String android_id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + demographic_table + " WHERE ANDROID_ID = ?", new String[] {android_id});
         return res;
     }
 

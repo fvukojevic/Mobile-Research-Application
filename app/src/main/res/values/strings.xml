@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">DemographicStuff</string>
+
+    <string-array name="spinner_category">
+        <item></item>
+        <item>Question 1</item>
+        <item>Question 2</item>
+        <item>Question 3</item>
+        <item>Question 4</item>
+    </string-array>
 </resources>

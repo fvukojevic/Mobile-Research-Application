@@ -1,7 +1,10 @@
 package com.example.administrator.demographicstuff;
 
+import android.content.Intent;
+import android.database.Cursor;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -30,10 +33,26 @@ public class MainActivity extends AppCompatActivity {
 
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        Toast.makeText(this, android_id, Toast.LENGTH_SHORT).show();
-
         db = new DatabaseHelper(this);
+
+        Cursor res = db.findByAndroidId(android_id);
+        if(res.getCount()>0)
+        {
+            Intent intent = new Intent(".FirstPageActivity");
+            startActivity(intent);
+            finish();
+        }
+
         inputChecker();
+    }
+
+    public void showMessage(String title, String message)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.show();
     }
 
     public void inputChecker()
@@ -70,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    Toast.makeText(MainActivity.this, "All good", Toast.LENGTH_SHORT).show();
                     int genderID = rg1.getCheckedRadioButtonId();
                     int ageID = rg2.getCheckedRadioButtonId();
                     int ocuID = rg3.getCheckedRadioButtonId();
@@ -82,12 +100,14 @@ public class MainActivity extends AppCompatActivity {
                     rb3 = findViewById(ocuID);
                     rb4 = findViewById(broadbandID);
 
-                    boolean check = db.insertDemographicData(android_id, rb1.getText().toString(), Integer.parseInt(rb2.getText().toString()), rb3.getText().toString(), rb4.getText().toString(), postal.getText().toString());
+                    boolean check = db.insertDemographicData(android_id, rb1.getText().toString(), rb2.getText().toString(), rb3.getText().toString(), rb4.getText().toString(), postal.getText().toString());
                     if(check == false)
                     {
                         Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(MainActivity.this, "Demographic submited!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(".FirstPageActivity");
+                        startActivity(intent);
                     }
                 }
             }
