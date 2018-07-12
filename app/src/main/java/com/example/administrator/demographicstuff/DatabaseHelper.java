@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -16,6 +17,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_5 = "ANDROID_ID";
     public static final String COL_2 = "CATEGORY";
     public static final String COL_3 = "SUBCATEGORY";
+    public static final String COL_6 = "FREQUENCY";
     public static final String COL_4 = "QUESTION";
 
     //FOR DEMOGRAPHIC
@@ -40,12 +42,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("Drop table if exists " + ticket_table);
-        db.execSQL("Drop table if exists " + demographic_table);
+        String sql = "ALTER TABLE " + ticket_table + " ADD COLUMN FREQUENCY TEXT";
+        db.execSQL(sql);
     }
 
     //unosenje podataka za tickete
-    public boolean insertTicketData(String category, String subcategory, String question, String android_id)
+    public boolean insertTicketData(String category, String subcategory,String question, String android_id)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -83,10 +85,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //dohvacanje ticket podataka
-    public Cursor getAllTicketData()
+    public Cursor getAllTicketData(String android_id)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from " + ticket_table, null);
+        Cursor res = db.rawQuery("select * from " + ticket_table + " WHERE ANDROID_ID = ?", new String[] {android_id});
         return res;
     }
 

@@ -86,7 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
                 android:layout_weight="1"
-                android:background="@android:color/holo_green_dark" />
+                android:background="@color/colorPrimary" />
         </RadioGroup>
 
         <RadioGroup
@@ -131,7 +131,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
                 android:layout_weight="1"
-                android:background="@android:color/holo_green_dark" />
+                android:background="@color/colorPrimary" />
         </RadioGroup>
 
         <RadioGroup
@@ -202,7 +202,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
                 android:layout_weight="1"
-                android:background="@android:color/holo_green_dark" />
+                android:background="@color/colorPrimary" />
 
         </RadioGroup>
 
@@ -241,7 +241,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
                 android:layout_weight="1"
-                android:background="@android:color/holo_green_dark" />
+                android:background="@color/colorPrimary" />
         </RadioGroup>
 
         <RadioGroup
@@ -270,12 +270,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@android:color/holo_green_light"
+                android:background="@color/colorPrimary"
                 android:gravity="right"
                 android:paddingTop="15dp"
-                android:textColor="@android:color/white"
                 android:text="Press To Confrim"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/white" />
         </RadioGroup>
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

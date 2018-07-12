@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Demographic submited!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(".FirstPageActivity");
                         startActivity(intent);
+                        finish();
                     }
                 }
             }

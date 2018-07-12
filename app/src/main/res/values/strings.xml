@@ -3,9 +3,18 @@
 
     <string-array name="spinner_category">
         <item></item>
-        <item>Question 1</item>
-        <item>Question 2</item>
-        <item>Question 3</item>
-        <item>Question 4</item>
+        <item>Voice</item>
+        <item>Coverage</item>
+        <item>Mobile Data</item>
+        <item>Device</item>
+    </string-array>
+
+    <string-array name="spinner_frequency">
+        <item></item>
+        <item>First time</item>
+        <item>Few times a month</item>
+        <item>Few times a week</item>
+        <item>A lot recently</item>
+        <item>Continiously</item>
     </string-array>
 </resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_action_name_home"
+        android:enabled="true"
+        android:title="Home"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/nav_live"
+        android:icon="@android:drawable/btn_star"
+        android:enabled="true"
+        android:title="Live"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/nav_usage"
+        android:icon="@drawable/ic_action_name_data"
+        android:enabled="true"
+        android:title="Usage"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/nav_ticket"
+        android:icon="@drawable/ic_action_name"
+        android:enabled="true"
+        android:title="Tickets"
+        app:showAsAction="ifRoom"/>
+</menu>
