@@ -6,8 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    tools:context=".FirstLaunch">
+    android:fillViewport="true">
 
 
     <android.support.constraint.ConstraintLayout
@@ -15,6 +14,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/BasicInfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Basic info"
+            android:textAlignment="center"
+            android:textSize="13pt"
+            android:visibility="visible"
+
+            app:layout_constraintBottom_toTopOf="@+id/radioGroup2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+
+        <TextView
+            android:id="@+id/Age_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Age"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 
         <RadioGroup
@@ -24,20 +49,10 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="1dp"
-            android:background="?attr/colorButtonNormal"
             app:layout_constraintBottom_toTopOf="@+id/radioGroup3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup2">
-
-            <TextView
-                android:id="@+id/Age_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/background_light"
-                android:text="Age"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <RadioButton
                 android:id="@+id/under"
@@ -81,13 +96,17 @@
                 android:layout_weight="1"
                 android:text="55+" />
 
-            <Button
-                android:id="@+id/button5"
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:layout_weight="1"
-                android:background="@color/colorPrimary" />
         </RadioGroup>
+
+        <TextView
+            android:id="@+id/gender_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/background_light"
+            android:text="Gender"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <RadioGroup
             android:id="@+id/radioGroup2"
@@ -95,7 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:background="?android:attr/colorButtonNormal"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/radioGroup"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -103,14 +122,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed">
 
-            <TextView
-                android:id="@+id/gender_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/background_light"
-                android:text="Gender"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
 
             <RadioButton
                 android:id="@+id/male_btn"
@@ -126,21 +138,14 @@
                 android:layout_weight="1"
                 android:text="Female" />
 
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:layout_weight="1"
-                android:background="@color/colorPrimary" />
         </RadioGroup>
 
         <RadioGroup
             android:id="@+id/radioGroup3"
-            android:layout_width="607dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:background="?attr/colorButtonNormal"
             app:layout_constraintBottom_toTopOf="@+id/radioGroup4"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/radioGroup"
@@ -153,6 +158,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/background_light"
                 android:text="Occupation"
+                android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <RadioButton
@@ -197,30 +203,24 @@
                 android:layout_weight="1"
                 android:text="Non working" />
 
-            <Button
-                android:id="@+id/button13"
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:layout_weight="1"
-                android:background="@color/colorPrimary" />
-
         </RadioGroup>
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/background_light"
+            android:text="Do you have fixed line broadband at home"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <RadioGroup
             android:id="@+id/radioGroup4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorButtonNormal"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/radioGroup5"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup3">
-
-            <TextView
-                android:id="@+id/text1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/background_light"
-                android:text="Do you have fixed line broadband at home"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <RadioButton
                 android:id="@+id/radioButton41"
@@ -236,25 +236,19 @@
                 android:layout_weight="1"
                 android:text="No" />
 
-            <Button
-                android:id="@+id/button14"
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:layout_weight="1"
-                android:background="@color/colorPrimary" />
         </RadioGroup>
 
         <RadioGroup
             android:id="@+id/radioGroup5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorButtonNormal"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup4">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Postal Code"
+                android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:background="@android:color/white"/>
 
