@@ -7,4 +7,6 @@
     <color name="colorWhite">#ffffff</color>
     <color name="greyLine">#858e9b</color>
     <color name="alternative">#00695C</color>
+    <color name="backgroundColor">#e8ebf7</color>
+    <color name="beginColor">#0a1d6b</color>
 </resources>
