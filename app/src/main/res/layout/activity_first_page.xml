@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="142dp"
         android:layout_weight="1"
-        android:background="@color/colorPrimaryDark" />
+        android:background="@color/greyLine" />
 
     <TextView
         android:id="@+id/textView3"
