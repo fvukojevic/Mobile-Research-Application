@@ -167,7 +167,8 @@
             app:layout_constraintStart_toStartOf="@+id/radioGroup"
             app:layout_constraintTop_toBottomOf="@+id/occupation_text"
             android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp">
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp">
 
 
             <RadioButton
@@ -228,7 +229,7 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup3"
-            android:layout_marginTop="35dp" />
+            android:layout_marginTop="35dp"/>
 
         <RadioGroup
             android:id="@+id/radioGroup4"
@@ -238,7 +239,8 @@
             app:layout_constraintBottom_toTopOf="@+id/radioGroup5"
             app:layout_constraintTop_toBottomOf="@+id/text1"
             android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp">
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="15dp">
 
             <RadioButton
                 android:id="@+id/radioButton41"
