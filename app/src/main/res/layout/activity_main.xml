@@ -20,7 +20,7 @@
             android:id="@+id/BasicInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="25dp"
             android:layout_marginBottom="20dp"
             android:text="Basic info"
             android:textAlignment="center"
@@ -114,7 +114,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintTop_toBottomOf="@+id/BasicInfo"
             app:layout_constraintBottom_toTopOf="@+id/radioGroup2"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="15dp"/>
 
         <RadioGroup

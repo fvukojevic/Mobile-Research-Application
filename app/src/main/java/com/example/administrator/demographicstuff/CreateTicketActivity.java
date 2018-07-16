@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -29,9 +30,10 @@ import java.util.ArrayList;
 public class CreateTicketActivity extends AppCompatActivity {
 
     public static Spinner category_spinner, subcategory_spinner, frequency_spinner;
-    public static EditText question_field;
+    public static EditText question_field,email_field;
     public static TextView category_text,subcategory_text,frequency_text;
     public static Button submit;
+    public static CheckBox permission;
     public static String android_id;
     public static DatabaseHelper db;
     public static BottomNavigationView bottom;
@@ -45,10 +47,29 @@ public class CreateTicketActivity extends AppCompatActivity {
 
         db = new DatabaseHelper(CreateTicketActivity.this);
 
+        givePermission();
         bottomGo();
         onSelect();
     }
 
+
+    public void givePermission()
+    {
+        permission = findViewById(R.id.permission);
+        email_field = findViewById(R.id.email_text);
+        email_field.setVisibility(View.INVISIBLE);
+
+        permission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(permission.isChecked())
+                    email_field.setVisibility(View.VISIBLE);
+                else
+                    email_field.setVisibility(View.INVISIBLE);
+
+            }
+        });
+    }
     @SuppressLint("RestrictedApi")
     public void bottomGo()
     {
