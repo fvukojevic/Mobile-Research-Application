@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,9 +21,13 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
+        android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
+        android:layout_width="170dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
         tools:context=".FirstPageActivity"
         android:background="@color/backgroundColor">
 
@@ -41,6 +54,65 @@
 
         <Button
             android:id="@+id/show_tickets"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="-142dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            style="?android:attr/borderlessButtonStyle"
+            android:background="@null"/>
+
+        <Button
+            android:id="@+id/create_ticket"
+            android:layout_width="wrap_content"
+            android:layout_height="27dp"
+            android:layout_above="@+id/button"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="-142dp"
+            android:layout_marginEnd="14dp"
+            android:background="@color/backgroundColor"
+            android:text="CREATE TICKET"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            style="?android:attr/borderlessButtonStyle" />
+
+    </RelativeLayout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_height="200dp"
+        android:layout_width="170dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        tools:context=".FirstPageActivity"
+        android:background="@color/backgroundColor">
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="142dp"
+            android:layout_weight="1"
+            android:background="@color/greyLine" />
+
+        <TextView
+            android:id="@+id/textView31"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="6dp"
+            android:text="Tickets"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        <Button
+            android:id="@+id/show_tickets1"
             android:layout_width="wrap_content"
             android:layout_height="27dp"
             android:layout_above="@+id/button"
@@ -53,7 +125,7 @@
             style="?android:attr/borderlessButtonStyle" />
 
         <Button
-            android:id="@+id/create_ticket"
+            android:id="@+id/create_ticket1"
             android:layout_width="wrap_content"
             android:layout_height="27dp"
             android:layout_above="@+id/button"
@@ -82,3 +154,5 @@
 
 
 </RelativeLayout>
+
+</ScrollView>
