@@ -56,17 +56,13 @@
             android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
             <RadioButton
                 android:id="@+id/under"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="under 18"
-                app:layout_constraintLeft_toRightOf="@+id/to25"/>
+                app:layout_constraintLeft_toRightOf="@+id/to25" />
 
             <RadioButton
                 android:id="@+id/to25"
@@ -83,11 +79,6 @@
                 android:layout_weight="1"
                 android:text="25-34" />
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
             <RadioButton
                 android:id="@+id/to45"
@@ -110,7 +101,6 @@
                 android:layout_weight="1"
                 android:text="55+" />
 
-            </LinearLayout>
 
         </RadioGroup>
 
