@@ -252,11 +252,11 @@ public class NetworkUsageHelper {
                 if (downloadedBytes > 0) {
                     switch (unitType) {
                         case DATA_GB: // GB
-                            return (long) (downloadedBytes * 1e-6f);
+                            return (long) (downloadedBytes * 1e-9f);
                         case DATA_MB: // MB
-                            return (long) (downloadedBytes * 1e-3f);
+                            return (long) (downloadedBytes * 1e-6f);
                         case DATA_KB: // KB
-                            return (long) (downloadedBytes * 0.001);
+                            return (long) (downloadedBytes * 1e-3f);
                     }
                 } else {
                     return downloadedBytes;
