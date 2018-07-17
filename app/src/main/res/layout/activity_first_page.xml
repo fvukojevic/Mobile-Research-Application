@@ -187,7 +187,7 @@
             tools:context=".FirstPageActivity"
             android:background="@color/backgroundColor"
             android:weightSum="1"
-            android:layout_marginBottom="40dp">
+            android:layout_marginBottom="5dp">
 
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"

@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     public static Button confirm;
     public static DatabaseHelper db;
     public static String android_id;
+    public static Button terms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
+
+
     public void inputChecker()
     {
         rg2 = findViewById(R.id.radioGroup);
@@ -63,6 +66,17 @@ public class MainActivity extends AppCompatActivity {
         rg4 = findViewById(R.id.radioGroup4);
         postal = findViewById(R.id.postal_code);
         confirm = findViewById(R.id.confirm);
+        terms = findViewById(R.id.agreeText);
+
+        terms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMessage("Terms", "Here come the terms!");
+                return;
+            }
+        });
+
+
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
