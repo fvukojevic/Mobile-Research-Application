@@ -17,7 +17,7 @@ import android.widget.Button;
 
 public class FirstPageActivity extends AppCompatActivity {
 
-    private static Button create_ticket, show_tickets;
+    private static Button create_ticket, show_tickets, show_wifi, show_mobile;
     private static DatabaseHelper db;
     public String android_id;
     private BottomNavigationView bottom;
@@ -31,8 +31,10 @@ public class FirstPageActivity extends AppCompatActivity {
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         bottomGo();
+        showMobileUsage();
         toCreate();
         showTickets();
+        showWifiUsage();
     }
 
     //Otvaranje prozora za pravljenje novog ticketa
@@ -42,6 +44,32 @@ public class FirstPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(".CreateTicketActivity");
+                startActivity(intent);
+            }
+        });
+    }
+
+    //dohvacanje wifi usage-a
+    public void showWifiUsage()
+    {
+        show_wifi = findViewById(R.id.wifi_btn);
+        show_wifi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(".AppWifiUsage");
+                startActivity(intent);
+            }
+        });
+    }
+
+    //dohvacanje mobile usage-a
+    public void showMobileUsage()
+    {
+        show_mobile = findViewById(R.id.mobile_btn);
+        show_mobile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(".AppMobileUsage");
                 startActivity(intent);
             }
         });
