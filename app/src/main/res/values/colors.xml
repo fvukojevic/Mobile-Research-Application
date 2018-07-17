@@ -8,5 +8,7 @@
     <color name="greyLine">#858e9b</color>
     <color name="alternative">#00695C</color>
     <color name="backgroundColor">#e8ebf7</color>
+    <color name="buttonColor">#d9e5f7</color>
+    <color name="tileColor">#eaf0f7</color>
     <color name="beginColor">#0a1d6b</color>
 </resources>
