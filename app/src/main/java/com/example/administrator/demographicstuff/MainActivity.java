@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     public static RadioButton rb1,rb2,rb3,rb4;
     public static EditText postal;
     public static Button confirm;
-    public static DatabaseHelper db;
+    public static DemograficDatabase db;
     public static String android_id;
 
     @Override
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        db = new DatabaseHelper(this);
+        db = new DemograficDatabase(this);
 
         Cursor res = db.findByAndroidId(android_id);
         if(res.getCount()>0)

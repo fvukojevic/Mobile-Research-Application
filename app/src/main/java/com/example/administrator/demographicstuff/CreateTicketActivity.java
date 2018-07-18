@@ -48,7 +48,8 @@ public class CreateTicketActivity extends AppCompatActivity{
     public static TextView category_text, subcategory_text, frequency_text, email_text;
     public static Button submit;
     public static String android_id;
-    public static DatabaseHelper db;
+    public static Double alti;
+    public static TicketNewDatabase tb;
     public static BottomNavigationView bottom;
     public static TextView date_text, time_text, long_text, lat_text;
     public static LocationManager locationManager;
@@ -63,14 +64,14 @@ public class CreateTicketActivity extends AppCompatActivity{
         long_text = findViewById(R.id.long1);
         lat_text = findViewById(R.id.lat);
 
-        db = new DatabaseHelper(CreateTicketActivity.this);
+        tb = new TicketNewDatabase(CreateTicketActivity.this);
 
         getTimeAndDate();
+        getLocation();
         bottomGo();
         onSelect();
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        getLocation();
     }
 
     public void getLocation()
@@ -88,6 +89,7 @@ public class CreateTicketActivity extends AppCompatActivity{
         if (location != null){
             double latti = location.getLatitude();
             double longi = location.getLongitude();
+            alti = location.getAltitude();
 
             long_text.setText(String.valueOf(longi));
             lat_text.setText(String.valueOf(latti));
@@ -145,13 +147,14 @@ public class CreateTicketActivity extends AppCompatActivity{
         category_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String category = category_spinner.getSelectedItem().toString();
+                final String category = category_spinner.getSelectedItem().toString();
                 if (category.equals("")) {
                     permission = findViewById(R.id.permission);
                     permission.setVisibility(View.INVISIBLE);
 
                     email_text = findViewById(R.id.email_text);
                     email_text.setVisibility(View.INVISIBLE);
+                    email_text.setText(" ");
 
                     permission.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -162,6 +165,7 @@ public class CreateTicketActivity extends AppCompatActivity{
 
                     subcategory_text = findViewById(R.id.subcategory_text);
                     subcategory_text.setVisibility(View.INVISIBLE);
+                    subcategory_text.setText(" ");
 
                     submit = findViewById(R.id.btn_ticket);
                     submit.setVisibility(View.INVISIBLE);
@@ -242,8 +246,11 @@ public class CreateTicketActivity extends AppCompatActivity{
                                             submit.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
-                                                    boolean check = db.insertTicketData(category_spinner.getSelectedItem().toString(), subcategory_spinner.getSelectedItem().toString(),
-                                                            question_field.getText().toString(), android_id);
+                                                    boolean check = tb.insertTicket(android_id, category_spinner.getSelectedItem().toString() ,
+                                                            subcategory_spinner.getSelectedItem().toString()
+                                                    , frequency_spinner.getSelectedItem().toString(), question_field.getText().toString(), date_text.getText().toString(),
+                                                            time_text.getText().toString(), Double.parseDouble(long_text.getText().toString()),
+                                                            Double.parseDouble(lat_text.getText().toString()),alti, email_text.getText().toString());
                                                     if (check == false) {
                                                         Toast.makeText(CreateTicketActivity.this, "Ticket not submitted", Toast.LENGTH_SHORT).show();
                                                     } else {
