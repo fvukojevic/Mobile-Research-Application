@@ -68,7 +68,7 @@
                 android:background="@color/tileColor">
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/button2"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentStart="true"
@@ -78,17 +78,17 @@
                     android:background="@color/tileColor" />
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/textView32"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="6dp"
-                    android:text="Tickets"
+                    android:text="Network"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
                 <Button
-                    android:id="@+id/show_tickets"
+                    android:id="@+id/show_tickets2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentStart="true"
@@ -98,7 +98,7 @@
                     android:background="@null"/>
 
                 <Button
-                    android:id="@+id/create_ticket"
+                    android:id="@+id/create_ticket2"
                     style="?android:attr/borderlessButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:background="@color/buttonColor"
-                    android:text="CREATE TICKET"
+                    android:text="VIEW"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             </RelativeLayout>
@@ -204,66 +204,6 @@
                 android:background="@color/tileColor">
 
                 <Button
-                    android:id="@+id/button2"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="142dp"
-                    android:layout_weight="1"
-                    android:background="@color/tileColor" />
-
-                <TextView
-                    android:id="@+id/textView32"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="6dp"
-                    android:text="Network"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-                <Button
-                    android:id="@+id/show_tickets2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginBottom="-142dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:background="@null"/>
-
-                <Button
-                    android:id="@+id/create_ticket2"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@color/buttonColor"
-                    android:text="VIEW"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-            </RelativeLayout>
-
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:orientation="vertical"
-                android:layout_height="match_parent"
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_below="@+id/linearlayout2"
-                tools:context=".FirstPageActivity"
-                android:background="@color/tileColor">
-
-                <Button
                     android:id="@+id/button3"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -306,6 +246,70 @@
                     android:background="@color/buttonColor"
                     android:text="VIEW"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+
+
+            </RelativeLayout>
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:orientation="vertical"
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight=".50"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/linearlayout2"
+                tools:context=".FirstPageActivity"
+                android:background="@color/tileColor">
+
+                <Button
+                    android:id="@+id/button"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="142dp"
+                    android:layout_weight="1"
+                    android:background="@color/tileColor" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="6dp"
+                    android:text="Tickets"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <Button
+                    android:id="@+id/show_tickets"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginBottom="-142dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:background="@null"/>
+
+                <Button
+                    android:id="@+id/create_ticket"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/buttonColor"
+                    android:text="CREATE TICKET"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+
 
             </RelativeLayout>
 
