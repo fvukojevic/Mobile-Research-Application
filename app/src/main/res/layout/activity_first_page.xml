@@ -92,18 +92,28 @@
                     android:layout_weight="1"
                     android:background="@color/tileColor" />
 
-                <TextView
-                    android:id="@+id/textView32"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="6dp"
-                    android:text="Network"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/yellow_color_button_text"
-                    android:drawableRight="@mipmap/network"
-                    style="?android:attr/borderlessButtonStyle"/>
+                    android:layout_gravity="center|center_horizontal"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/textView1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="Network"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textColor="@color/yellow_color_button_text"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/network"/>
+
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/show_tickets2"
@@ -156,18 +166,28 @@
                     android:layout_weight="1"
                     android:background="@color/tileColor" />
 
-                <TextView
-                    android:id="@+id/textView31"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="6dp"
-                    android:text="App usage"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_color_button_text"
-                    android:drawableRight="@mipmap/appusage"
-                    style="?android:attr/borderlessButtonStyle"/>
+                    android:layout_gravity="center|center_horizontal"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="App usage"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textColor="@color/blue_color_button_text"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/appusage"/>
+
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/show_tickets1"
@@ -235,18 +255,28 @@
                     android:layout_weight="1"
                     android:background="@color/tileColor" />
 
-                <TextView
-                    android:id="@+id/textView33"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="6dp"
-                    android:text="Location"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/green_color_button_text"
-                    android:drawableRight="@mipmap/location"
-                    style="?android:attr/borderlessButtonStyle" />
+                    android:layout_gravity="center|center_horizontal"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="Location"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textColor="@color/green_color_button_text"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/location"/>
+
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/show_tickets3"
@@ -300,18 +330,28 @@
                     android:layout_weight="1"
                     android:background="@color/tileColor" />
 
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="6dp"
-                    android:text="Tickets"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/red_color_button_text"
-                    android:drawableRight="@mipmap/tickets"
-                    style="?android:attr/borderlessButtonStyle" />
+                    android:layout_gravity="center|center_horizontal"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="Tickets"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textColor="@color/red_color_button_text"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/tickets"/>
+
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/show_tickets"
