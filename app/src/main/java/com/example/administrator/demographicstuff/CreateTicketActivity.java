@@ -148,10 +148,10 @@ public class CreateTicketActivity extends AppCompatActivity{
                 String category = category_spinner.getSelectedItem().toString();
                 if (category.equals("")) {
                     permission = findViewById(R.id.permission);
-                    permission.setVisibility(View.INVISIBLE);
+                    permission.setVisibility(View.VISIBLE);
 
                     email_text = findViewById(R.id.email_text);
-                    email_text.setVisibility(View.INVISIBLE);
+                    email_text.setVisibility(View.VISIBLE);
 
                     permission.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -161,22 +161,22 @@ public class CreateTicketActivity extends AppCompatActivity{
                     });
 
                     subcategory_text = findViewById(R.id.subcategory_text);
-                    subcategory_text.setVisibility(View.INVISIBLE);
+                    subcategory_text.setVisibility(View.VISIBLE);
 
                     submit = findViewById(R.id.btn_ticket);
-                    submit.setVisibility(View.INVISIBLE);
+                    submit.setVisibility(View.VISIBLE);
 
                     subcategory_spinner = findViewById(R.id.spinner2);
-                    subcategory_spinner.setVisibility(View.INVISIBLE);
+                    subcategory_spinner.setVisibility(View.VISIBLE);
 
                     question_field = findViewById(R.id.question_field);
-                    question_field.setVisibility(View.INVISIBLE);
+                    question_field.setVisibility(View.VISIBLE);
 
                     frequency_spinner = findViewById(R.id.spinner3);
-                    frequency_spinner.setVisibility(View.INVISIBLE);
+                    frequency_spinner.setVisibility(View.VISIBLE);
 
                     frequency_text = findViewById(R.id.frequency_text);
-                    frequency_text.setVisibility(View.INVISIBLE);
+                    frequency_text.setVisibility(View.VISIBLE);
                 } else {
                     subcategory_spinner = findViewById(R.id.spinner2);
                     subcategory_spinner.setVisibility(View.VISIBLE);
