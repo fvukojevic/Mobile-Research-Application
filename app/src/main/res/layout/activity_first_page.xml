@@ -101,7 +101,9 @@
                     android:layout_marginTop="6dp"
                     android:text="Network"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/yellow_color_button_text" />
+                    android:textColor="@color/yellow_color_button_text"
+                    android:drawableRight="@mipmap/network"
+                    style="?android:attr/borderlessButtonStyle"/>
 
                 <Button
                     android:id="@+id/show_tickets2"
@@ -163,17 +165,19 @@
                     android:layout_marginTop="6dp"
                     android:text="App usage"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_color_button_text" />
+                    android:textColor="@color/blue_color_button_text"
+                    android:drawableRight="@mipmap/appusage"
+                    style="?android:attr/borderlessButtonStyle"/>
 
                 <Button
                     android:id="@+id/show_tickets1"
+                    style="?android:attr/borderlessButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentStart="true"
-                    android:layout_marginBottom="-142dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:background="@null"/>
+                    android:layout_alignParentTop="true"
+                    android:background="@null"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
                 <Button
                     android:id="@+id/create_ticket1"
@@ -240,7 +244,9 @@
                     android:layout_marginTop="6dp"
                     android:text="Location"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/green_color_button_text" />
+                    android:textColor="@color/green_color_button_text"
+                    android:drawableRight="@mipmap/location"
+                    style="?android:attr/borderlessButtonStyle" />
 
                 <Button
                     android:id="@+id/show_tickets3"
@@ -303,7 +309,9 @@
                     android:layout_marginTop="6dp"
                     android:text="Tickets"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/red_color_button_text" />
+                    android:textColor="@color/red_color_button_text"
+                    android:drawableRight="@mipmap/tickets"
+                    style="?android:attr/borderlessButtonStyle" />
 
                 <Button
                     android:id="@+id/show_tickets"

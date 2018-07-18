@@ -3,6 +3,9 @@ package com.example.administrator.demographicstuff;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
@@ -79,6 +82,7 @@ public class FirstPageActivity extends AppCompatActivity {
             }
         });
     }
+
 
     @SuppressLint("RestrictedApi")
     public void bottomGo()
