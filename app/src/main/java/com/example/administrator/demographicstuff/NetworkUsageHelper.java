@@ -221,48 +221,48 @@ public class NetworkUsageHelper {
             this.uploadPercentage = uploadPercentage;
         }
 
-        public Long getUploaded(Integer unitType) {
+        public Float getUploaded(Integer unitType) {
             if (unitType.equals(DATA_B)) {
-                return uploadedBytes;
+                return Float.valueOf(uploadedBytes);
             } else {
                 if (uploadedBytes > 0) {
                     switch (unitType) {
                         case DATA_GB: // GB
-                            return (long) (uploadedBytes * 1e-9f);
+                            return (uploadedBytes / 1073741824f);
                         case DATA_MB: // MB
-                            return (long) (uploadedBytes * 1e-6f);
+                            return (uploadedBytes / 1048576f);
                         case DATA_KB: // KB
-                            return (long) (uploadedBytes * 1e-3f);
+                            return (uploadedBytes / 1024f);
                     }
                 } else {
-                    return uploadedBytes;
+                    return Float.valueOf(uploadedBytes);
                 }
             }
-            return uploadedBytes;
+            return Float.valueOf(uploadedBytes);
         }
 
         public void setUploadedBytes(Long uploadedBytes) {
             this.uploadedBytes = uploadedBytes;
         }
 
-        public Long getDownloaded(Integer unitType) {
+        public Float getDownloaded(Integer unitType) {
             if (unitType.equals(DATA_B)) {
-                return downloadedBytes;
+                return Float.valueOf(downloadedBytes);
             } else {
                 if (downloadedBytes > 0) {
                     switch (unitType) {
                         case DATA_GB: // GB
-                            return (long) (downloadedBytes * 1e-9f);
+                            return (downloadedBytes / 1073741824f);
                         case DATA_MB: // MB
-                            return (long) (downloadedBytes * 1e-6f);
+                            return (downloadedBytes / 1048576f);
                         case DATA_KB: // KB
-                            return (long) (downloadedBytes * 1e-3f);
+                            return (downloadedBytes / 1024f);
                     }
                 } else {
-                    return downloadedBytes;
+                    return Float.valueOf(downloadedBytes);
                 }
             }
-            return downloadedBytes;
+            return Float.valueOf(downloadedBytes);
         }
 
         public void setDownloadedBytes(Long downloadedBytes) {
@@ -270,4 +270,3 @@ public class NetworkUsageHelper {
         }
     }
 }
-

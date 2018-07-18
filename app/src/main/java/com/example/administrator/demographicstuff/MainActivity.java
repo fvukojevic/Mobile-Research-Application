@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,9 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.shitij.goyal.slidebutton.SwipeButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -100,7 +104,20 @@ public class MainActivity extends AppCompatActivity {
                     rb3 = findViewById(ocuID);
                     rb4 = findViewById(broadbandID);
 
-                    boolean check = db.insertDemographicData(android_id, rb1.getText().toString(), rb2.getText().toString(), rb3.getText().toString(), rb4.getText().toString(), postal.getText().toString());
+                    JSONObject postData = new JSONObject();
+                    try {
+                        postData.put("android_id", android_id);
+                        postData.put("gender", rb1.getText().toString());
+                        postData.put("age", rb2.getText().toString());
+                        postData.put("occupation", rb3.getText().toString());
+                        postData.put("nesto", rb4.getText().toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d("MyApp",postData.toString());
+
+                    boolean check = db.insertDemographicData(android_id, rb1.getText().toString(), rb2.getText().toString(),
+                            rb3.getText().toString(), rb4.getText().toString(), postal.getText().toString());
                     if(check == false)
                     {
                         Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();

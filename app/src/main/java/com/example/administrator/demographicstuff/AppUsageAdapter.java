@@ -35,6 +35,7 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
         ViewHolder holder = new ViewHolder(view);
         holder.icon = view.findViewById(R.id.icon);
         holder.name = view.findViewById(R.id.name);
+        holder.uploaded = view.findViewById(R.id.uploaded);
         holder.downloaded = view.findViewById(R.id.downloaded);
         holder.usage = view.findViewById(R.id.progress);
         holder.usage.setMax(100);
@@ -46,14 +47,20 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
         NetworkUsageHelper.AppUsage usage = usageList.get(position);
         holder.icon.setImageDrawable(usage.getAppIcon());
         holder.name.setText(usage.getAppName());
-        Long downloaded = usage.getDownloaded(NetworkUsageHelper.DATA_MB);
-        if(downloaded > 1024)
-            holder.downloaded.setText(usage.getDownloaded(NetworkUsageHelper.DATA_GB) + " GB");
-        else if(downloaded < 5)
-            holder.downloaded.setText(usage.getDownloaded(NetworkUsageHelper.DATA_KB) + " KB");
-        else
-            holder.downloaded.setText(usage.getDownloaded(NetworkUsageHelper.DATA_MB) + " MB");
-
+        float uploaded = usage.getUploaded(NetworkUsageHelper.DATA_MB);
+        if (uploaded > 15000f) {
+            uploaded = usage.getUploaded(NetworkUsageHelper.DATA_GB);
+            holder.uploaded.setText("U: " + Math.round(uploaded) + " GB");
+        } else {
+            holder.uploaded.setText("U: " + Math.round(uploaded) + " MB");
+        }
+        float downloaded = usage.getDownloaded(NetworkUsageHelper.DATA_MB);
+        if (downloaded > 15000f) {
+            downloaded = usage.getDownloaded(NetworkUsageHelper.DATA_GB);
+            holder.downloaded.setText("D: " + Math.round(downloaded) + " GB");
+        } else {
+            holder.downloaded.setText("D: " + Math.round(downloaded) + " MB");
+        }
         holder.name.setText(usage.getAppName());
         holder.usage.setProgress(Float.valueOf(usage.getDownloadPercentage() * 100f).intValue());
 
