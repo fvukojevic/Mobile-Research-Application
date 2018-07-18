@@ -293,14 +293,14 @@
                     android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
                     android:gravity="right|center_vertical"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:layout_alignParentEnd="true"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textSize="12dp"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:gravity="right|center_vertical"
                     android:text="I agree to "
                     android:layout_weight="1"
