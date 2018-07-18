@@ -107,9 +107,10 @@
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="@color/buttonColor"
                     android:text="VIEW"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:background="@drawable/yellow_border_button"
+                    android:textColor="@color/yellow_color_button_text" />
 
             </RelativeLayout>
 
@@ -168,9 +169,10 @@
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="@color/buttonColor"
                     android:text="VIEW"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:background="@drawable/blue_border_button"
+                    android:textColor="@color/blue_color_button_text" />
 
             </RelativeLayout>
 
@@ -187,7 +189,7 @@
             tools:context=".FirstPageActivity"
             android:background="@color/backgroundColor"
             android:weightSum="1"
-            android:layout_marginBottom="5dp">
+            android:layout_marginBottom="20dp">
 
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -243,9 +245,10 @@
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="@color/buttonColor"
                     android:text="VIEW"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:background="@drawable/green_border_button"
+                    android:textColor="@color/green_color_button_text"/>
 
 
 
@@ -305,9 +308,10 @@
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:background="@color/buttonColor"
                     android:text="CREATE TICKET"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:background="@drawable/red_border_button"
+                    android:textColor="@color/red_color_button_text" />
 
 
 
