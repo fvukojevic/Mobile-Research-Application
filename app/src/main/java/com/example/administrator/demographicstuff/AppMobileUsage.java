@@ -24,12 +24,14 @@ public class AppMobileUsage extends AppCompatActivity {
 
     private RecyclerView list;
     private static Button mobile_btn,wifi_btn;
+    private String android_id;
 
     private final int REQUEST_READ_PHONE_STATE_PERMISSION = 1231;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         setContentView(R.layout.activity_app_wifi_usage);
         list = findViewById(R.id.list);
         showMobileUsage();
@@ -94,7 +96,7 @@ public class AppMobileUsage extends AppCompatActivity {
 
     private void initializeRecyclerViewProperties() {
         list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        AppUsageAdapter adapter = new AppUsageAdapter();
+        AppUsageAdapter adapter = new AppUsageAdapter(getApplicationContext(), android_id);
         adapter.usageList = new NetworkUsageHelper(getApplicationContext()).getMobileUsageList();
         list.setAdapter(adapter);
     }
