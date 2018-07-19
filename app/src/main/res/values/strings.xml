@@ -17,4 +17,42 @@
         <item>A lot recently</item>
         <item>Continiously</item>
     </string-array>
+
+    <string name="technology">Tehnologija</string>
+    <string name="cell_id">Cell Id</string>
+    <string name="mcc">MCC</string>
+    <string name="mnc">MNC</string>
+    <string name="rssi">RSSI</string>
+    <string name="mobile">Mobilni internet</string>
+    <string name="WiFi">Wi-Fi</string>
+    <string name="ssid">SSID</string>
+    <string name="noData">-</string>
+    <string name="status">Status</string>
+    <string name="nepoznataMreza">Nepoznata Mreža</string>
+    <string name="nepoznato">Nepoznato</string>
+    <string name="nijeSpojeno">Nije spojeno</string>
+    <string name="networkType2G">2G</string>
+    <string name="networkType3G">3G</string>
+    <string name="networkType4G">4G</string>
+    <string name="spojeno">Spojeno</string>
+    <string name="rsrp">RSRP</string>
+    <string name="rsrq">RSRQ</string>
+    <string name="cqi">Cqi</string>
+    <string name="pci">PCI</string>
+    <string name="enodeb">ENodeB</string>
+    <string name="snr">SNR</string>
+    <string name="tac">TAC</string>
+    <string name="lac">LAC</string>
+    <string name="earfcn">Earfcn</string>
+    <string name="arfcn">Arfcn</string>
+    <string name="uarfcn">Uarfcn</string>
+    <string name="psc">PSC</string>
+    <string name="nodeb">NodeB</string>
+    <string name="location">Lokacija</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="altitude">Altitude</string>
+    <string name="ta">Timing advance</string>
+    <string name="accuracy">Accuracy</string>
+    <string name="speed">Speed</string>
 </resources>

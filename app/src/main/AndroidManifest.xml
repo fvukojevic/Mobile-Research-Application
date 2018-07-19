@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
@@ -27,38 +28,51 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".FirstPageActivity">
             <intent-filter>
                 <action android:name=".FirstPageActivity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".CreateTicketActivity">
             <intent-filter>
                 <action android:name=".CreateTicketActivity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".AppWifiUsage">
             <intent-filter>
                 <action android:name=".AppWifiUsage" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".AppMobileUsage">
             <intent-filter>
                 <action android:name=".AppMobileUsage" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".LiveConditions">
+            <intent-filter>
+                <action android:name=".LiveConditions" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <service
+            android:name=".DataCollectionService"
+            android:exported="false"/>
+        <receiver
+            android:name=".DataCollectionServiceBroadcastReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:label="RestartServiceWhenStopped">
+            <intent-filter>
+                <action android:name=".restartService"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

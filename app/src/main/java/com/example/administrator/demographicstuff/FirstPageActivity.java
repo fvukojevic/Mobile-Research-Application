@@ -17,6 +17,10 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class FirstPageActivity extends AppCompatActivity {
 
@@ -25,6 +29,8 @@ public class FirstPageActivity extends AppCompatActivity {
     private static AppUsageDatabase ab;
     public String android_id;
     private BottomNavigationView bottom;
+    @BindView(R.id.create_ticket2)
+    TextView showLiveConditions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +38,7 @@ public class FirstPageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_first_page);
         tb = new TicketNewDatabase(FirstPageActivity.this);
         ab = new AppUsageDatabase(FirstPageActivity.this);
+        ButterKnife.bind(this);
 
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -40,25 +47,22 @@ public class FirstPageActivity extends AppCompatActivity {
         toCreate();
         showTickets();
         showWifiUsage();
+        showLiveConditions();
     }
 
 
     //dohvacanje najkoristenijih aplikacija
-    public void AppsUsed()
-    {
+    public void AppsUsed() {
         Cursor res = ab.getMostUsedApps(android_id);
-        if(res.getCount() == 0)
-        {
+        if (res.getCount() == 0) {
             //Show message
             showMessage("Empty", "No apps found");
             return;
-        }
-        else{
+        } else {
             StringBuffer buffer = new StringBuffer();
-            while(res.moveToNext())
-            {
+            while (res.moveToNext()) {
                 buffer.append("App name: " + res.getString(2) + "\n");
-                buffer.append("Usage: " + res.getString(3)+ " MB\n");
+                buffer.append("Usage: " + res.getString(3) + " MB\n");
                 buffer.append("\n");
             }
             //show all data
@@ -67,7 +71,7 @@ public class FirstPageActivity extends AppCompatActivity {
     }
 
     //Otvaranje prozora za pravljenje novog ticketa
-    public void toCreate(){
+    public void toCreate() {
         create_ticket = findViewById(R.id.create_ticket);
         create_ticket.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,8 +83,7 @@ public class FirstPageActivity extends AppCompatActivity {
     }
 
     //dohvacanje wifi usage-a
-    public void showWifiUsage()
-    {
+    public void showWifiUsage() {
         show_wifi = findViewById(R.id.show_wifi);
         show_wifi.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,35 +94,41 @@ public class FirstPageActivity extends AppCompatActivity {
         });
     }
 
+    public void showLiveConditions() {
+        showLiveConditions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(".LiveConditions");
+                startActivity(intent);
+            }
+        });
+    }
+
 
     //dohvacanje svih Ticketa
-    public void showTickets()
-    {
-        show_tickets = (Button)findViewById(R.id.show_tickets);
+    public void showTickets() {
+        show_tickets = (Button) findViewById(R.id.show_tickets);
         show_tickets.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Cursor res = tb.getMyTickets(android_id);
-                if(res.getCount() == 0)
-                {
+                if (res.getCount() == 0) {
                     //Show message
                     showMessage("Empty", "No tickets found");
                     return;
-                }
-                else{
+                } else {
                     StringBuffer buffer = new StringBuffer();
-                    while(res.moveToNext())
-                    {
+                    while (res.moveToNext()) {
                         buffer.append("ID: " + res.getString(0) + "\n");
-                        buffer.append("Android_id: " + res.getString(1)+ "\n");
-                        buffer.append("Category: " + res.getString(2)+ "\n");
-                        buffer.append("Subcategory: " + res.getString(3)+ "\n");
-                        buffer.append("Frequency: " + res.getString(4)+ "\n");
-                        buffer.append("Question: " + res.getString(5)+ "\n");
-                        buffer.append("Date: " + res.getString(6)+ "\n");
-                        buffer.append("Time: " + res.getString(7)+ "\n");
-                        buffer.append("Long: " + res.getString(8)+ "\n");
-                        buffer.append("Lat: " + res.getString(9)+ "\n");
+                        buffer.append("Android_id: " + res.getString(1) + "\n");
+                        buffer.append("Category: " + res.getString(2) + "\n");
+                        buffer.append("Subcategory: " + res.getString(3) + "\n");
+                        buffer.append("Frequency: " + res.getString(4) + "\n");
+                        buffer.append("Question: " + res.getString(5) + "\n");
+                        buffer.append("Date: " + res.getString(6) + "\n");
+                        buffer.append("Time: " + res.getString(7) + "\n");
+                        buffer.append("Long: " + res.getString(8) + "\n");
+                        buffer.append("Lat: " + res.getString(9) + "\n");
                         buffer.append("\n");
                     }
 
@@ -132,8 +141,7 @@ public class FirstPageActivity extends AppCompatActivity {
 
 
     @SuppressLint("RestrictedApi")
-    public void bottomGo()
-    {
+    public void bottomGo() {
         bottom = findViewById(R.id.bottom);
         BottomNavigationView bottom = (BottomNavigationView) findViewById(R.id.bottom);
         BottomNavigationMenuView menuView = (BottomNavigationMenuView) bottom.getChildAt(0);
@@ -145,7 +153,7 @@ public class FirstPageActivity extends AppCompatActivity {
         bottom.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch(menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.nav_home:
                         Intent home_intent = new Intent(".FirstPageActivity");
                         startActivity(home_intent);
@@ -154,14 +162,15 @@ public class FirstPageActivity extends AppCompatActivity {
                         Intent ticket_intent = new Intent(".CreateTicketActivity");
                         startActivity(ticket_intent);
                         return true;
-                    default:return false;
+                    default:
+                        return false;
                 }
             }
         });
     }
+
     //prikaz svih tiketaa u Alert Dialogu
-    public void showMessage(String title, String message)
-    {
+    public void showMessage(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle(title);
