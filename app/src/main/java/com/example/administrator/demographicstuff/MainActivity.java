@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,14 +18,18 @@ import android.widget.Toast;
 
 import com.shitij.goyal.slidebutton.SwipeButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
 
     public static RadioGroup rg1,rg2,rg3,rg4;
     public static RadioButton rb1,rb2,rb3,rb4;
     public static EditText postal;
     public static Button confirm;
-    public static DatabaseHelper db;
+    public static DemograficDatabase db;
     public static String android_id;
+    public static Button terms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        db = new DatabaseHelper(this);
+        db = new DemograficDatabase(this);
 
         Cursor res = db.findByAndroidId(android_id);
         if(res.getCount()>0)
@@ -55,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
+
+
     public void inputChecker()
     {
         rg2 = findViewById(R.id.radioGroup);
@@ -63,6 +70,17 @@ public class MainActivity extends AppCompatActivity {
         rg4 = findViewById(R.id.radioGroup4);
         postal = findViewById(R.id.postal_code);
         confirm = findViewById(R.id.confirm);
+        terms = findViewById(R.id.agreeText);
+
+        terms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMessage("Terms", "Here come the terms!");
+                return;
+            }
+        });
+
+
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +118,20 @@ public class MainActivity extends AppCompatActivity {
                     rb3 = findViewById(ocuID);
                     rb4 = findViewById(broadbandID);
 
-                    boolean check = db.insertDemographicData(android_id, rb1.getText().toString(), rb2.getText().toString(), rb3.getText().toString(), rb4.getText().toString(), postal.getText().toString());
+                    JSONObject postData = new JSONObject();
+                    try {
+                        postData.put("android_id", android_id);
+                        postData.put("gender", rb1.getText().toString());
+                        postData.put("age", rb2.getText().toString());
+                        postData.put("occupation", rb3.getText().toString());
+                        postData.put("nesto", rb4.getText().toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d("MyApp",postData.toString());
+
+                    boolean check = db.insertDemographicData(android_id, rb1.getText().toString(), rb2.getText().toString(),
+                            rb3.getText().toString(), rb4.getText().toString(), postal.getText().toString());
                     if(check == false)
                     {
                         Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
