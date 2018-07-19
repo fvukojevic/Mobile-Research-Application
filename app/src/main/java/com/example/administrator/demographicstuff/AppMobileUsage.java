@@ -37,7 +37,7 @@ public class AppMobileUsage extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        setContentView(R.layout.activity_app_wifi_usage);
+        setContentView(R.layout.activity_app_mobile_usage);
         list = findViewById(R.id.list);
         showMobileUsage();
         showWifiUsage();
