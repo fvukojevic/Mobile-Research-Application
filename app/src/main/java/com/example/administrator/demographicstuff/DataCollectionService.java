@@ -126,7 +126,6 @@ public class DataCollectionService extends Service {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //Log.i("json", readFromFile(getApplicationContext()));
             map.clear();
 
             LocationListener locationListener = new LocationListener() {
@@ -147,8 +146,6 @@ public class DataCollectionService extends Service {
                 public void onProviderDisabled(String s) {
                 }
             };
-
-
 
             try {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
