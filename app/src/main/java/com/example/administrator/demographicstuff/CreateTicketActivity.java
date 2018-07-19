@@ -48,7 +48,8 @@ public class CreateTicketActivity extends AppCompatActivity{
     public static TextView category_text, subcategory_text, frequency_text, email_text;
     public static Button submit;
     public static String android_id;
-    public static DatabaseHelper db;
+    public static Double alti;
+    public static TicketNewDatabase tb;
     public static BottomNavigationView bottom;
     public static TextView date_text, time_text, long_text, lat_text;
     public static LocationManager locationManager;
@@ -63,7 +64,7 @@ public class CreateTicketActivity extends AppCompatActivity{
         long_text = findViewById(R.id.long1);
         lat_text = findViewById(R.id.lat);
 
-        db = new DatabaseHelper(CreateTicketActivity.this);
+        tb = new TicketNewDatabase(CreateTicketActivity.this);
 
         getTimeAndDate();
         bottomGo();
@@ -76,26 +77,27 @@ public class CreateTicketActivity extends AppCompatActivity{
     public void getLocation()
     {
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
+            != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(CreateTicketActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+        ActivityCompat.requestPermissions(CreateTicketActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
 
         } else {
-            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-            if (location != null){
-                double latti = location.getLatitude();
-                double longi = location.getLongitude();
+        if (location != null){
+            double latti = location.getLatitude();
+            double longi = location.getLongitude();
+            alti = location.getAltitude();
 
-                long_text.setText(String.valueOf(longi));
-                lat_text.setText(String.valueOf(latti));
-            } else {
-                long_text.setText("Can't find");
-                lat_text.setText("Can't find");
-            }
+            long_text.setText(String.valueOf(longi));
+            lat_text.setText(String.valueOf(latti));
+        } else {
+            long_text.setText("Can't find");
+            lat_text.setText("Can't find");
         }
+    }
     }
     public void getTimeAndDate() {
         date_text = findViewById(R.id.date);
@@ -162,6 +164,7 @@ public class CreateTicketActivity extends AppCompatActivity{
 
                     subcategory_text = findViewById(R.id.subcategory_text);
                     subcategory_text.setVisibility(View.VISIBLE);
+                    subcategory_text.setText(" ");
 
                     submit = findViewById(R.id.btn_ticket);
                     submit.setVisibility(View.VISIBLE);
@@ -242,8 +245,11 @@ public class CreateTicketActivity extends AppCompatActivity{
                                             submit.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
-                                                    boolean check = db.insertTicketData(category_spinner.getSelectedItem().toString(), subcategory_spinner.getSelectedItem().toString(),
-                                                            question_field.getText().toString(), android_id);
+                                                    boolean check = tb.insertTicket(android_id, category_spinner.getSelectedItem().toString() ,
+                                                            subcategory_spinner.getSelectedItem().toString()
+                                                    , frequency_spinner.getSelectedItem().toString(), question_field.getText().toString(), date_text.getText().toString(),
+                                                            time_text.getText().toString(), Double.parseDouble(long_text.getText().toString()),
+                                                            Double.parseDouble(lat_text.getText().toString()),alti, email_text.getText().toString());
                                                     if (check == false) {
                                                         Toast.makeText(CreateTicketActivity.this, "Ticket not submitted", Toast.LENGTH_SHORT).show();
                                                     } else {

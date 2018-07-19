@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DemographicStuff</string>
+    <string name="app_name">Mobile Research App</string>
 
     <string-array name="spinner_category">
         <item></item>
