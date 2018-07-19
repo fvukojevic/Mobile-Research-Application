@@ -3,6 +3,9 @@ package com.example.administrator.demographicstuff;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
@@ -17,8 +20,8 @@ import android.widget.Button;
 
 public class FirstPageActivity extends AppCompatActivity {
 
-    private static Button create_ticket, show_tickets;
-    private static DatabaseHelper db;
+    private static Button create_ticket, show_tickets, show_wifi;
+    private static TicketNewDatabase tb;
     public String android_id;
     private BottomNavigationView bottom;
 
@@ -26,13 +29,14 @@ public class FirstPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_page);
-        db = new DatabaseHelper(FirstPageActivity.this);
+        tb = new TicketNewDatabase(FirstPageActivity.this);
 
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         bottomGo();
         toCreate();
         showTickets();
+        showWifiUsage();
     }
 
     //Otvaranje prozora za pravljenje novog ticketa
@@ -47,6 +51,20 @@ public class FirstPageActivity extends AppCompatActivity {
         });
     }
 
+    //dohvacanje wifi usage-a
+    public void showWifiUsage()
+    {
+        show_wifi = findViewById(R.id.show_wifi);
+        show_wifi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(".AppWifiUsage");
+                startActivity(intent);
+            }
+        });
+    }
+
+
     //dohvacanje svih Ticketa
     public void showTickets()
     {
@@ -54,11 +72,11 @@ public class FirstPageActivity extends AppCompatActivity {
         show_tickets.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Cursor res = db.getAllTicketData(android_id);
+                Cursor res = tb.getMyTickets(android_id);
                 if(res.getCount() == 0)
                 {
                     //Show message
-                    showMessage("Error", "No tickets found");
+                    showMessage("Empty", "No tickets found");
                     return;
                 }
                 else{
@@ -66,10 +84,15 @@ public class FirstPageActivity extends AppCompatActivity {
                     while(res.moveToNext())
                     {
                         buffer.append("ID: " + res.getString(0) + "\n");
-                        buffer.append("Category: " + res.getString(1)+ "\n");
-                        buffer.append("Subcategory: " + res.getString(2)+ "\n");
-                        buffer.append("Text: " + res.getString(3)+ "\n");
-                        buffer.append("Android_id" + res.getString(4));
+                        buffer.append("Android_id: " + res.getString(1)+ "\n");
+                        buffer.append("Category: " + res.getString(2)+ "\n");
+                        buffer.append("Subcategory: " + res.getString(3)+ "\n");
+                        buffer.append("Frequency: " + res.getString(4)+ "\n");
+                        buffer.append("Question: " + res.getString(5)+ "\n");
+                        buffer.append("Date: " + res.getString(6)+ "\n");
+                        buffer.append("Time: " + res.getString(7)+ "\n");
+                        buffer.append("Long: " + res.getString(8)+ "\n");
+                        buffer.append("Lat: " + res.getString(9)+ "\n");
                         buffer.append("\n");
                     }
 
@@ -79,6 +102,7 @@ public class FirstPageActivity extends AppCompatActivity {
             }
         });
     }
+
 
     @SuppressLint("RestrictedApi")
     public void bottomGo()
