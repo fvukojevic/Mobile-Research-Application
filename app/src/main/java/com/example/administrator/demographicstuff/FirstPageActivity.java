@@ -22,6 +22,7 @@ public class FirstPageActivity extends AppCompatActivity {
 
     private static Button create_ticket, show_tickets, show_wifi;
     private static TicketNewDatabase tb;
+    private static AppUsageDatabase ab;
     public String android_id;
     private BottomNavigationView bottom;
 
@@ -30,13 +31,39 @@ public class FirstPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_page);
         tb = new TicketNewDatabase(FirstPageActivity.this);
+        ab = new AppUsageDatabase(FirstPageActivity.this);
 
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        AppsUsed();
         bottomGo();
         toCreate();
         showTickets();
         showWifiUsage();
+    }
+
+
+    //dohvacanje najkoristenijih aplikacija
+    public void AppsUsed()
+    {
+        Cursor res = ab.getMostUsedApps(android_id);
+        if(res.getCount() == 0)
+        {
+            //Show message
+            showMessage("Empty", "No apps found");
+            return;
+        }
+        else{
+            StringBuffer buffer = new StringBuffer();
+            while(res.moveToNext())
+            {
+                buffer.append("App name: " + res.getString(2) + "\n");
+                buffer.append("Usage: " + res.getString(3)+ " MB\n");
+                buffer.append("\n");
+            }
+            //show all data
+            showMessage("Most used apps", buffer.toString());
+        }
     }
 
     //Otvaranje prozora za pravljenje novog ticketa

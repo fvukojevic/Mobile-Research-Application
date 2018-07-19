@@ -67,4 +67,13 @@ public class AppUsageDatabase extends SQLiteOpenHelper {
         return res;
     }
 
+    //dohvacanje 3 najkoristenije aplikacije
+    public Cursor getMostUsedApps(String android_id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from " + app_usage_table + " WHERE ANDROID_ID = ? ORDER BY USAGE DESC LIMIT 3", new String[] {android_id});
+        return res;
+    }
+
+
 }

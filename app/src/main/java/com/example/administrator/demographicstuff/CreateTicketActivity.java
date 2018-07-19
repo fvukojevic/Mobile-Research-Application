@@ -253,6 +253,8 @@ public class CreateTicketActivity extends AppCompatActivity{
                                                         Toast.makeText(CreateTicketActivity.this, "Ticket not submitted", Toast.LENGTH_SHORT).show();
                                                     } else {
                                                         Toast.makeText(CreateTicketActivity.this, "Ticket submited!", Toast.LENGTH_SHORT).show();
+                                                        Intent intent = new Intent(".FirstPageActivity");
+                                                        startActivity(intent);
                                                     }
                                                 }
                                             });
