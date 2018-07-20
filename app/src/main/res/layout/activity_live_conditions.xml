@@ -22,7 +22,7 @@
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:background="@android:drawable/btn_star_big_on" />
+                android:background="@drawable/mobileicon" />
 
             <TextView
                 android:id="@+id/tvMobile"
@@ -276,20 +276,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/ll2">
+            app:layout_constraintTop_toBottomOf="@+id/ll2"
+            android:gravity="center"
+            android:layout_gravity="center|center_horizontal">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:background="@android:drawable/btn_star_big_on" />
+                android:background="@drawable/wifiicon" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
-                android:layout_weight="11"
+                android:layout_weight="14"
                 android:padding="5dp"
                 android:text="@string/WiFi"
                 android:textSize="24sp" />
@@ -367,20 +369,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/ll4">
+            app:layout_constraintTop_toBottomOf="@+id/ll4"
+            android:gravity="center"
+            android:layout_gravity="center|center_horizontal">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:scaleType="fitCenter"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:background="@android:drawable/btn_star_big_on" />
+                android:background="@drawable/locationicon" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
-                android:layout_weight="11"
+                android:layout_weight="14"
                 android:padding="5dp"
                 android:text="@string/location"
                 android:textSize="24sp" />
