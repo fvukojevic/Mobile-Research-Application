@@ -27,9 +27,7 @@ import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,6 +44,7 @@ public class DataCollectionService extends Service {
     private static final String NETWORK_TYPE_3G = "3G";
     private static final String NETWORK_TYPE_4G = "4G";
     private static final int LOCATION_UPDATE_DISTANCE = 20;
+    private static final int TIME_UPDATE = 60000;
 
     ConnectivityManager connectivityManager;
     NetworkInfo activeNetworkInfo;
@@ -119,6 +119,8 @@ public class DataCollectionService extends Service {
         public void run() {
             getData();
             getLocation();
+            map.put("aaupdated", "byTime");
+            map.put("aaTimestamp", Calendar.getInstance().getTime().toString());
             json = new JSONObject(map);
 
             try {
@@ -152,7 +154,7 @@ public class DataCollectionService extends Service {
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
-            new Handler(mServiceLooper).postDelayed(dataCollect, 600000);
+            new Handler(mServiceLooper).postDelayed(dataCollect, TIME_UPDATE);
         }
     };
 
@@ -162,6 +164,7 @@ public class DataCollectionService extends Service {
         String filename = "data.txt";
 
         File f = new File(file1 + File.separator + filename);
+
         FileOutputStream fstream = new FileOutputStream(f, true);
         fstream.write(json.toString().getBytes());
         fstream.write("\r\n ".getBytes());
@@ -344,6 +347,8 @@ public class DataCollectionService extends Service {
             lastLocation = location;
             getData();
             getLocation();
+            map.put("aaupdated","byLocation");
+            map.put("aaTimestamp", Calendar.getInstance().getTime().toString());
             json = new JSONObject(map);
             try {
                 writeToFile(json);
