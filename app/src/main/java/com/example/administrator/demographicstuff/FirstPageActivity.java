@@ -1,6 +1,8 @@
 package com.example.administrator.demographicstuff;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -14,23 +16,30 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FirstPageActivity extends AppCompatActivity {
 
-    private static Button create_ticket, show_tickets, show_wifi;
+    private static Button create_ticket, show_tickets, show_wifi, show_map;
     private static TicketNewDatabase tb;
     private static AppUsageDatabase ab;
     public String android_id;
-    private BottomNavigationView bottom;
     @BindView(R.id.create_ticket2)
     TextView showLiveConditions;
+
+    //For google maps
+    private static final int ERROR_DIALOG_REQUEST = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +52,55 @@ public class FirstPageActivity extends AppCompatActivity {
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         AppsUsed();
-        bottomGo();
         toCreate();
         showTickets();
         showWifiUsage();
+        if(isServicesOK()){
+            showMap();
+        }
         showLiveConditions();
     }
 
+    public boolean isServicesOK(){
+
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(FirstPageActivity.this);
+
+        if(available == ConnectionResult.SUCCESS){
+            //everything is fine and the user can make map requests
+            return true;
+        }
+        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+            //an error occured but we can resolve it
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(FirstPageActivity.this, available, ERROR_DIALOG_REQUEST);
+            dialog.show();
+        }else{
+            Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(FirstPageActivity.this);
+
+        builder.setMessage("Are you sure you want to Exit?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        FirstPageActivity.super.onBackPressed();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 
     //dohvacanje najkoristenijih aplikacija
     public void AppsUsed() {
@@ -82,6 +133,18 @@ public class FirstPageActivity extends AppCompatActivity {
         });
     }
 
+    //prelazak na mapu
+    public void showMap()
+    {
+        show_map = findViewById(R.id.show_map);
+        show_map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(".MapActivity");
+                startActivity(intent);
+            }
+        });
+    }
     //dohvacanje wifi usage-a
     public void showWifiUsage() {
         show_wifi = findViewById(R.id.show_wifi);
@@ -134,36 +197,6 @@ public class FirstPageActivity extends AppCompatActivity {
 
                     //show all data
                     showMessage("Data", buffer.toString());
-                }
-            }
-        });
-    }
-
-
-    @SuppressLint("RestrictedApi")
-    public void bottomGo() {
-        bottom = findViewById(R.id.bottom);
-        BottomNavigationView bottom = (BottomNavigationView) findViewById(R.id.bottom);
-        BottomNavigationMenuView menuView = (BottomNavigationMenuView) bottom.getChildAt(0);
-        for (int i = 0; i < menuView.getChildCount(); i++) {
-            BottomNavigationItemView itemView = (BottomNavigationItemView) menuView.getChildAt(i);
-            itemView.setShifting(false);
-            itemView.setChecked(false);
-        }
-        bottom.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.nav_home:
-                        Intent home_intent = new Intent(".FirstPageActivity");
-                        startActivity(home_intent);
-                        return true;
-                    case R.id.nav_ticket:
-                        Intent ticket_intent = new Intent(".CreateTicketActivity");
-                        startActivity(ticket_intent);
-                        return true;
-                    default:
-                        return false;
                 }
             }
         });

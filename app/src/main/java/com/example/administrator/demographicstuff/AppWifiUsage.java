@@ -65,6 +65,7 @@ public class AppWifiUsage extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(".AppWifiUsage");
                 startActivity(intent);
+                finish();
             }
         });
     }
@@ -77,6 +78,7 @@ public class AppWifiUsage extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(".AppMobileUsage");
                 startActivity(intent);
+                finish();
             }
         });
     }

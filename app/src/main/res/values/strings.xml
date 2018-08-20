@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Mobile Research App</string>
 
+    <string name="api_key">AIzaSyDSxWIBN-w_IAhnkUkbtSv_MtQKqv5wkto</string>
+
     <string-array name="spinner_category">
         <item></item>
         <item>Voice</item>
