@@ -35,35 +35,35 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FirstPageActivity">
+        <activity android:name=".FirstPageActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name=".FirstPageActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateTicketActivity">
+        <activity android:name=".CreateTicketActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name=".CreateTicketActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".AppWifiUsage">
+        <activity android:name=".AppWifiUsage" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name=".AppWifiUsage" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".AppMobileUsage">
+        <activity android:name=".AppMobileUsage" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name=".AppMobileUsage" />
 
@@ -94,13 +94,15 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".MapActivity">
+        <activity android:name=".MapActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name=".MapActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+
     </application>
 
 </manifest>

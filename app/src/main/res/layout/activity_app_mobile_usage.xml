@@ -16,6 +16,19 @@
         android:layout_marginTop="5dp">
 
         <Button
+            android:id="@+id/combined_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="15dp"
+            android:text="Combined"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:background="@drawable/blue_border_button"
+            android:textColor="@color/blue_color_button_text"
+            android:layout_weight=".50"
+            android:layout_alignParentLeft="true" />
+
+        <Button
             android:id="@+id/wifi_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,7 +39,7 @@
             android:background="@drawable/blue_border_button"
             android:textColor="@color/blue_color_button_text"
             android:layout_weight=".50"
-            android:layout_alignParentLeft="true"/>
+            android:layout_alignParentLeft="true" />
 
         <Button
             android:id="@+id/mobile_btn"

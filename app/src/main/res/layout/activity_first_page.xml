@@ -96,7 +96,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|center_horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:id="@+id/network">
 
                     <TextView
                         android:id="@+id/textView1"
@@ -113,6 +114,21 @@
                         android:layout_height="match_parent"
                         android:src="@drawable/network"
                         android:scaleType="fitCenter"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/networkInfo"
+                        android:textColor="@color/yellow_color_button_text1"/>
 
                 </LinearLayout>
 
@@ -171,7 +187,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|center_horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:id="@+id/appUsage">
 
                     <TextView
                         android:id="@+id/textView2"
@@ -188,6 +205,21 @@
                         android:layout_height="match_parent"
                         android:src="@drawable/appusage"
                         android:scaleType="fitCenter"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/apps"
+                        android:textColor="@color/blue_color_button_text1"/>
 
                 </LinearLayout>
 
@@ -261,7 +293,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|center_horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:id="@+id/location">
 
                     <TextView
                         android:id="@+id/textView3"
@@ -337,7 +370,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|center_horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:id="@+id/tickets">
 
                     <TextView
                         android:id="@+id/textView4"
@@ -354,6 +388,21 @@
                         android:layout_height="match_parent"
                         android:src="@drawable/tickets"
                         android:scaleType="fitCenter"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/ticketsList"
+                        android:textColor="@color/red_color_button_text1"/>
 
                 </LinearLayout>
 

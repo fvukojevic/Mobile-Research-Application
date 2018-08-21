@@ -59,6 +59,7 @@ public class FirstPageActivity extends AppCompatActivity {
             showMap();
         }
         showLiveConditions();
+
     }
 
     public boolean isServicesOK(){
@@ -105,19 +106,18 @@ public class FirstPageActivity extends AppCompatActivity {
     //dohvacanje najkoristenijih aplikacija
     public void AppsUsed() {
         Cursor res = ab.getMostUsedApps(android_id);
+        TextView appUsage = findViewById(R.id.apps);
         if (res.getCount() == 0) {
-            //Show message
-            showMessage("Empty", "No apps found");
+            appUsage.setText("No apps found");
             return;
         } else {
             StringBuffer buffer = new StringBuffer();
             while (res.moveToNext()) {
-                buffer.append("App name: " + res.getString(2) + "\n");
-                buffer.append("Usage: " + res.getString(3) + " MB\n");
+                buffer.append(res.getString(2) + "\n");
+                buffer.append(res.getString(3) + " MB\n");
                 buffer.append("\n");
             }
-            //show all data
-            showMessage("Most used apps", buffer.toString());
+            appUsage.setText(buffer.toString());
         }
     }
 
@@ -171,6 +171,7 @@ public class FirstPageActivity extends AppCompatActivity {
     //dohvacanje svih Ticketa
     public void showTickets() {
         show_tickets = (Button) findViewById(R.id.show_tickets);
+        TextView tickets = findViewById(R.id.ticketsList);
         show_tickets.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -200,6 +201,24 @@ public class FirstPageActivity extends AppCompatActivity {
                 }
             }
         });
+
+        Cursor res = tb.getMyTickets(android_id);
+        if (res.getCount() == 0) {
+            //Show message
+            tickets.setText("No tickets found");
+            return;
+        } else {
+            StringBuffer buffer = new StringBuffer();
+            while (res.moveToNext()) {
+                buffer.append("ID: " + res.getString(0) + " - " + res.getString(2) + "\n");
+                buffer.append("Date: " + res.getString(6) + "\n");
+                buffer.append("\n");
+            }
+
+            //show all data
+            tickets.setText(buffer.toString());
+        }
+
     }
 
     //prikaz svih tiketaa u Alert Dialogu
