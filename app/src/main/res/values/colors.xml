@@ -12,7 +12,12 @@
     <color name="tileColor">#f2f5f9</color>
     <color name="beginColor">#0a1d6b</color>
     <color name="blue_color_button_text">#2c62ba</color>
+    <color name="blue_color_button_text1">#426fb9</color>
     <color name="red_color_button_text">#ba2c2c</color>
+    <color name="red_color_button_text1">#ba3e3e</color>
     <color name="yellow_color_button_text">#ba9b2c</color>
+    <color name="yellow_color_button_text1">#b69f4c</color>
     <color name="green_color_button_text">#2cba5d</color>
+
+
 </resources>

@@ -1,7 +1,11 @@
 package com.example.administrator.demographicstuff;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,11 +25,15 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +46,16 @@ public class FirstPageActivity extends AppCompatActivity {
     public String android_id;
     @BindView(R.id.create_ticket2)
     TextView showLiveConditions;
+
+    //For custom notification
+    private NotificationCompat.Builder builder;
+    private NotificationManager notificationManager;
+    public static int notification_id;
+    public static RemoteViews remoteViews;
+    private Context context;
+    public static PendingIntent pendingIntent;
+    //<--              -->//
+
 
     //For google maps
     private static final int ERROR_DIALOG_REQUEST = 9001;
@@ -59,6 +78,44 @@ public class FirstPageActivity extends AppCompatActivity {
             showMap();
         }
         showLiveConditions();
+
+        //<-- GETTING CUSTOM NOTIFICATION LAYOUT -->//
+        context = FirstPageActivity.this;
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        builder = new NotificationCompat.Builder(context);
+
+        remoteViews = new RemoteViews(getPackageName(),R.layout.custom_notification);
+        remoteViews.setImageViewResource(R.id.notif_icon,R.mipmap.ic_launcher);
+        remoteViews.setTextViewText(R.id.notif_title,"Rate us!");
+
+        notification_id = (int) System.currentTimeMillis();
+
+        Intent button_intent = new Intent("button_click");
+        button_intent.putExtra("id",notification_id);
+        PendingIntent button_pending_event = PendingIntent.getBroadcast(context,123,
+                button_intent,0);
+
+        remoteViews.setOnClickPendingIntent(R.id.rtg1,button_pending_event);
+        remoteViews.setOnClickPendingIntent(R.id.rtg2,button_pending_event);
+        remoteViews.setOnClickPendingIntent(R.id.rtg3,button_pending_event);
+        remoteViews.setOnClickPendingIntent(R.id.rtg4,button_pending_event);
+        remoteViews.setOnClickPendingIntent(R.id.rtg5,button_pending_event);
+
+        Intent notification_intent = new Intent(context,FirstPageActivity.class);
+        pendingIntent = PendingIntent.getActivity(context,0,notification_intent,0);
+        //<--     end of custom notification    -->//
+
+        //<-- alarm menager -->//
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Intent notificationIntent = new Intent(this, AlarmReceiver.class);
+        PendingIntent broadcast = PendingIntent.getBroadcast(context, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.SECOND, 5);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
+        //<-- End of alarm menager -->//
+
     }
 
     public boolean isServicesOK(){
@@ -105,19 +162,20 @@ public class FirstPageActivity extends AppCompatActivity {
     //dohvacanje najkoristenijih aplikacija
     public void AppsUsed() {
         Cursor res = ab.getMostUsedApps(android_id);
+        TextView appUsage = findViewById(R.id.apps);
         if (res.getCount() == 0) {
             //Show message
-            showMessage("Empty", "No apps found");
+            appUsage.setText("No apps found");
             return;
         } else {
             StringBuffer buffer = new StringBuffer();
             while (res.moveToNext()) {
-                buffer.append("App name: " + res.getString(2) + "\n");
-                buffer.append("Usage: " + res.getString(3) + " MB\n");
+                buffer.append(res.getString(2) + "\n");
+                buffer.append(res.getString(3) + " MB\n");
                 buffer.append("\n");
             }
             //show all data
-            showMessage("Most used apps", buffer.toString());
+            appUsage.setText(buffer.toString());
         }
     }
 
@@ -171,6 +229,7 @@ public class FirstPageActivity extends AppCompatActivity {
     //dohvacanje svih Ticketa
     public void showTickets() {
         show_tickets = (Button) findViewById(R.id.show_tickets);
+        TextView tickets = findViewById(R.id.ticketsList);
         show_tickets.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -200,6 +259,22 @@ public class FirstPageActivity extends AppCompatActivity {
                 }
             }
         });
+        Cursor res = tb.getMyThreeTickets(android_id);
+        if (res.getCount() == 0) {
+            //Show message
+            tickets.setText("No tickets found");
+            return;
+        } else {
+            StringBuffer buffer = new StringBuffer();
+            while (res.moveToNext()) {
+                buffer.append("ID: " + res.getString(0) + " - " + res.getString(2) + "\n");
+                buffer.append("Date: " + res.getString(6) + "\n");
+                buffer.append("\n");
+            }
+
+            //show all data
+            tickets.setText(buffer.toString());
+        }
     }
 
     //prikaz svih tiketaa u Alert Dialogu
@@ -211,3 +286,4 @@ public class FirstPageActivity extends AppCompatActivity {
         builder.show();
     }
 }
+

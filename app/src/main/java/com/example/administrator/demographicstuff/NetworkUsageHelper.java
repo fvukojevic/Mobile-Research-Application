@@ -120,6 +120,17 @@ public class NetworkUsageHelper {
         });
         List<AppUsage> result = new ArrayList<>(packageInfoList.size());
         for (PackageInfo packageInfo : packageInfoList) {
+            ApplicationInfo ain = null;
+            try {
+                ain = packageManager.getApplicationInfo(packageInfo.packageName, 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            if((ain.flags & ApplicationInfo.FLAG_SYSTEM) != 0){
+                continue;
+            }
+
             if (packageManager.checkPermission(Manifest.permission.INTERNET,
                     packageInfo.packageName) == PackageManager.PERMISSION_DENIED) {
                 continue;

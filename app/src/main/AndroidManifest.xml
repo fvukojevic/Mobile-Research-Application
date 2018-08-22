@@ -101,6 +101,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <receiver android:name="Button_listener">
+            <intent-filter>
+                <action android:name="button_click"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".AlarmReceiver">
+            <intent-filter>
+                <action android:name=".DISPLAY_NOTIFICATION"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
