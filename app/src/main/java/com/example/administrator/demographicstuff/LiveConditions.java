@@ -1,9 +1,13 @@
 package com.example.administrator.demographicstuff;
 
 import android.Manifest;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,10 +26,13 @@ import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.TextView;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -36,6 +43,8 @@ public class LiveConditions extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 4;
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 5;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 6;
+    private static final int DATA_COLLECTION_SCHEDULE_SERVICE = 7;
+    private static final int TIME_UPDATE = 1200000;
     private static final String NETWORK_TYPE_2G = "2G";
     private static final String NETWORK_TYPE_3G = "3G";
     private static final String NETWORK_TYPE_4G = "4G";
@@ -103,9 +112,12 @@ public class LiveConditions extends AppCompatActivity {
     TelephonyManager telephonyManager;
     WifiManager wifiManager;
     Handler handler;
-    DataCollectionService dataCollectionService;
     LocationManager locationManager;
     List<TextView> listOfMobileParameters;
+    JobScheduler jobScheduler;
+    JobInfo jobInfo;
+    Location location;
+    Criteria crit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,20 +150,34 @@ public class LiveConditions extends AppCompatActivity {
         telephonyManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         handler = new Handler();
-        dataCollectionService = new DataCollectionService();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         listOfMobileParameters = new LinkedList<>();
-        listOfMobileParameters.addAll(Arrays.asList(tvCellId,tvCqi,tvENodeB,tvMCC,tvMNC,tvMobileRSSI,tvMobileTechnology,tvPCI,tvRfcn,tvRSRP,tvRSRQ,tvSNR,tvTAC,tvTimingAdvance));
+        listOfMobileParameters.addAll(Arrays.asList(tvCellId, tvCqi, tvENodeB, tvMCC, tvMNC, tvMobileRSSI, tvMobileTechnology, tvPCI, tvRfcn, tvRSRP, tvRSRQ, tvSNR, tvTAC, tvTimingAdvance));
+
+        startService(new Intent(this, LocationService.class));
+
+        jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        ComponentName componentName = new ComponentName(this, DataCollectionJobSchedule.class);
+        jobInfo = new JobInfo.Builder(DATA_COLLECTION_SCHEDULE_SERVICE, componentName)
+                .setPeriodic(TIME_UPDATE, JobInfo.getMinFlexMillis())
+                .setPersisted(true)
+                .build();
+        int resultCode = jobScheduler.schedule(jobInfo);
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            Log.d("TAG", "Job scheduled!");
+        } else {
+            Log.d("TAG", "Job not scheduled");
+        }
 
         if (activeNetworkInfo == null) {
             tvMobileStatus.setText(R.string.nijeSpojeno);
             tvWiFiStatus.setText(R.string.nijeSpojeno);
         } else {
-            startService(new Intent(this, DataCollectionService.class));
             getData();
             getLocation();
             handler.postDelayed(dataCollect, 1000);
         }
+
     }
 
     @Override
@@ -190,7 +216,7 @@ public class LiveConditions extends AppCompatActivity {
             };
 
             try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
@@ -211,7 +237,7 @@ public class LiveConditions extends AppCompatActivity {
         netcap = connectivityManager != null ? connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork()) : null;
         activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
         if (wifiManager.isWifiEnabled()) {
-            if(activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
+            if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
                 if (netcap.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                     tvMobileStatus.setText(R.string.nijeSpojeno);
                     for (TextView text : listOfMobileParameters) {
@@ -220,8 +246,8 @@ public class LiveConditions extends AppCompatActivity {
                     getWiFiParameters();
                 }
             }
-        } else if (telephonyManager.isDataEnabled()){
-            if(activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
+        } else if (telephonyManager.isDataEnabled()) {
+            if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
                 if (netcap.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
                     tvWiFiStatus.setText(R.string.nijeSpojeno);
                     tvWiFiSSID.setText(R.string.noData);
@@ -356,34 +382,44 @@ public class LiveConditions extends AppCompatActivity {
     }
 
     public void getLocation() {
-        Location location = null;
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        location = null;
+        crit = new Criteria();
+        crit.setAccuracy(Criteria.ACCURACY_FINE);
+        String provider;
         try {
-            location = locationManager != null ? locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) : null;
-            if (lastLocation == null) {
-                lastLocation = location;
-            }
-        } catch (SecurityException e) {
+            provider = locationManager.getBestProvider(crit, true);
+            location = locationManager.getLastKnownLocation(provider);
+            if (lastLocation == null) lastLocation = location;
+        } catch (SecurityException | NullPointerException e) {
             e.printStackTrace();
         }
         if (location != null) {
-            if (lastLocation.distanceTo(location) >= 20) {
-                lastLocation = location;
-            }
             tvLocationLat.setText(String.valueOf(location.getLatitude()));
             tvLocationLong.setText(String.valueOf(location.getLongitude()));
             tvLocationAlt.setText(String.valueOf(location.getAltitude()));
+            tvLocationAcc.setText(String.valueOf(location.getAccuracy()));
+            tvSpeed.setText(String.valueOf(location.getSpeed()));
         }
     }
 
 
     public void updateLocation(Location location) {
-        if (lastLocation == null) {
-            lastLocation = location;
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        location = null;
+        crit = new Criteria();
+        crit.setAccuracy(Criteria.ACCURACY_FINE);
+        String provider;
+        try {
+            provider = locationManager.getBestProvider(crit, true);
+            location = locationManager.getLastKnownLocation(provider);
+            if (lastLocation == null) lastLocation = location;
+        } catch (SecurityException | NullPointerException e) {
+            tvLocationAcc.setText(R.string.locationUnavailable);
+            e.printStackTrace();
         }
+
         if (location != null) {
-            if (lastLocation.distanceTo(location) >= 20) {
-                lastLocation = location;
-            }
             tvLocationLat.setText(String.valueOf(location.getLatitude()));
             tvLocationLong.setText(String.valueOf(location.getLongitude()));
             tvLocationAlt.setText(String.valueOf(location.getAltitude()));

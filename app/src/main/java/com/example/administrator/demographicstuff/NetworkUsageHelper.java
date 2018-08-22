@@ -14,7 +14,6 @@ import android.net.TrafficStats;
 import android.os.Build;
 import android.os.RemoteException;
 import android.telephony.TelephonyManager;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,8 +46,9 @@ public class NetworkUsageHelper {
         return getUsageList(ConnectivityManager.TYPE_MOBILE);
     }
 
-    private List<AppUsage> getUsageList(Integer networkType) {
+    private List<AppUsage> getUsageList(final Integer networkType) {
         List<AppUsage> appUsages = getPackagesData();
+        List<AppUsage> temp = new ArrayList<>();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             long uploadedData = -1;
             long downloadedData = -1;
@@ -80,6 +80,10 @@ public class NetworkUsageHelper {
                         rxBytes += bucket.getRxBytes();
                     }
                     stats.close();
+                    if(txBytes < 5242880 && rxBytes < 5242880){
+                        temp.add(appUsage);
+                        continue;
+                    }
                     appUsage.setUploadedBytes(txBytes);
                     appUsage.setUploadPercentage((float) txBytes / uploadedData);
                     appUsage.setDownloadedBytes(rxBytes);
@@ -88,6 +92,19 @@ public class NetworkUsageHelper {
                     e.printStackTrace();
                 }
             }
+            appUsages.removeAll(temp);
+            appUsages.sort(new Comparator<AppUsage>() {
+                @Override
+                public int compare(AppUsage appUsage, AppUsage t1) {
+                    if(appUsage.getDownloaded(DATA_B) > t1.getDownloaded(DATA_B)){
+                        return -1;
+                    } else if (appUsage.getDownloaded(DATA_B) < t1.getDownloaded(DATA_B)){
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
         } else {
             long uploadedData = -1;
             long downloadedData = -1;
@@ -123,14 +140,18 @@ public class NetworkUsageHelper {
             ApplicationInfo ain = null;
             try {
                 ain = packageManager.getApplicationInfo(packageInfo.packageName, 0);
+
+                PackageInfo targetPkgInfo = packageManager.getPackageInfo(
+                        packageInfo.packageName, PackageManager.GET_SIGNATURES);
+                PackageInfo sys = packageManager.getPackageInfo(
+                        "android", PackageManager.GET_SIGNATURES);
+                if (targetPkgInfo != null && targetPkgInfo.signatures != null && sys.signatures[0]
+                        .equals(targetPkgInfo.signatures[0])) {
+                    continue;
+                }
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
-
-            if((ain.flags & ApplicationInfo.FLAG_SYSTEM) != 0){
-                continue;
-            }
-
             if (packageManager.checkPermission(Manifest.permission.INTERNET,
                     packageInfo.packageName) == PackageManager.PERMISSION_DENIED) {
                 continue;

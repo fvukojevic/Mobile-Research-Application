@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-feature android:name="android.hardware.location.gps" />
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
@@ -112,6 +114,11 @@
                 <action android:name=".DISPLAY_NOTIFICATION"/>
             </intent-filter>
         </receiver>
+        <service
+            android:name=".DataCollectionJobSchedule"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"/>
+        <service android:name=".LocationService"/>
     </application>
 
 </manifest>
