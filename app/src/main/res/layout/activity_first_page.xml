@@ -117,7 +117,7 @@
 
                     </LinearLayout>
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="40dp"
@@ -127,10 +127,27 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/networkInfo"
-                            android:textColor="@color/yellow_color_button_text1"/>
+                            android:id="@+id/typeNetwork"
+                            android:textColor="@color/yellow_color_button_text1"
+                            android:scrollHorizontally="false"/>
 
-                    </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/networkInfo"
+                            android:textColor="@color/yellow_color_button_text1"
+                            android:scrollHorizontally="false"
+                            android:layout_below="@id/typeNetwork"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/rssi_rsrp"
+                            android:textColor="@color/yellow_color_button_text1"
+                            android:scrollHorizontally="false"
+                            android:layout_below="@id/networkInfo"/>
+
+                    </RelativeLayout>
 
                     <Button
                         android:id="@+id/show_tickets2"
@@ -313,6 +330,65 @@
                             android:scaleType="fitCenter"/>
 
                     </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/info1"
+                            android:textColor="@color/green_color_button_text1"
+                            android:scrollHorizontally="false"
+                            android:text="Latitude:"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/latInfo"
+                            android:textColor="@color/green_color_button_text1"
+                            android:scrollHorizontally="false"
+                            android:layout_below="@id/info1"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/info2"
+                            android:textColor="@color/green_color_button_text1"
+                            android:scrollHorizontally="false"
+                            android:text="\nLongitude:"
+                            android:layout_below="@id/latInfo"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/longInfo"
+                            android:textColor="@color/green_color_button_text1"
+                            android:scrollHorizontally="false"
+                            android:layout_below="@id/info2"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/info3"
+                            android:textColor="@color/green_color_button_text1"
+                            android:scrollHorizontally="false"
+                            android:text="\nAltitude:"
+                            android:layout_below="@id/longInfo"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/altInfo"
+                            android:textColor="@color/green_color_button_text1"
+                            android:scrollHorizontally="false"
+                            android:layout_below="@id/info3"/>
+
+                    </RelativeLayout>
 
                     <Button
                         android:id="@+id/show_tickets3"

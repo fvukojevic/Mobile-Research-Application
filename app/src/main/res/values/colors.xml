@@ -7,17 +7,18 @@
     <color name="colorWhite">#ffffff</color>
     <color name="greyLine">#858e9b</color>
     <color name="alternative">#00695C</color>
-    <color name="backgroundColor">#d5d8e8</color>
+    <color name="backgroundColor">#e6e6e9</color>
     <color name="buttonColor">#d9e5f7</color>
-    <color name="tileColor">#f2f5f9</color>
+    <color name="tileColor">#ffffff</color>
     <color name="beginColor">#0a1d6b</color>
     <color name="blue_color_button_text">#2c62ba</color>
-    <color name="blue_color_button_text1">#426fb9</color>
+    <color name="blue_color_button_text1">#4e76b7</color>
     <color name="red_color_button_text">#ba2c2c</color>
-    <color name="red_color_button_text1">#ba3e3e</color>
+    <color name="red_color_button_text1">#ba5151</color>
     <color name="yellow_color_button_text">#ba9b2c</color>
-    <color name="yellow_color_button_text1">#b69f4c</color>
+    <color name="yellow_color_button_text1">#b19d57</color>
     <color name="green_color_button_text">#2cba5d</color>
+    <color name="green_color_button_text1">#61b47e</color>
 
 
 </resources>

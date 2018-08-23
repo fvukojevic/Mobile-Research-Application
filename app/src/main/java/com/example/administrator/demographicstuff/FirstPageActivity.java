@@ -5,6 +5,9 @@ import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +15,15 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
@@ -21,6 +33,12 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.CellInfo;
+import android.telephony.CellInfoCdma;
+import android.telephony.CellInfoGsm;
+import android.telephony.CellInfoLte;
+import android.telephony.CellInfoWcdma;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,11 +47,14 @@ import android.widget.ImageButton;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.net.NetworkInfo;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,6 +80,46 @@ public class FirstPageActivity extends AppCompatActivity {
 
     //For google maps
     private static final int ERROR_DIALOG_REQUEST = 9001;
+
+    ConnectivityManager connectivityManager;
+
+    private static final String NETWORK_TYPE_2G = "2G";
+    private static final String NETWORK_TYPE_3G = "3G";
+    private static final String NETWORK_TYPE_4G = "4G";
+    private static final String TYPE_WIFI = "Network - WiFi:\n";
+    private static final String TYPE_MOBILE = "Network - Mobile:\n";
+    private String networkType = "";
+    private String typeNet = "";
+    private static final int DATA_COLLECTION_SCHEDULE_SERVICE = 7;
+    private static final int TIME_UPDATE = 1200000;
+    private Location lastLocation = null;
+
+
+    @BindView(R.id.rssi_rsrp)
+    TextView rssi_rsrp;
+    @BindView(R.id.networkInfo)
+    TextView networkInfo;
+    @BindView(R.id.typeNetwork)
+    TextView typeNetwork;
+    @BindView(R.id.latInfo)
+    TextView latInfo;
+    @BindView(R.id.longInfo)
+    TextView longInfo;
+    @BindView(R.id.altInfo)
+    TextView altInfo;
+
+    NetworkInfo activeNetworkInfo;
+    NetworkCapabilities netcap;
+    TelephonyManager telephonyManager;
+    WifiManager wifiManager;
+    List<TextView> listOfMobileParameters;
+    LocationManager locationManager;
+    Location location;
+    Handler handler;
+    JobScheduler jobScheduler;
+    JobInfo jobInfo;
+    Criteria crit;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +177,84 @@ public class FirstPageActivity extends AppCompatActivity {
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
         //<-- End of alarm menager -->//
 
+
+        connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
+        boolean isConnected = activeNetworkInfo != null &&
+                activeNetworkInfo.isConnectedOrConnecting();
+        netcap = connectivityManager != null ? connectivityManager.getNetworkCapabilities(connectivityManager != null ? connectivityManager.getActiveNetwork() : null) : null;
+        telephonyManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        listOfMobileParameters = new LinkedList<>();
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        handler = new Handler();
+
+        startService(new Intent(this, LocationService.class));
+
+        jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        ComponentName componentName = new ComponentName(this, DataCollectionJobSchedule.class);
+        jobInfo = new JobInfo.Builder(DATA_COLLECTION_SCHEDULE_SERVICE, componentName)
+                .setPeriodic(TIME_UPDATE, JobInfo.getMinFlexMillis())
+                .setPersisted(true)
+                .build();
+        int resultCode = jobScheduler.schedule(jobInfo);
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            Log.d("TAG", "Job scheduled!");
+        } else {
+            Log.d("TAG", "Job not scheduled");
+        }
+
+        getData();
+        getLocation();
+        handler.postDelayed(dataCollect, 1000);
+
+
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        handler.removeCallbacks(dataCollect);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        handler.postDelayed(dataCollect, 1000);
+    }
+
+    private Runnable dataCollect = new Runnable() {
+        @Override
+        public void run() {
+            getData();
+            LocationListener locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    updateLocation(location);
+                }
+
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
+                }
+
+                @Override
+                public void onProviderEnabled(String s) {
+                }
+
+                @Override
+                public void onProviderDisabled(String s) {
+                }
+            };
+
+            try {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+            handler.postDelayed(dataCollect, 1000);
+        }
+    };
+
 
     public boolean isServicesOK(){
 
@@ -285,5 +423,158 @@ public class FirstPageActivity extends AppCompatActivity {
         builder.setMessage(message);
         builder.show();
     }
+
+
+    //prikaz informacija o mrezi
+
+
+
+    public void getData() {
+        connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
+        netcap = connectivityManager != null ? connectivityManager.getNetworkCapabilities(connectivityManager != null ? connectivityManager.getActiveNetwork() : null) : null;
+        telephonyManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        getNetworkType();
+    }
+
+    public void getNetworkType() {
+        netcap = connectivityManager != null ? connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork()) : null;
+        activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
+        if (wifiManager.isWifiEnabled()) {
+            if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
+                if (netcap.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    for (TextView text : listOfMobileParameters) {
+                        text.setText(R.string.noData);
+                    }
+                    getWiFiParameters();
+                }
+            }
+        } else if (telephonyManager.isDataEnabled()) {
+            if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
+                if (netcap.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                    networkInfo.setText(R.string.noData);
+                    rssi_rsrp.setText(R.string.noData);
+                    switch (activeNetworkInfo != null ? activeNetworkInfo.getSubtype() : -1) {
+                        case TelephonyManager.NETWORK_TYPE_GPRS:
+                        case TelephonyManager.NETWORK_TYPE_EDGE:
+                        case TelephonyManager.NETWORK_TYPE_CDMA:
+                        case TelephonyManager.NETWORK_TYPE_1xRTT:
+                        case TelephonyManager.NETWORK_TYPE_IDEN:
+                        case TelephonyManager.NETWORK_TYPE_GSM:
+                            typeNet = TYPE_MOBILE;
+                            networkType = NETWORK_TYPE_2G;
+                            networkInfo.setText(R.string.networkType2G);
+                            typeNetwork.setText(R.string.mobile);
+                            getMobileParameters();
+                            return;
+                        case TelephonyManager.NETWORK_TYPE_UMTS:
+                        case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                        case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                        case TelephonyManager.NETWORK_TYPE_HSDPA:
+                        case TelephonyManager.NETWORK_TYPE_HSUPA:
+                        case TelephonyManager.NETWORK_TYPE_HSPA:
+                        case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                        case TelephonyManager.NETWORK_TYPE_EHRPD:
+                        case TelephonyManager.NETWORK_TYPE_HSPAP:
+                        case TelephonyManager.NETWORK_TYPE_TD_SCDMA:
+                            typeNet = TYPE_MOBILE;
+                            networkType = NETWORK_TYPE_3G;
+                            networkInfo.setText(R.string.networkType3G);
+                            typeNetwork.setText(R.string.mobile);
+                            getMobileParameters();
+                            return;
+                        case TelephonyManager.NETWORK_TYPE_LTE:
+                            typeNet = TYPE_MOBILE;
+                            networkType = NETWORK_TYPE_4G;
+                            networkInfo.setText(R.string.networkType4G);
+                            typeNetwork.setText(R.string.mobile);
+                            getMobileParameters();
+                    }
+                }
+            }
+        } else {
+            return;
+        }
+    }
+
+    public void getWiFiParameters() {
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        typeNet = TYPE_WIFI;
+        typeNetwork.setText(R.string.WiFi);
+        networkInfo.setText(wifiInfo.getSSID() + "\n");
+        rssi_rsrp.setText("RSSI: " + String.valueOf(wifiInfo.getRssi()));
+    }
+
+    public void getMobileParameters() {
+        List<CellInfo> cellinfo = null;
+        try {
+            cellinfo = telephonyManager != null ? telephonyManager.getAllCellInfo() : null;
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+        if (cellinfo == null) return;
+        switch (networkType) {
+            case NETWORK_TYPE_2G:
+                CellInfoGsm gsm = (CellInfoGsm) cellinfo.get(0);
+                rssi_rsrp.setText("RSRP: " + String.format("%s dBm", String.valueOf(gsm.getCellSignalStrength().getDbm())));
+                return;
+            case NETWORK_TYPE_3G:
+                try {
+                    CellInfoWcdma wcdma = (CellInfoWcdma) cellinfo.get(0);
+                    rssi_rsrp.setText("RSRP: " + String.format("%s dBm", String.valueOf(wcdma.getCellSignalStrength().getDbm())));
+                } catch (ClassCastException e) {
+                    CellInfoCdma cdma = (CellInfoCdma) cellinfo.get(0);
+                    rssi_rsrp.setText(String.valueOf(cdma.getCellSignalStrength().getCdmaDbm()));
+                }
+                return;
+            case NETWORK_TYPE_4G:
+                CellInfoLte lte = (CellInfoLte) cellinfo.get(0);
+                rssi_rsrp.setText("RSRP: " + String.format("%s dBm", String.valueOf(lte.getCellSignalStrength().getDbm())));
+        }
+    }
+
+    public void getLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        location = null;
+        crit = new Criteria();
+        crit.setAccuracy(Criteria.ACCURACY_FINE);
+        String provider;
+        try {
+            provider = locationManager.getBestProvider(crit, true);
+            location = locationManager.getLastKnownLocation(provider);
+            if (lastLocation == null) lastLocation = location;
+        } catch (SecurityException | NullPointerException e) {
+            e.printStackTrace();
+        }
+        if (location != null) {
+            latInfo.setText(String.valueOf(location.getLatitude()));
+            longInfo.setText(String.valueOf(location.getLongitude()));
+            altInfo.setText(String.valueOf(location.getAltitude()));
+        }
+    }
+
+
+    public void updateLocation(Location location) {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        location = null;
+        crit = new Criteria();
+        crit.setAccuracy(Criteria.ACCURACY_FINE);
+        String provider;
+        try {
+            provider = locationManager.getBestProvider(crit, true);
+            location = locationManager.getLastKnownLocation(provider);
+            if (lastLocation == null) lastLocation = location;
+        } catch (SecurityException | NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        if (location != null) {
+            latInfo.setText(String.valueOf(location.getLatitude()));
+            longInfo.setText(String.valueOf(location.getLongitude()));
+            altInfo.setText(String.valueOf(location.getAltitude()));
+        }
+    }
+
 }
 
