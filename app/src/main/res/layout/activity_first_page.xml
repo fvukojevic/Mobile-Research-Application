@@ -16,81 +16,81 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="match_parent"
-        tools:context=".FirstPageActivity"
-        android:background="@color/backgroundColor"
-        android:weightSum="1">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/titleLayout"
-            android:orientation="horizontal"
-            android:background="@color/tileColor"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:paddingBottom="5dp">
-
-            <TextView
-                android:id="@+id/livetext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:text="Live view"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textAlignment="center"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="15dp"
-                android:textSize="13pt"/>
-
-        </LinearLayout>
-
-
-
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/linearlayout1"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="250dp"
+            android:orientation="vertical"
+            android:layout_height="match_parent"
             tools:context=".FirstPageActivity"
             android:background="@color/backgroundColor"
-            android:weightSum="1"
-            android:layout_marginTop="5dp">
+            android:weightSum="1">
 
-
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/relativelayout1"
-                android:orientation="vertical"
-                android:layout_height="match_parent"
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:layout_alignParentLeft="true"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/titleLayout"
+                android:orientation="horizontal"
+                android:background="@color/tileColor"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:layout_below="@+id/livetext"
-                tools:context=".FirstPageActivity"
-                android:background="@color/tileColor">
+                android:layout_marginTop="5dp"
+                android:paddingBottom="5dp">
 
-                <Button
-                    android:id="@+id/button2"
+                <TextView
+                    android:id="@+id/livetext"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="142dp"
-                    android:layout_weight="1"
-                    android:background="@color/tileColor" />
+                    android:layout_alignParentTop="true"
+                    android:text="Live view"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textAlignment="center"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="15dp"
+                    android:textSize="13pt"/>
+
+            </LinearLayout>
+
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/linearlayout1"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="250dp"
+                tools:context=".FirstPageActivity"
+                android:background="@color/backgroundColor"
+                android:weightSum="1"
+                android:layout_marginTop="5dp">
+
+
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/relativelayout1"
+                    android:orientation="vertical"
+                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight=".50"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_below="@+id/livetext"
+                    tools:context=".FirstPageActivity"
+                    android:background="@color/tileColor">
+
+                    <Button
+                        android:id="@+id/button2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="142dp"
+                        android:layout_weight="1"
+                        android:background="@color/tileColor" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -99,348 +99,348 @@
                     android:gravity="center"
                     android:id="@+id/network">
 
-                    <TextView
-                        android:id="@+id/textView1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:text="Network"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:textColor="@color/yellow_color_button_text"/>
+                        <TextView
+                            android:id="@+id/textView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="Network"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            android:textColor="@color/yellow_color_button_text"/>
 
-                    <ImageView
-                        android:layout_width="wrap_content"
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/network"
+                            android:scaleType="fitCenter"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/networkInfo"
+                            android:textColor="@color/yellow_color_button_text1"/>
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/show_tickets2"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/network"
-                        android:scaleType="fitCenter"/>
+                        android:layout_alignParentStart="true"
+                        android:layout_marginBottom="-142dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:background="@null"/>
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/create_ticket2"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/networkInfo"
-                        android:textColor="@color/yellow_color_button_text1"/>
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="VIEW"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:background="@drawable/yellow_border_button"
+                        android:textColor="@color/yellow_color_button_text" />
 
-                </LinearLayout>
+                </RelativeLayout>
 
-                <Button
-                    android:id="@+id/show_tickets2"
-                    android:layout_width="match_parent"
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/relativelayout2"
+                    android:orientation="vertical"
                     android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginBottom="-142dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:background="@null"/>
+                    android:layout_width="0dp"
+                    android:layout_weight=".50"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
+                    android:layout_below="@+id/livetext"
+                    tools:context=".FirstPageActivity"
+                    android:background="@color/tileColor">
 
-                <Button
-                    android:id="@+id/create_ticket2"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:text="VIEW"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:background="@drawable/yellow_border_button"
-                    android:textColor="@color/yellow_color_button_text" />
+                    <Button
+                        android:id="@+id/button1"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="142dp"
+                        android:layout_weight="1"
+                        android:background="@color/tileColor" />
 
-            </RelativeLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|center_horizontal"
+                        android:gravity="center"
+                        android:id="@+id/appUsage">
 
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="App usage"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            android:textColor="@color/blue_color_button_text"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/appusage"
+                            android:scaleType="fitCenter"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/apps"
+                            android:textColor="@color/blue_color_button_text1"/>
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/show_tickets1"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@null"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+                    <Button
+                        android:id="@+id/show_wifi"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="VIEW"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:background="@drawable/blue_border_button"
+                        android:textColor="@color/blue_color_button_text" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/relativelayout2"
-                android:orientation="vertical"
-                android:layout_height="match_parent"
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="5dp"
-                android:layout_below="@+id/livetext"
+                android:id="@+id/linearlayout2"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="250dp"
+                android:layout_below="@+id/linearlayout1"
                 tools:context=".FirstPageActivity"
-                android:background="@color/tileColor">
+                android:background="@color/backgroundColor"
+                android:weightSum="1"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp">
 
-                <Button
-                    android:id="@+id/button1"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="142dp"
-                    android:layout_weight="1"
-                    android:background="@color/tileColor" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center|center_horizontal"
-                    android:gravity="center"
-                    android:id="@+id/appUsage">
-
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:text="App usage"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:textColor="@color/blue_color_button_text"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/appusage"
-                        android:scaleType="fitCenter"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/apps"
-                        android:textColor="@color/blue_color_button_text1"/>
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/show_tickets1"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="match_parent"
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:orientation="vertical"
                     android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:background="@null"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                    android:layout_width="0dp"
+                    android:layout_weight=".50"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    tools:context=".FirstPageActivity"
+                    android:background="@color/tileColor">
 
-                <Button
-                    android:id="@+id/show_wifi"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:text="VIEW"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:background="@drawable/blue_border_button"
-                    android:textColor="@color/blue_color_button_text" />
+                    <Button
+                        android:id="@+id/button3"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="142dp"
+                        android:layout_weight="1"
+                        android:background="@color/tileColor" />
 
-            </RelativeLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|center_horizontal"
+                        android:gravity="center"
+                        android:id="@+id/location">
+
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="Location"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            android:textColor="@color/green_color_button_text"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/location"
+                            android:scaleType="fitCenter"/>
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/show_tickets3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginBottom="-142dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:background="@null"/>
+
+                    <Button
+                        android:id="@+id/show_map"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/green_border_button"
+                        android:text="VIEW"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/green_color_button_text" />
+
+
+
+                </RelativeLayout>
+
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:orientation="vertical"
+                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight=".50"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
+                    android:layout_below="@+id/linearlayout2"
+                    tools:context=".FirstPageActivity"
+                    android:background="@color/tileColor">
+
+                    <Button
+                        android:id="@+id/button"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="142dp"
+                        android:layout_weight="1"
+                        android:background="@color/tileColor" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|center_horizontal"
+                        android:gravity="center"
+                        android:id="@+id/tickets">
+
+                        <TextView
+                            android:id="@+id/textView4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="Tickets"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            android:textColor="@color/red_color_button_text"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/tickets"
+                            android:scaleType="fitCenter"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/ticketsList"
+                            android:textColor="@color/red_color_button_text1"/>
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/show_tickets"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginBottom="-142dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:background="@null"/>
+
+                    <Button
+                        android:id="@+id/create_ticket"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="CREATE TICKET"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:background="@drawable/red_border_button"
+                        android:textColor="@color/red_color_button_text" />
+
+
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/linearlayout2"
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="250dp"
-            android:layout_below="@+id/linearlayout1"
-            tools:context=".FirstPageActivity"
-            android:background="@color/backgroundColor"
-            android:weightSum="1"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp">
-
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:orientation="vertical"
-                android:layout_height="match_parent"
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                tools:context=".FirstPageActivity"
-                android:background="@color/tileColor">
-
-                <Button
-                    android:id="@+id/button3"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="142dp"
-                    android:layout_weight="1"
-                    android:background="@color/tileColor" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center|center_horizontal"
-                    android:gravity="center"
-                    android:id="@+id/location">
-
-                    <TextView
-                        android:id="@+id/textView3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:text="Location"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:textColor="@color/green_color_button_text"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/location"
-                        android:scaleType="fitCenter"/>
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/show_tickets3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginBottom="-142dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:background="@null"/>
-
-                <Button
-                    android:id="@+id/show_map"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/green_border_button"
-                    android:text="VIEW"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/green_color_button_text" />
-
-
-
-            </RelativeLayout>
-
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:orientation="vertical"
-                android:layout_height="match_parent"
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="5dp"
-                android:layout_below="@+id/linearlayout2"
-                tools:context=".FirstPageActivity"
-                android:background="@color/tileColor">
-
-                <Button
-                    android:id="@+id/button"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="142dp"
-                    android:layout_weight="1"
-                    android:background="@color/tileColor" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center|center_horizontal"
-                    android:gravity="center"
-                    android:id="@+id/tickets">
-
-                    <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:text="Tickets"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:textColor="@color/red_color_button_text"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/tickets"
-                        android:scaleType="fitCenter"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/ticketsList"
-                        android:textColor="@color/red_color_button_text1"/>
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/show_tickets"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginBottom="-142dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:background="@null"/>
-
-                <Button
-                    android:id="@+id/create_ticket"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:text="CREATE TICKET"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:background="@drawable/red_border_button"
-                    android:textColor="@color/red_color_button_text" />
-
-
-
-            </RelativeLayout>
-
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</ScrollView>
+    </ScrollView>
 
 </RelativeLayout>
 

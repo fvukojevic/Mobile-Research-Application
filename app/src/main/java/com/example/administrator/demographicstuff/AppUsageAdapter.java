@@ -55,6 +55,7 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
             holder.uploaded.setText("U: " + Math.round(uploaded) + " MB");
         }
         float downloaded = usage.getDownloaded(NetworkUsageHelper.DATA_MB);
+        float downloaded_ALLMB = usage.getDownloaded(NetworkUsageHelper.DATA_MB);
         if (downloaded > 15000f) {
             downloaded = usage.getDownloaded(NetworkUsageHelper.DATA_GB);
             holder.downloaded.setText("D: " + Math.round(downloaded) + " GB");
@@ -64,22 +65,22 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
         holder.name.setText(usage.getAppName());
         holder.usage.setProgress(Float.valueOf(usage.getDownloadPercentage() * 100f).intValue());
 
-        if(downloaded > 10)
+        if(downloaded_ALLMB > 10)
         {
             Cursor res = db.getAppUsage(android_id, usage.getAppName());
             if(res.getCount() == 0)
             {
                 //Show message
-                db.insertAppUsage(android_id, usage.getAppName(), downloaded);
+                db.insertAppUsage(android_id, usage.getAppName(), downloaded_ALLMB);
                 Toast.makeText(context, usage.getAppName() + " is now inserted", Toast.LENGTH_SHORT).show();
             }
             else{
                 while(res.moveToNext())
                 {
                     double old_usage = res.getDouble(3);
-                    if(downloaded - old_usage > 10)
+                    if(downloaded_ALLMB - old_usage > 10)
                     {
-                        db.updateAppUsage(android_id, usage.getAppName(), downloaded);
+                        db.updateAppUsage(android_id, usage.getAppName(), downloaded_ALLMB);
                         Toast.makeText(context, usage.getAppName() + " is updated", Toast.LENGTH_SHORT).show();
                     }
                 }

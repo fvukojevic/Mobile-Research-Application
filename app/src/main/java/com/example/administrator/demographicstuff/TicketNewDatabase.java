@@ -76,5 +76,11 @@ public class TicketNewDatabase extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getMyThreeTickets(String android_id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from " + new_ticket_table + " WHERE ANDROID_ID = ? ORDER BY id DESC LIMIT 3", new String[] {android_id});
+        return res;
+    }
 }
 

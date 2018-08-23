@@ -297,7 +297,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             .position(latLng)
                             .title(ticket_id)
                             .snippet(snippet)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_ticket_icon));
                     mMarker = mMap.addMarker(options);
                 }
             }
