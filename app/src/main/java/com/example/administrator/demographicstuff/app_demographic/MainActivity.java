@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     public static DemograficDatabase db;
     public static String android_id;
     public static Button terms;
+    public static Button privacy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +69,9 @@ public class MainActivity extends AppCompatActivity {
         rg4 = findViewById(R.id.radioGroup4);
         postal = findViewById(R.id.postal_code);
         confirm = findViewById(R.id.confirm);
-        terms = findViewById(R.id.agreeText);
+        terms = findViewById(R.id.termsOfUse);
+        privacy = findViewById(R.id.privacyBtn);
+
 
         terms.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +81,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        privacy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMessage("Privacy:", "Privacy info goes here!");
+                return;
+            }
+        });
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override

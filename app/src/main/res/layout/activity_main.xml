@@ -362,46 +362,118 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginRight="40dp">
 
-                    <CheckBox
-                        android:id="@+id/agree"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_centerHorizontal="true"
-                        android:gravity="right|center"
-                        android:layout_weight="1"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:text="I agree to "
-                        android:textSize="14dp"/>
-
-
-                    <Button
-                        android:id="@+id/agreeText"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="left|center"
-                        android:text="terms of service"
-                        android:textSize="14dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:textColor="@color/beginColor"
-                        android:layout_weight="1"
-                        style="?android:attr/borderlessButtonStyle">
-                    </Button>
-
-                </LinearLayout>
 
 
             </RadioGroup>
 
         </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/agreeLayout"
+            android:orientation="horizontal"
+            android:background="@color/tileColor"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_below="@+id/addiotionalinfoLayout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/terms"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@color/beginColor"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+
+                    android:text="THE DATA COLLECTED BY THIS APP WILL HELP OUR OPERATORS TO IMPROVE MOBILE SERVICES IN CROATIA.\n\n
+SPECIFICALLY, IT COLLECTS INFORMATION ABOUT:\n
+- THE PERFORMANCE OF YOUR MOBILE NETWORK, INCLUDING LOCATON OF YOUR PHONE AND THE TIME IT WAS CONNECTED.\n
+- THE APPS YOU USE BUT NOT WHAT YOU USE THEM FOR, E.G. NO INFORMATION ABOUT THE CONTENT YOU ACCESSED.\n
+- COLLECTED DATA WILL BE STORED SECURELY, WILL ONLY BE SHARED OR PUBLISHED IN AN ANONIMOUS FORMAT AND MAY BE USED BY OPERATORS TO
+IMPROVE NETWORK PERFORMANCE\n
+- IF YOU WISH TO STOP PARTICIPATING IN THIS STUDY, SIMPLY UNINSTALL THE APP."/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_below="@+id/terms"
+                android:id="@+id/agreeTerms">
+
+                <CheckBox
+                    android:id="@+id/agree"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="right|center"
+                    android:layout_weight="1"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:text="I agree to "
+                    android:textSize="14dp"/>
+
+
+                <Button
+                    android:id="@+id/termsOfUse"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="left|center"
+                    android:text="terms and conditions of use"
+                    android:textSize="14dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/beginColor"
+                    android:layout_weight="0.5"
+                    style="?android:attr/borderlessButtonStyle">
+                </Button>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_below="@+id/agreeTerms"
+                android:layout_centerHorizontal="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" and "
+                    android:layout_weight="1"
+                    android:textColor="#000"/>
+
+                <Button
+                    android:id="@+id/privacyBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="left|center"
+                    android:text="privacy"
+                    android:textSize="14dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/beginColor"
+                    android:layout_weight="1"
+                    style="?android:attr/borderlessButtonStyle">
+                </Button>
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -413,7 +485,7 @@
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:layout_below="@+id/addiotionalinfoLayout">
+            android:layout_below="@+id/agreeLayout">
 
             <Button
                 android:id="@+id/confirm"
