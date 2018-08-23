@@ -52,8 +52,10 @@ import com.google.android.gms.tasks.Task;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 //imports for cluster manager
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 
@@ -125,9 +127,32 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void setUpClusterer() {
         mClusterManager = new ClusterManager<>(this, mMap);
-        mClusterManager.setAnimation(true);
+        mClusterManager.setAnimation(false);
+        mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MyItem>() {
+            @Override
+            public boolean onClusterClick(Cluster<MyItem> cluster) {
+                Toast.makeText(MapActivity.this, "Zoom to see markers", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
         mMap.setOnCameraIdleListener(mClusterManager);
         mMap.setOnMarkerClickListener(mClusterManager);
+    }
+
+    private void addItems() {
+
+        LatLng stariTrzni = new LatLng(43.3453916, 17.8009922);
+        mClusterManager.addItem(new MyItem(stariTrzni.latitude, stariTrzni.longitude, "title1", "snippet1"));
+        LatLng mepas = new LatLng(43.3476426, 17.8038751);
+        mClusterManager.addItem(new MyItem(mepas.latitude, mepas.longitude, "title2", "snippet2"));
+        LatLng karting = new LatLng(43.3501085, 17.7979277);
+        mClusterManager.addItem(new MyItem(karting.latitude, karting.longitude, "title3", "snippet3"));
+        LatLng franjevacka = new LatLng(43.337563,17.8097269);
+        mClusterManager.addItem(new MyItem(franjevacka.latitude, franjevacka.longitude));
+        LatLng katedrala = new LatLng(43.3389234,17.7976635);
+        mClusterManager.addItem(new MyItem(katedrala.latitude, katedrala.longitude));
+        LatLng stadion = new LatLng(43.3454522,17.7958132);
+        mClusterManager.addItem(new MyItem(stadion.latitude, stadion.longitude));
     }
 
     @Override
@@ -272,14 +297,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    public void showTickets()
-    {
-        if(ticket_tester == 0)
+    public void showTickets() {
+        if (ticket_tester == 0)
             ticket_tester = 1;
         else
             ticket_tester = 0;
 
-        if(ticket_tester == 1 ) {
+        if (ticket_tester == 1) {
+            addItems();
             mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapActivity.this));
             Cursor res = tb.getMyTickets(android_id);
             if (res.getCount() == 0) {
@@ -287,7 +312,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 return;
             } else {
                 while (res.moveToNext()) {
-                    String ticket_id = "ID: " + res.getString(0) +" ";
+                    String ticket_id = "ID: " + res.getString(0) + " ";
                     String ticket_aid = res.getString(1);
                     String ticket_ctg = "Category: " + res.getString(2);
                     String ticket_subctg = "Subcategory: " + res.getString(3);
@@ -300,7 +325,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             Double.parseDouble(res.getString(8)));
 
                     //mClusterManager.addItem(new MyItem(Double.parseDouble(res.getString(9)),
-                      //      Double.parseDouble(res.getString(8)), ticket_id, snippet));
+                    //      Double.parseDouble(res.getString(8)), ticket_id, snippet));
 
                     String snippet = "Category:  " + ticket_ctg + "\n" +
                             "Subcategory: " + ticket_subctg + "\n" +
@@ -317,10 +342,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     mMarker = mMap.addMarker(options);
                 }
             }
-            ;
-        }
-        else
+        } else {
             mMap.clear();
+            mClusterManager.clearItems();
+        }
     }
 
     private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo){
@@ -516,4 +541,5 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 }
+
 

@@ -31,13 +31,15 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAWQUxDWz-NudIZvh-lLH4KHMBiJP6OPgk"/>
+            android:value="AIzaSyDSxWIBN-w_IAhnkUkbtSv_MtQKqv5wkto"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".app_demographic.MainActivity" android:screenOrientation="portrait">
+        <activity android:name=".app_demographic.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
