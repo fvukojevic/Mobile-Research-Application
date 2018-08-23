@@ -1,4 +1,4 @@
-package com.example.administrator.demographicstuff;
+package com.example.administrator.demographicstuff.app_map;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;

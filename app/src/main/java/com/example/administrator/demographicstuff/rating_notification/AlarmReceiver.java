@@ -1,4 +1,4 @@
-package com.example.administrator.demographicstuff;
+package com.example.administrator.demographicstuff.rating_notification;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -9,6 +9,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+
+import com.example.administrator.demographicstuff.FirstPageActivity;
+import com.example.administrator.demographicstuff.R;
 
 import static android.app.NotificationManager.IMPORTANCE_DEFAULT;
 

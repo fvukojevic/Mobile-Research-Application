@@ -1,6 +1,5 @@
-package com.example.administrator.demographicstuff;
+package com.example.administrator.demographicstuff.app_map;
 
-import android.*;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -21,12 +20,13 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrator.demographicstuff.rating_notification.CustomInfoWindowAdapter;
+import com.example.administrator.demographicstuff.R;
+import com.example.administrator.demographicstuff.app_tickets.TicketNewDatabase;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -41,7 +41,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -53,7 +52,10 @@ import com.google.android.gms.tasks.Task;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+//imports for cluster manager
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
 
 import com.example.administrator.demographicstuff.models.PlaceInfo;
 
@@ -88,6 +90,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             init();
         }
+        setUpClusterer();
     }
 
     private static final String TAG = "MapActivity";
@@ -116,6 +119,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static TicketNewDatabase tb;
     public String android_id;
     public static int ticket_tester = 0;
+
+    // Inicijalizacija cluster managera.
+    private ClusterManager<MyItem> mClusterManager;
+
+    private void setUpClusterer() {
+        mClusterManager = new ClusterManager<>(this, mMap);
+        mClusterManager.setAnimation(true);
+        mMap.setOnCameraIdleListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -285,6 +298,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     LatLng latLng = new LatLng(Double.parseDouble(res.getString(9)),
                             Double.parseDouble(res.getString(8)));
+
+                    //mClusterManager.addItem(new MyItem(Double.parseDouble(res.getString(9)),
+                      //      Double.parseDouble(res.getString(8)), ticket_id, snippet));
 
                     String snippet = "Category:  " + ticket_ctg + "\n" +
                             "Subcategory: " + ticket_subctg + "\n" +
@@ -468,5 +484,36 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             places.release();
         }
     };
+
+    public class MyItem implements ClusterItem {
+        private LatLng mPosition;
+        private String mTitle = "";
+        private String mSnippet = "";
+
+        public MyItem(double lat, double lng) {
+            mPosition = new LatLng(lat, lng);
+        }
+
+        public MyItem(double lat, double lng, String title, String snippet) {
+            mPosition = new LatLng(lat, lng);
+            mTitle = title;
+            mSnippet = snippet;
+        }
+
+        @Override
+        public LatLng getPosition() {
+            return mPosition;
+        }
+
+        @Override
+        public String getTitle() {
+            return mTitle;
+        }
+
+        @Override
+        public String getSnippet() {
+            return mSnippet;
+        }
+    }
 }
 

@@ -1,4 +1,4 @@
-package com.example.administrator.demographicstuff;
+package com.example.administrator.demographicstuff.app_live_conditions;
 
 import android.app.Service;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.example.administrator.demographicstuff.app_live_conditions.DataCollectionJobSchedule;
 
 public class LocationService extends Service {
     private LocationManager mLocationManager = null;

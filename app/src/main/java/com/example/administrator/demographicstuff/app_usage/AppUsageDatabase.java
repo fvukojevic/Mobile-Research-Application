@@ -1,4 +1,4 @@
-package com.example.administrator.demographicstuff;
+package com.example.administrator.demographicstuff.app_usage;
 
 import android.content.ContentValues;
 import android.content.Context;

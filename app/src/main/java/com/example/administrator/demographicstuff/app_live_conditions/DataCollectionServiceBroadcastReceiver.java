@@ -1,4 +1,4 @@
-package com.example.administrator.demographicstuff;
+package com.example.administrator.demographicstuff.app_live_conditions;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

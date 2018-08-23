@@ -1,4 +1,4 @@
-package com.example.administrator.demographicstuff;
+package com.example.administrator.demographicstuff.app_usage;
 
 import android.Manifest;
 import android.annotation.SuppressLint;

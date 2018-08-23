@@ -186,6 +186,7 @@
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-tagmanager-11.4.0" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support.constraint:constraint-layout-solver:1.1.2@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-vision-common-11.4.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.maps.android:android-maps-utils-0.5" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-maps-11.4.0" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:coordinatorlayout-28.0.0-rc01" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:customview-28.0.0-rc01" level="project" />

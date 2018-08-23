@@ -29,6 +29,9 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.example.administrator.demographicstuff.app_live_conditions.DataCollectionJobSchedule;
+import com.example.administrator.demographicstuff.app_live_conditions.LocationService;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
