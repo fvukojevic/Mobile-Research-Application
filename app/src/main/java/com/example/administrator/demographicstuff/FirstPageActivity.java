@@ -20,6 +20,7 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -55,13 +56,36 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FirstPageActivity extends AppCompatActivity {
-
-    private static Button create_ticket, show_tickets, show_wifi, show_map;
     private static TicketNewDatabase tb;
     private static AppUsageDatabase ab;
     public String android_id;
     @BindView(R.id.create_ticket2)
     TextView showLiveConditions;
+    @BindView(R.id.apps)
+    TextView appUsage;
+    @BindView(R.id.create_ticket)
+    Button create_ticket;
+    @BindView(R.id.show_tickets)
+    Button show_tickets;
+    @BindView(R.id.ticketsList)
+    TextView tickets;
+    @BindView(R.id.show_wifi)
+    Button show_wifi;
+    @BindView(R.id.show_map)
+    Button show_map;
+    @BindView(R.id.rssi_rsrp)
+    TextView rssi_rsrp;
+    @BindView(R.id.networkInfo)
+    TextView networkInfo;
+    @BindView(R.id.typeNetwork)
+    TextView typeNetwork;
+    @BindView(R.id.latInfo)
+    TextView latInfo;
+    @BindView(R.id.longInfo)
+    TextView longInfo;
+    @BindView(R.id.altInfo)
+    TextView altInfo;
+
 
     //For custom notification
     private NotificationCompat.Builder builder;
@@ -90,19 +114,6 @@ public class FirstPageActivity extends AppCompatActivity {
     private Location lastLocation = null;
 
 
-    @BindView(R.id.rssi_rsrp)
-    TextView rssi_rsrp;
-    @BindView(R.id.networkInfo)
-    TextView networkInfo;
-    @BindView(R.id.typeNetwork)
-    TextView typeNetwork;
-    @BindView(R.id.latInfo)
-    TextView latInfo;
-    @BindView(R.id.longInfo)
-    TextView longInfo;
-    @BindView(R.id.altInfo)
-    TextView altInfo;
-
     NetworkInfo activeNetworkInfo;
     NetworkCapabilities netcap;
     TelephonyManager telephonyManager;
@@ -126,14 +137,7 @@ public class FirstPageActivity extends AppCompatActivity {
 
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        AppsUsed();
-        toCreate();
-        showTickets();
-        showWifiUsage();
-        if(isServicesOK()){
-            showMap();
-        }
-        showLiveConditions();
+        new SetClickListeners().execute();
 
         //<-- GETTING CUSTOM NOTIFICATION LAYOUT -->//
         context = FirstPageActivity.this;
@@ -292,15 +296,12 @@ public class FirstPageActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    //dohvacanje najkoristenijih aplikacija
-    public void AppsUsed() {
-        Cursor res = ab.getMostUsedApps(android_id);
-        TextView appUsage = findViewById(R.id.apps);
-        if (res.getCount() == 0) {
-            //Show message
-            appUsage.setText("No apps found");
-            return;
-        } else {
+    private class SetClickListeners extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            //dohvacanje najkoristenijih aplikacija
+            String data = "No Apps found";
+            Cursor res = ab.getMostUsedApps(android_id);
             StringBuffer buffer = new StringBuffer();
             while (res.moveToNext()) {
                 buffer.append(res.getString(2) + "\n");
@@ -309,104 +310,93 @@ public class FirstPageActivity extends AppCompatActivity {
             }
             //show all data
             appUsage.setText(buffer.toString());
-        }
-    }
-
-    //Otvaranje prozora za pravljenje novog ticketa
-    public void toCreate() {
-        create_ticket = findViewById(R.id.create_ticket);
-        create_ticket.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(".CreateTicketActivity");
-                startActivity(intent);
-            }
-        });
-    }
-
-    //prelazak na mapu
-    public void showMap()
-    {
-        show_map = findViewById(R.id.show_map);
-        show_map.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(".MapActivity");
-                startActivity(intent);
-            }
-        });
-    }
-    //dohvacanje wifi usage-a
-    public void showWifiUsage() {
-        show_wifi = findViewById(R.id.show_wifi);
-        show_wifi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(".AppWifiUsage");
-                startActivity(intent);
-            }
-        });
-    }
-
-    public void showLiveConditions() {
-        showLiveConditions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(".LiveConditions");
-                startActivity(intent);
-            }
-        });
-    }
 
 
-    //dohvacanje svih Ticketa
-    public void showTickets() {
-        show_tickets = (Button) findViewById(R.id.show_tickets);
-        TextView tickets = findViewById(R.id.ticketsList);
-        show_tickets.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Cursor res = tb.getMyTickets(android_id);
-                if (res.getCount() == 0) {
-                    //Show message
-                    showMessage("Empty", "No tickets found");
-                    return;
-                } else {
-                    StringBuffer buffer = new StringBuffer();
-                    while (res.moveToNext()) {
-                        buffer.append("ID: " + res.getString(0) + "\n");
-                        buffer.append("Android_id: " + res.getString(1) + "\n");
-                        buffer.append("Category: " + res.getString(2) + "\n");
-                        buffer.append("Subcategory: " + res.getString(3) + "\n");
-                        buffer.append("Frequency: " + res.getString(4) + "\n");
-                        buffer.append("Question: " + res.getString(5) + "\n");
-                        buffer.append("Date: " + res.getString(6) + "\n");
-                        buffer.append("Time: " + res.getString(7) + "\n");
-                        buffer.append("Long: " + res.getString(8) + "\n");
-                        buffer.append("Lat: " + res.getString(9) + "\n");
-                        buffer.append("\n");
-                    }
-
-                    //show all data
-                    showMessage("Data", buffer.toString());
+            //Otvaranje prozora za pravljenje novog ticketa
+            create_ticket.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(".CreateTicketActivity");
+                    startActivity(intent);
                 }
-            }
-        });
-        Cursor res = tb.getMyThreeTickets(android_id);
-        if (res.getCount() == 0) {
-            //Show message
-            tickets.setText("No tickets found");
-            return;
-        } else {
-            StringBuffer buffer = new StringBuffer();
-            while (res.moveToNext()) {
-                buffer.append("ID: " + res.getString(0) + " - " + res.getString(2) + "\n");
-                buffer.append("Date: " + res.getString(6) + "\n");
-                buffer.append("\n");
+            });
+
+            //prelazak na mapu
+            if (isServicesOK()) {
+                show_map.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(".MapActivity");
+                        startActivity(intent);
+                    }
+                });
             }
 
-            //show all data
-            tickets.setText(buffer.toString());
+            //dohvacanje wifi usage-a
+            show_wifi.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(".AppWifiUsage");
+                    startActivity(intent);
+                }
+            });
+
+            showLiveConditions.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(".LiveConditions");
+                    startActivity(intent);
+                }
+            });
+
+            //dohvacanje svih Ticketa
+            show_tickets.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Cursor res = tb.getMyTickets(android_id);
+                    if (res.getCount() == 0) {
+                        //Show message
+                        showMessage("Empty", "No tickets found");
+                        return;
+                    } else {
+                        StringBuffer buffer = new StringBuffer();
+                        while (res.moveToNext()) {
+                            buffer.append("ID: " + res.getString(0) + "\n");
+                            buffer.append("Android_id: " + res.getString(1) + "\n");
+                            buffer.append("Category: " + res.getString(2) + "\n");
+                            buffer.append("Subcategory: " + res.getString(3) + "\n");
+                            buffer.append("Frequency: " + res.getString(4) + "\n");
+                            buffer.append("Question: " + res.getString(5) + "\n");
+                            buffer.append("Date: " + res.getString(6) + "\n");
+                            buffer.append("Time: " + res.getString(7) + "\n");
+                            buffer.append("Long: " + res.getString(8) + "\n");
+                            buffer.append("Lat: " + res.getString(9) + "\n");
+                            buffer.append("\n");
+                        }
+
+                        //show all data
+                        showMessage("Data", buffer.toString());
+                    }
+                }
+            });
+
+            //dohvacanje prva tri ticketa
+            Cursor res3 = tb.getMyThreeTickets(android_id);
+            if (res3.getCount() == 0) {
+                //Show message
+                tickets.setText("No tickets found");
+            } else {
+                StringBuffer buffer2 = new StringBuffer();
+                while (res3.moveToNext()) {
+                    buffer2.append("ID: " + res3.getString(0) + " - " + res3.getString(2) + "\n");
+                    buffer2.append("Date: " + res3.getString(6) + "\n");
+                    buffer2.append("\n");
+                }
+
+                //show all data
+                tickets.setText(buffer2.toString());
+            }
+            return null;
         }
     }
 
@@ -421,9 +411,6 @@ public class FirstPageActivity extends AppCompatActivity {
 
 
     //prikaz informacija o mrezi
-
-
-
     public void getData() {
         connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
