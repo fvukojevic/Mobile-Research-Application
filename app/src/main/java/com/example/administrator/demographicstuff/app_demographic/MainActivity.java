@@ -1,13 +1,11 @@
-package com.example.administrator.demographicstuff;
+package com.example.administrator.demographicstuff.app_demographic;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +14,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.shitij.goyal.slidebutton.SwipeButton;
+import com.example.administrator.demographicstuff.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

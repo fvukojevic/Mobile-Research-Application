@@ -1,4 +1,4 @@
-package com.example.administrator.demographicstuff;
+package com.example.administrator.demographicstuff.rating_notification;
 
 import android.app.NotificationManager;
 import android.app.NotificationManager;

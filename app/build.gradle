@@ -47,4 +47,8 @@ dependencies {
 
     //Google play services
     implementation 'com.google.android.gms:play-services:11.4.0'
+
+    //for map clusterer
+    implementation 'com.google.maps.android:android-maps-utils:0.5+'
+
 }

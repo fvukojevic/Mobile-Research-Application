@@ -37,7 +37,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".app_demographic.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,21 +51,21 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateTicketActivity">
+        <activity android:name=".app_tickets.CreateTicketActivity">
             <intent-filter>
                 <action android:name=".CreateTicketActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".AppWifiUsage">
+        <activity android:name=".app_usage.AppWifiUsage">
             <intent-filter>
                 <action android:name=".AppWifiUsage" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".AppMobileUsage">
+        <activity android:name=".app_usage.AppMobileUsage">
             <intent-filter>
                 <action android:name=".AppMobileUsage" />
 
@@ -83,11 +83,11 @@
         </activity>
 
         <service
-            android:name=".DataCollectionService"
+            android:name=".app_live_conditions.DataCollectionService"
             android:exported="false" />
 
         <receiver
-            android:name=".DataCollectionServiceBroadcastReceiver"
+            android:name=".app_live_conditions.DataCollectionServiceBroadcastReceiver"
             android:enabled="true"
             android:exported="false"
             android:label="RestartServiceWhenStopped">
@@ -96,7 +96,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".MapActivity">
+        <activity android:name=".app_map.MapActivity">
             <intent-filter>
                 <action android:name=".MapActivity" />
 
@@ -104,21 +104,21 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="Button_listener">
+        <receiver android:name=".rating_notification.Button_listener">
             <intent-filter>
                 <action android:name="button_click"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".AlarmReceiver">
+        <receiver android:name=".rating_notification.AlarmReceiver">
             <intent-filter>
                 <action android:name=".DISPLAY_NOTIFICATION"/>
             </intent-filter>
         </receiver>
         <service
-            android:name=".DataCollectionJobSchedule"
+            android:name=".app_live_conditions.DataCollectionJobSchedule"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="true"/>
-        <service android:name=".LocationService"/>
+        <service android:name=".app_live_conditions.LocationService"/>
     </application>
 
 </manifest>

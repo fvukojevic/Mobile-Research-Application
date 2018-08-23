@@ -1,4 +1,4 @@
-package com.example.administrator.demographicstuff;
+package com.example.administrator.demographicstuff.app_usage;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -21,9 +21,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.administrator.demographicstuff.R;
+
 import java.util.concurrent.TimeUnit;
 
-public class AppMobileUsage extends AppCompatActivity {
+public class AppWifiUsage extends AppCompatActivity {
 
     private RecyclerView list;
     private static Button mobile_btn,wifi_btn;
@@ -37,7 +39,7 @@ public class AppMobileUsage extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        setContentView(R.layout.activity_app_mobile_usage);
+        setContentView(R.layout.activity_app_wifi_usage);
         list = findViewById(R.id.list);
         showMobileUsage();
         showWifiUsage();
@@ -104,12 +106,12 @@ public class AppMobileUsage extends AppCompatActivity {
     private void initializeRecyclerViewProperties() {
         list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         final AppUsageAdapter adapter = new AppUsageAdapter(getApplicationContext(), android_id);
-        adapter.usageList = new NetworkUsageHelper(getApplicationContext()).getMobileUsageList();
+        adapter.usageList = new NetworkUsageHelper(getApplicationContext()).getWifiUsageList();
         list.setAdapter(adapter);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                adapter.usageList = new NetworkUsageHelper(getApplicationContext()).getMobileUsageList();
+                adapter.usageList = new NetworkUsageHelper(getApplicationContext()).getWifiUsageList();
                 adapter.notifyDataSetChanged();
                 runOnUiThread(new Runnable() {
                     @Override
@@ -144,7 +146,7 @@ public class AppMobileUsage extends AppCompatActivity {
                             return;
                         }
                         appOps.stopWatchingMode(this);
-                        Intent intent = new Intent(AppMobileUsage.this, AppMobileUsage.class);
+                        Intent intent = new Intent(AppWifiUsage.this, AppWifiUsage.class);
                         if (getIntent().getExtras() != null) {
                             intent.putExtras(getIntent().getExtras());
                         }
@@ -162,4 +164,3 @@ public class AppMobileUsage extends AppCompatActivity {
         startActivity(intent);
     }
 }
-
