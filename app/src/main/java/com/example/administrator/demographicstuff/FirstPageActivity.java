@@ -36,7 +36,9 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RemoteViews;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,6 +87,10 @@ public class FirstPageActivity extends AppCompatActivity {
     TextView longInfo;
     @BindView(R.id.altInfo)
     TextView altInfo;
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
 
     //For custom notification
@@ -222,6 +228,14 @@ public class FirstPageActivity extends AppCompatActivity {
         handler.postDelayed(dataCollect, 1000);
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        scrollView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+
+    }
+
     private Runnable dataCollect = new Runnable() {
         @Override
         public void run() {
@@ -336,6 +350,8 @@ public class FirstPageActivity extends AppCompatActivity {
             show_wifi.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    scrollView.setVisibility(View.GONE);
                     Intent intent = new Intent(".AppWifiUsage");
                     startActivity(intent);
                 }
