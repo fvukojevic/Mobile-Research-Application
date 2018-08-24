@@ -121,6 +121,7 @@ public class LiveConditions extends AppCompatActivity {
     JobInfo jobInfo;
     Location location;
     Criteria crit;
+    public static Double altitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -401,6 +402,7 @@ public class LiveConditions extends AppCompatActivity {
             tvLocationLat.setText(String.valueOf(location.getLatitude()));
             tvLocationLong.setText(String.valueOf(location.getLongitude()));
             tvLocationAlt.setText(String.valueOf(location.getAltitude()));
+            altitude = location.getAltitude();
             tvLocationAcc.setText(String.valueOf(location.getAccuracy()));
             tvSpeed.setText(String.valueOf(location.getSpeed()));
         }

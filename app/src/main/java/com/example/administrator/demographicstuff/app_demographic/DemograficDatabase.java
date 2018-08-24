@@ -59,6 +59,12 @@ public class DemograficDatabase extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getMyId(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select id from " + demographic_table, null);
+        return res;
+    }
+
     public Cursor findByAndroidId(String android_id) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + demographic_table + " WHERE ANDROID_ID = ?", new String[]{android_id});

@@ -326,12 +326,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             Double.parseDouble(res.getString(8)));
 
 
-                    String snippet = "Category:  " + ticket_ctg + "\n" +
+                    String snippet = ("Category:  " + ticket_ctg + "\n" +
                             "Subcategory: " + ticket_subctg + "\n" +
                             "Frequency: " + ticket_frq + "\n" +
                             "Question: " + ticket_q + "\n" +
                             "Date:  " + ticket_date + "\n" +
-                            "Time: " + ticket_time + "\n";
+                            "Time: " + ticket_time + "\n" +
+                            "Longitude: " + Double.parseDouble(res.getString(8)) + "\n" +
+                            "Latitude: " + Double.parseDouble(res.getString(9)) + "\n" +
+                            "Altitude: " + Double.parseDouble(res.getString(10)));
 
                    /* MarkerOptions options = new MarkerOptions()
                             .position(latLng)
