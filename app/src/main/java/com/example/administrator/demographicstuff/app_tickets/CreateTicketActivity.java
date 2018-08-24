@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,7 +27,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrator.demographicstuff.FirstPageActivity;
+import com.example.administrator.demographicstuff.LiveConditions;
 import com.example.administrator.demographicstuff.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -238,6 +244,28 @@ public class CreateTicketActivity extends AppCompatActivity{
                                             submit.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
+                                                    //<--      Json obj -->//
+                                                    JSONObject postData = new JSONObject();
+                                                    Long tsLong = System.currentTimeMillis()/1000;
+                                                    String ts = tsLong.toString();
+                                                    try {
+                                                        postData.put("appuserid", FirstPageActivity.user_id);
+                                                        postData.put("category", category_spinner.getSelectedItem().toString());
+                                                        postData.put("frequency", frequency_spinner.getSelectedItem().toString());
+                                                        postData.put("comment", question_field.getText().toString());
+                                                        postData.put("longitude", Double.parseDouble(long_text.getText().toString()));
+                                                        postData.put("latitude", Double.parseDouble(lat_text.getText().toString()));
+                                                        postData.put("altitude", LiveConditions.altitude);
+                                                        postData.put("timestamp", ts);
+                                                        postData.put("email", email_text.getText().toString());
+                                                        postData.put("acceptance", true);
+
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    Log.d("MyApp", postData.toString());
+
+                                                    //<--End of json obj. Local storage below -->//
                                                     boolean check = tb.insertTicket(android_id, category_spinner.getSelectedItem().toString() ,
                                                             subcategory_spinner.getSelectedItem().toString()
                                                     , frequency_spinner.getSelectedItem().toString(), question_field.getText().toString(), date_text.getText().toString(),
