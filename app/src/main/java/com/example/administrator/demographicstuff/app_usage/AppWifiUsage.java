@@ -71,7 +71,7 @@ public class AppWifiUsage extends AppCompatActivity {
             }
         });
     }
-
+//TODO loading wheel when switching between mobile and wifi
     public void showMobileUsage()
     {
         mobile_btn = findViewById(R.id.mobile_btn);

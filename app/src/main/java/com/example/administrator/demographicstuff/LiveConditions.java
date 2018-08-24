@@ -3,9 +3,7 @@ package com.example.administrator.demographicstuff;
 import android.Manifest;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -26,11 +24,7 @@ import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.widget.TextView;
-
-import com.example.administrator.demographicstuff.app_live_conditions.DataCollectionJobSchedule;
-import com.example.administrator.demographicstuff.app_live_conditions.LocationService;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -46,8 +40,6 @@ public class LiveConditions extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 4;
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 5;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 6;
-    private static final int DATA_COLLECTION_SCHEDULE_SERVICE = 7;
-    private static final int TIME_UPDATE = 1200000;
     private static final String NETWORK_TYPE_2G = "2G";
     private static final String NETWORK_TYPE_3G = "3G";
     private static final String NETWORK_TYPE_4G = "4G";
@@ -117,8 +109,6 @@ public class LiveConditions extends AppCompatActivity {
     Handler handler;
     LocationManager locationManager;
     List<TextView> listOfMobileParameters;
-    JobScheduler jobScheduler;
-    JobInfo jobInfo;
     Location location;
     Criteria crit;
 
@@ -156,21 +146,6 @@ public class LiveConditions extends AppCompatActivity {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         listOfMobileParameters = new LinkedList<>();
         listOfMobileParameters.addAll(Arrays.asList(tvCellId, tvCqi, tvENodeB, tvMCC, tvMNC, tvMobileRSSI, tvMobileTechnology, tvPCI, tvRfcn, tvRSRP, tvRSRQ, tvSNR, tvTAC, tvTimingAdvance));
-
-        startService(new Intent(this, LocationService.class));
-
-        jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        ComponentName componentName = new ComponentName(this, DataCollectionJobSchedule.class);
-        jobInfo = new JobInfo.Builder(DATA_COLLECTION_SCHEDULE_SERVICE, componentName)
-                .setPeriodic(TIME_UPDATE, JobInfo.getMinFlexMillis())
-                .setPersisted(true)
-                .build();
-        int resultCode = jobScheduler.schedule(jobInfo);
-        if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Log.d("TAG", "Job scheduled!");
-        } else {
-            Log.d("TAG", "Job not scheduled");
-        }
 
         if (activeNetworkInfo == null) {
             tvMobileStatus.setText(R.string.nijeSpojeno);

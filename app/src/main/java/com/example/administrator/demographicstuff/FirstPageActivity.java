@@ -202,12 +202,7 @@ public class FirstPageActivity extends AppCompatActivity {
                 .setPeriodic(TIME_UPDATE, JobInfo.getMinFlexMillis())
                 .setPersisted(true)
                 .build();
-        int resultCode = jobScheduler.schedule(jobInfo);
-        if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Log.d("TAG", "Job scheduled!");
-        } else {
-            Log.d("TAG", "Job not scheduled");
-        }
+        jobScheduler.schedule(jobInfo);
 
         getData();
         getLocation();

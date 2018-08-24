@@ -3,6 +3,7 @@ package com.example.administrator.demographicstuff.app_live_conditions;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -38,7 +39,6 @@ public class DataCollectionJobSchedule extends JobService {
     private static final String NETWORK_TYPE_2G = "2G";
     private static final String NETWORK_TYPE_3G = "3G";
     private static final String NETWORK_TYPE_4G = "4G";
-
 
     JobParameters params;
     ConnectivityManager connectivityManager;
@@ -267,12 +267,8 @@ public class DataCollectionJobSchedule extends JobService {
     public void getLocation() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Location location = null;
-        Criteria crit = new Criteria();
-        crit.setAccuracy(Criteria.ACCURACY_FINE);
-        String provider;
         try {
-            provider = locationManager.getBestProvider(crit, true);
-            location = locationManager.getLastKnownLocation(provider);
+            location = locationManager.getLastKnownLocation(locationManager.getProvider(LocationManager.GPS_PROVIDER).toString());
             if (lastLocation == null) lastLocation = location;
         } catch (SecurityException | NullPointerException e) {
             e.printStackTrace();

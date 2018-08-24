@@ -1,31 +1,42 @@
 package com.example.administrator.demographicstuff.app_live_conditions;
 
 import android.app.Service;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PersistableBundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.administrator.demographicstuff.app_live_conditions.DataCollectionJobSchedule;
 
+import java.security.Provider;
+
 public class LocationService extends Service {
+    private static final int LOCATION_DATA_COLLECTION_SCHEDULE_SERVICE = 8;
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 500;
     private static final int LOCATION_DISTANCE = 10;
     private Location lastLocation;
 
     private class LocationListener implements android.location.LocationListener {
+        String provider;
         public LocationListener(String provider) {
+            this.provider = provider;
             lastLocation = null;
         }
 
         @Override
         public void onLocationChanged(Location location) {
             Log.i("Location Changed", location.toString());
-            collectData(location);
+            Log.i("Provider", provider);
+            collectData(location, provider);
         }
 
         @Override
@@ -41,15 +52,38 @@ public class LocationService extends Service {
         }
     }
 
-    public void collectData(Location location){
-        if(lastLocation == null){
+    public void collectData(Location location, String provider) {
+        if (lastLocation == null) {
             lastLocation = location;
             Log.i("lastLocationWasNull", location.toString());
+            startService(provider);
         }
-        if (lastLocation.distanceTo(location) >= 20){
+        if (lastLocation.distanceTo(location) >= 20) {
             lastLocation = location;
             Log.i("lastLocationGT20", lastLocation.toString());
-            startService(new Intent(this, DataCollectionJobSchedule.class));
+            startService(provider);
+        }
+    }
+
+
+    public void startService(String provider){
+        Toast toast = Toast.makeText(getApplicationContext(), "Location updated", Toast.LENGTH_SHORT);
+        toast.show();
+
+        JobScheduler jobScheduler;
+        JobInfo jobInfo;
+        jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        ComponentName componentName = new ComponentName(this, LocationDataCollectionJobSchedule.class);
+        PersistableBundle bundle = new PersistableBundle();
+        bundle.putString("PROVIDER", provider);
+        jobInfo = new JobInfo.Builder(LOCATION_DATA_COLLECTION_SCHEDULE_SERVICE, componentName)
+                .setExtras(bundle)
+                .setRequiresStorageNotLow(true)
+                .setMinimumLatency(20)
+                .setOverrideDeadline(200)
+                .build();
+        if (jobScheduler != null) {
+            jobScheduler.schedule(jobInfo);
         }
     }
 
@@ -90,6 +124,8 @@ public class LocationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Intent broadcastIntent = new Intent(".restartService");
+        sendBroadcast(broadcastIntent);
     }
 
     private void initializeLocationManager() {
