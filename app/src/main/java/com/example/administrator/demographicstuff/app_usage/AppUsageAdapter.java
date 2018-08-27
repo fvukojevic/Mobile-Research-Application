@@ -73,8 +73,7 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
         }
         holder.name.setText(usage.getAppName());
         holder.usage.setProgress(Float.valueOf(usage.getDownloadPercentage() * 100f).intValue());
-        holder.usage.getProgressDrawable().setColorFilter(
-                Color.CYAN, PorterDuff.Mode.MULTIPLY);
+
 
         if(downloaded_ALLMB > 10)
         {
