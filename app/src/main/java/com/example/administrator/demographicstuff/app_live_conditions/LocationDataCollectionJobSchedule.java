@@ -1,25 +1,17 @@
 package com.example.administrator.demographicstuff.app_live_conditions;
 
-import android.app.Service;
+import android.app.job.JobParameters;
+import android.app.job.JobService;
 import android.content.Context;
-import android.content.Intent;
+import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.Process;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
@@ -41,14 +33,12 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-public class DataCollectionService extends Service {
+public class LocationDataCollectionJobSchedule extends JobService{
     private static final String NETWORK_TYPE_2G = "2G";
     private static final String NETWORK_TYPE_3G = "3G";
     private static final String NETWORK_TYPE_4G = "4G";
-    private static final int LOCATION_UPDATE_DISTANCE = 20;
-    private static final String JOB_FINISHED = "jobFinished";
 
-
+    JobParameters params;
     ConnectivityManager connectivityManager;
     NetworkInfo activeNetworkInfo;
     NetworkCapabilities netcap;
@@ -58,20 +48,12 @@ public class DataCollectionService extends Service {
     String networkType;
     LocationManager locationManager;
     Location lastLocation;
-    Looper mServiceLooper;
-    //ServiceHandler mServiceHandler;
-    HandlerThread thread;
     JSONObject json;
-    Handler handler;
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+    boolean isWorking = false;
 
     @Override
-    public void onCreate() {
+    public boolean onStartJob(final JobParameters jobParameters) {
+        params = jobParameters;
         connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
         netcap = connectivityManager != null ? connectivityManager.getNetworkCapabilities(connectivityManager != null ? connectivityManager.getActiveNetwork() : null) : null;
@@ -79,89 +61,41 @@ public class DataCollectionService extends Service {
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         map = new HashMap<>();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        thread = new HandlerThread("DataCollectionThread", Process.THREAD_PRIORITY_BACKGROUND);
-        thread.start();
-        mServiceLooper = thread.getLooper();
-        // mServiceHandler = new ServiceHandler(mServiceLooper);
-        handler = new Handler(mServiceLooper);
         lastLocation = null;
+
+        isWorking = true;
+        new Thread(new Runnable() {
+            public void run() {
+                dataCollect(jobParameters);
+            }
+        }).start();
+        return isWorking;
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-
-        dataCollect.run();
-
-        //Message msg = mServiceHandler.obtainMessage();
-        //msg.arg1 = startId;
-        //mServiceHandler.sendMessage(msg);
-        stopSelf();
-        Intent jobFinished = new Intent(JOB_FINISHED);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(jobFinished);
-        return START_NOT_STICKY;
+    public boolean onStopJob(JobParameters jobParameters) {
+        jobFinished(jobParameters, isWorking);
+        return false;
     }
 
-    /*private final class ServiceHandler extends Handler {
-        ServiceHandler(Looper looper) {
-            super(looper);
+    public void dataCollect(JobParameters params) {
+        getData();
+        getLocation(params.getExtras().get("PROVIDER").toString());
+        map.put("aaupdated", "byLocation");
+        map.put("aaTimestamp", Calendar.getInstance().getTime().toString());
+        json = new JSONObject(map);
+        try {
+            writeToFile(json);
+        } catch (IOException e) {
+            Log.d("Write to file", "Failed");
+            e.printStackTrace();
         }
+        map.clear();
+        isWorking = false;
+        jobFinished(params, isWorking);
 
-        @Override
-        public void handleMessage(Message msg) {
-            dataCollect.run();
-        }
-    }*/
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //Intent broadcastIntent = new Intent(".restartService");
-        //sendBroadcast(broadcastIntent);
     }
 
-
-    private Runnable dataCollect = new Runnable() {
-        @Override
-        public void run() {
-            getData();
-            getLocation();
-            map.put("aaupdated", "byTime");
-            map.put("aaTimestamp", Calendar.getInstance().getTime().toString());
-            json = new JSONObject(map);
-            try {
-                writeToFile(json);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            map.clear();
-
-            LocationListener locationListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    getDistance(location);
-                }
-
-                @Override
-                public void onStatusChanged(String s, int i, Bundle bundle) {
-                }
-
-                @Override
-                public void onProviderEnabled(String s) {
-                }
-
-                @Override
-                public void onProviderDisabled(String s) {
-                }
-            };
-
-            try {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300 , 10, locationListener);
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
     public void writeToFile(JSONObject json) throws IOException {
         FileOutputStream stream;
@@ -180,19 +114,18 @@ public class DataCollectionService extends Service {
         String ret = "";
         try {
             InputStream inputStream = context.openFileInput("data.txt");
-            if ( inputStream != null ) {
+            if (inputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString = "";
                 StringBuilder stringBuilder = new StringBuilder();
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                while ((receiveString = bufferedReader.readLine()) != null) {
                     stringBuilder.append(receiveString);
                 }
                 inputStream.close();
                 ret = stringBuilder.toString();
             }
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
         } catch (IOException e) {
             Log.e("login activity", "Can not read file: " + e.toString());
@@ -214,13 +147,13 @@ public class DataCollectionService extends Service {
         netcap = connectivityManager != null ? connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork()) : null;
         activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
         if (wifiManager.isWifiEnabled()) {
-            if(activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
+            if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
                 if (netcap.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                     getWiFiParameters();
                 }
             }
-        }else if (telephonyManager.isDataEnabled()){
-            if(activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
+        } else if (telephonyManager.isDataEnabled()) {
+            if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
                 if (netcap.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
                     switch (activeNetworkInfo != null ? activeNetworkInfo.getSubtype() : -1) {
                         case TelephonyManager.NETWORK_TYPE_GPRS:
@@ -329,60 +262,25 @@ public class DataCollectionService extends Service {
         }
     }
 
-    public void getLocation() {
+    public void getLocation(String provider) {
+        Log.i("Provider id LocationDataCollection", provider);
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Location location = null;
         try {
-            location = locationManager != null ? locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) : null;
+            location = locationManager.getLastKnownLocation(provider);
             if (lastLocation == null) lastLocation = location;
-        } catch (SecurityException e) {
+        } catch (SecurityException | NullPointerException e) {
             e.printStackTrace();
         }
-        if (location != null) {
-            if(location.getAccuracy() < 25 || !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                map.put("lat", String.valueOf(location.getLatitude()));
-                map.put("long", String.valueOf(location.getLongitude()));
-                map.put("alt", String.valueOf(location.getAltitude()));
-                map.put("acc", String.valueOf(location.getAccuracy()));
-                map.put("speed", String.valueOf(location.getSpeed()));
-            } else {
-                try {
-                    location = locationManager != null ? locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) : null;
-                    if (lastLocation == null) lastLocation = location;
-                    map.put("lat", String.valueOf(location.getLatitude()));
-                    map.put("long", String.valueOf(location.getLongitude()));
-                    map.put("alt", String.valueOf(location.getAltitude()));
-                    map.put("acc", String.valueOf(location.getAccuracy()));
-                    map.put("speed", String.valueOf(location.getSpeed()));
-                } catch (SecurityException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
-    public void getDistance(Location location) {
-        if(lastLocation == null){
-            lastLocation = location;
-        }
-        if (location.distanceTo(lastLocation) >= LOCATION_UPDATE_DISTANCE) {
-            map.put("distance", String.valueOf(location.distanceTo(lastLocation)));
-            lastLocation = location;
+        if (location != null) {
             map.put("lat", String.valueOf(location.getLatitude()));
             map.put("long", String.valueOf(location.getLongitude()));
             map.put("alt", String.valueOf(location.getAltitude()));
             map.put("acc", String.valueOf(location.getAccuracy()));
             map.put("speed", String.valueOf(location.getSpeed()));
-            getData();
-            map.put("aaupdated","byLocation");
-            map.put("aaTimestamp", Calendar.getInstance().getTime().toString());
-            json = new JSONObject(map);
-            try {
-                writeToFile(json);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            map.clear();
+
         }
     }
 }
+

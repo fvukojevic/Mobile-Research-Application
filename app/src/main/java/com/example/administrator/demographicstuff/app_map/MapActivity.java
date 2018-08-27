@@ -135,6 +135,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 return true;
             }
         });
+        mClusterManager.setRenderer(new OwnIconRendered(MapActivity.this.getApplicationContext(), mMap , mClusterManager));
         mMap.setOnCameraIdleListener(mClusterManager);
         mMap.setOnMarkerClickListener(mClusterManager);
     }
@@ -324,22 +325,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     LatLng latLng = new LatLng(Double.parseDouble(res.getString(9)),
                             Double.parseDouble(res.getString(8)));
 
-                    //mClusterManager.addItem(new MyItem(Double.parseDouble(res.getString(9)),
-                    //      Double.parseDouble(res.getString(8)), ticket_id, snippet));
 
-                    String snippet = "Category:  " + ticket_ctg + "\n" +
+                    String snippet = ("Category:  " + ticket_ctg + "\n" +
                             "Subcategory: " + ticket_subctg + "\n" +
                             "Frequency: " + ticket_frq + "\n" +
                             "Question: " + ticket_q + "\n" +
                             "Date:  " + ticket_date + "\n" +
-                            "Time: " + ticket_time + "\n";
+                            "Time: " + ticket_time + "\n" +
+                            "Longitude: " + Double.parseDouble(res.getString(8)) + "\n" +
+                            "Latitude: " + Double.parseDouble(res.getString(9)) + "\n" +
+                            "Altitude: " + Double.parseDouble(res.getString(10)));
 
-                    MarkerOptions options = new MarkerOptions()
+                   /* MarkerOptions options = new MarkerOptions()
                             .position(latLng)
                             .title(ticket_id)
                             .snippet(snippet)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_ticket_icon));
-                    mMarker = mMap.addMarker(options);
+                    mMarker = mMap.addMarker(options);*/
+
+                    mClusterManager.addItem(new MyItem(Double.parseDouble(res.getString(9)),
+                            Double.parseDouble(res.getString(8)), ticket_id, snippet));
                 }
             }
         } else {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrator.demographicstuff.FirstPageActivity;
 import com.example.administrator.demographicstuff.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +77,20 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
             Cursor res = db.getAppUsage(android_id, usage.getAppName());
             if(res.getCount() == 0)
             {
+                //Json for server database
+                JSONObject postData = new JSONObject();
+                Long tsLong = System.currentTimeMillis()/1000;
+                String ts = tsLong.toString();
+                try {
+                    postData.put("appuserid", FirstPageActivity.user_id);
+                    postData.put("name", usage.getAppName());
+                    postData.put("data", downloaded_ALLMB);
+                    postData.put("timestamp", ts);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.d("AppUsage", postData.toString());
+
                 //Show message
                 db.insertAppUsage(android_id, usage.getAppName(), downloaded_ALLMB);
                 Toast.makeText(context, usage.getAppName() + " is now inserted", Toast.LENGTH_SHORT).show();
@@ -82,6 +101,20 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
                     double old_usage = res.getDouble(3);
                     if(downloaded_ALLMB - old_usage > 10)
                     {
+                        //Json for server database
+                        JSONObject postData = new JSONObject();
+                        Long tsLong = System.currentTimeMillis()/1000;
+                        String ts = tsLong.toString();
+                        try {
+                            postData.put("appuserid", FirstPageActivity.user_id);
+                            postData.put("name", usage.getAppName());
+                            postData.put("data", downloaded_ALLMB);
+                            postData.put("timestamp", ts);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Log.d("AppUsage", postData.toString());
+
                         db.updateAppUsage(android_id, usage.getAppName(), downloaded_ALLMB);
                         Toast.makeText(context, usage.getAppName() + " is updated", Toast.LENGTH_SHORT).show();
                     }

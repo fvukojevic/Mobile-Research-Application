@@ -42,6 +42,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrator.demographicstuff.app_demographic.DemograficDatabase;
 import com.example.administrator.demographicstuff.app_live_conditions.DataCollectionJobSchedule;
 import com.example.administrator.demographicstuff.app_live_conditions.LocationService;
 import com.example.administrator.demographicstuff.app_tickets.TicketNewDatabase;
@@ -60,6 +61,7 @@ import butterknife.ButterKnife;
 public class FirstPageActivity extends AppCompatActivity {
     private static TicketNewDatabase tb;
     private static AppUsageDatabase ab;
+    private static DemograficDatabase db;
     public String android_id;
     @BindView(R.id.create_ticket2)
     TextView showLiveConditions;
@@ -119,6 +121,7 @@ public class FirstPageActivity extends AppCompatActivity {
     private static final int TIME_UPDATE = 1200000;
     private Location lastLocation = null;
 
+    public static int user_id;
 
     NetworkInfo activeNetworkInfo;
     NetworkCapabilities netcap;
@@ -139,9 +142,19 @@ public class FirstPageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_first_page);
         tb = new TicketNewDatabase(FirstPageActivity.this);
         ab = new AppUsageDatabase(FirstPageActivity.this);
+        db = new DemograficDatabase(FirstPageActivity.this);
         ButterKnife.bind(this);
 
+
+        //getting id-s for local and server database
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        Cursor res = db.getMyId();
+        StringBuffer buffer = new StringBuffer();
+            while (res.moveToNext()) {
+            user_id = Integer.parseInt(res.getString(0));
+        }
+        Log.d("MY ID", "onCreate: MY ID is " + user_id);
+            //<--                      -->//
 
         new SetClickListeners().execute();
 
@@ -202,12 +215,7 @@ public class FirstPageActivity extends AppCompatActivity {
                 .setPeriodic(TIME_UPDATE, JobInfo.getMinFlexMillis())
                 .setPersisted(true)
                 .build();
-        int resultCode = jobScheduler.schedule(jobInfo);
-        if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Log.d("TAG", "Job scheduled!");
-        } else {
-            Log.d("TAG", "Job not scheduled");
-        }
+        jobScheduler.schedule(jobInfo);
 
         getData();
         getLocation();
