@@ -1,5 +1,8 @@
 package com.example.administrator.demographicstuff.app_live_conditions;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -11,9 +14,11 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.administrator.demographicstuff.R;
 import com.example.administrator.demographicstuff.app_live_conditions.DataCollectionJobSchedule;
 
 import java.security.Provider;
@@ -105,6 +110,16 @@ public class LocationService extends Service {
 
     @Override
     public void onCreate() {
+        NotificationChannel channel = new NotificationChannel("CuedLocationForeground",
+                "Cued location service",
+                NotificationManager.IMPORTANCE_LOW);
+
+        ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+
+        Notification notification = new NotificationCompat.Builder(getApplicationContext(), "CuedLocationForeground")
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentText("Location based data collection").build();
+        startForeground(1, notification);
         initializeLocationManager();
         try {
             mLocationManager.requestLocationUpdates(

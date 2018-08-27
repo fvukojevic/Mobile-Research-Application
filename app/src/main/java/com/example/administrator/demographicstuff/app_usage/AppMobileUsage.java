@@ -19,27 +19,36 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.administrator.demographicstuff.R;
 
 import java.util.concurrent.TimeUnit;
 
-public class AppMobileUsage extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
+public class AppMobileUsage extends AppCompatActivity {
     private RecyclerView list;
     private static Button mobile_btn,wifi_btn,combine_btn;
     private String android_id;
-
     private Handler handler = new Handler();
-
     private final int REQUEST_READ_PHONE_STATE_PERMISSION = 1231;
+    @BindView(R.id.progressBarMobileUsage)
+    ProgressBar progressBar;
+    @BindView(R.id.topMenu)
+    LinearLayout linearLayout;
+    @BindView(R.id.list)
+    RecyclerView recyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         setContentView(R.layout.activity_app_mobile_usage);
+        ButterKnife.bind(this);
         list = findViewById(R.id.list);
         showMobileUsage();
         showWifiUsage();
@@ -66,6 +75,8 @@ public class AppMobileUsage extends AppCompatActivity {
         wifi_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
                 Intent intent = new Intent(".AppWifiUsage");
                 startActivity(intent);
                 finish();
@@ -79,6 +90,8 @@ public class AppMobileUsage extends AppCompatActivity {
         mobile_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
                 Intent intent = new Intent(".AppMobileUsage");
                 startActivity(intent);
                 finish();
@@ -92,6 +105,8 @@ public class AppMobileUsage extends AppCompatActivity {
         combine_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
                 Intent intent = new Intent(".AppCombinedUsage");
                 startActivity(intent);
                 finish();

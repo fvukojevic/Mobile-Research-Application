@@ -207,7 +207,7 @@ public class FirstPageActivity extends AppCompatActivity {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         handler = new Handler();
 
-        startService(new Intent(this, LocationService.class));
+        startForegroundService(new Intent(this, LocationService.class));
 
         jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
         ComponentName componentName = new ComponentName(this, DataCollectionJobSchedule.class);

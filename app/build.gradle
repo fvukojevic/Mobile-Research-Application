@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.administrator.demographicstuff"
-        minSdkVersion 21
+        minSdkVersion 26
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -48,7 +48,8 @@ dependencies {
     //Google play services
     implementation 'com.google.android.gms:play-services:11.4.0'
 
-    //for map clusterer
-    implementation 'com.google.maps.android:android-maps-utils:0.5+'
+    //Smiley Rating bar
+    implementation 'com.github.sujithkanna:smileyrating:1.6.8'
 
+    implementation 'com.google.maps.android:android-maps-utils:0.5+'
 }
