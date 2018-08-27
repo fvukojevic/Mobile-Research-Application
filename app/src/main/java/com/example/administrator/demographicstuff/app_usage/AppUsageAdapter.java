@@ -2,6 +2,8 @@ package com.example.administrator.demographicstuff.app_usage;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -55,22 +57,24 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
         holder.icon.setImageDrawable(usage.getAppIcon());
         holder.name.setText(usage.getAppName());
         float uploaded = usage.getUploaded(NetworkUsageHelper.DATA_MB);
-        if (uploaded > 15000f) {
+        if (uploaded > 1024f) {
             uploaded = usage.getUploaded(NetworkUsageHelper.DATA_GB);
-            holder.uploaded.setText("U: " + Math.round(uploaded) + " GB");
+            holder.uploaded.setText("U: " + String.format("%.2f", uploaded) + " GB");
         } else {
             holder.uploaded.setText("U: " + Math.round(uploaded) + " MB");
         }
         float downloaded = usage.getDownloaded(NetworkUsageHelper.DATA_MB);
         float downloaded_ALLMB = usage.getDownloaded(NetworkUsageHelper.DATA_MB);
-        if (downloaded > 15000f) {
+        if (downloaded > 1024f) {
             downloaded = usage.getDownloaded(NetworkUsageHelper.DATA_GB);
-            holder.downloaded.setText("D: " + Math.round(downloaded) + " GB");
+            holder.downloaded.setText("D: " + String.format("%.2f", downloaded) + " GB");
         } else {
             holder.downloaded.setText("D: " + Math.round(downloaded) + " MB");
         }
         holder.name.setText(usage.getAppName());
         holder.usage.setProgress(Float.valueOf(usage.getDownloadPercentage() * 100f).intValue());
+        holder.usage.getProgressDrawable().setColorFilter(
+                Color.CYAN, PorterDuff.Mode.MULTIPLY);
 
         if(downloaded_ALLMB > 10)
         {
