@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class AppWifiUsage extends AppCompatActivity {
 
     private RecyclerView list;
-    private static Button mobile_btn,wifi_btn;
+    private static Button mobile_btn,wifi_btn,combine_btn;
     private String android_id;
 
     private Handler handler = new Handler();
@@ -43,6 +43,7 @@ public class AppWifiUsage extends AppCompatActivity {
         list = findViewById(R.id.list);
         showMobileUsage();
         showWifiUsage();
+        showCombinedUsage();
         initialize();
     }
 
@@ -79,6 +80,19 @@ public class AppWifiUsage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(".AppMobileUsage");
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
+    public void showCombinedUsage()
+    {
+        combine_btn = findViewById(R.id.combined_btn);
+        combine_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(".AppCombinedUsage");
                 startActivity(intent);
                 finish();
             }

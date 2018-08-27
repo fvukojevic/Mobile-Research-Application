@@ -11,8 +11,10 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <uses-feature android:name="android.hardware.location.gps" />
+
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
@@ -28,16 +30,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDSxWIBN-w_IAhnkUkbtSv_MtQKqv5wkto"/>
-
+            android:value="AIzaSyDSxWIBN-w_IAhnkUkbtSv_MtQKqv5wkto" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".app_demographic.MainActivity"
+        <activity
+            android:name=".app_demographic.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -46,28 +47,45 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FirstPageActivity" android:screenOrientation="portrait">
+        <activity
+            android:name=".FirstPageActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name=".FirstPageActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".app_tickets.CreateTicketActivity" android:screenOrientation="portrait">
+        <activity
+            android:name=".app_tickets.CreateTicketActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name=".CreateTicketActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".app_usage.AppWifiUsage" android:screenOrientation="portrait">
+        <activity
+            android:name=".app_usage.AppCombinedUsage"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name=".AppCombinedUsage" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app_usage.AppWifiUsage"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name=".AppWifiUsage" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".app_usage.AppMobileUsage" android:screenOrientation="portrait">
+        <activity
+            android:name=".app_usage.AppMobileUsage"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name=".AppMobileUsage" />
 
@@ -83,8 +101,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".app_map.MapActivity" android:screenOrientation="portrait">
+        <activity
+            android:name=".app_map.MapActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name=".MapActivity" />
 
@@ -94,12 +113,12 @@
 
         <receiver android:name=".rating_notification.Button_listener">
             <intent-filter>
-                <action android:name="button_click"/>
+                <action android:name="button_click" />
             </intent-filter>
         </receiver>
         <receiver android:name=".rating_notification.AlarmReceiver">
             <intent-filter>
-                <action android:name=".DISPLAY_NOTIFICATION"/>
+                <action android:name=".DISPLAY_NOTIFICATION" />
             </intent-filter>
         </receiver>
         <receiver
@@ -108,18 +127,21 @@
             android:exported="false"
             android:label="RestartServiceWhenStopped">
             <intent-filter>
-                <action android:name=".restartService"/>
+                <action android:name=".restartService" />
             </intent-filter>
         </receiver>
+
         <service
             android:name=".app_live_conditions.DataCollectionJobSchedule"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true"/>
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".app_live_conditions.LocationDataCollectionJobSchedule"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true"/>
-        <service android:name=".app_live_conditions.LocationService"/>
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service android:name=".app_live_conditions.LocationService" />
+
+
     </application>
 
 </manifest>

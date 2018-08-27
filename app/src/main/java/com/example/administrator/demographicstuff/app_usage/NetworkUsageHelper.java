@@ -42,9 +42,10 @@ public class NetworkUsageHelper {
         return getUsageList(ConnectivityManager.TYPE_WIFI);
     }
 
-    public List<AppUsage> getMobileUsageList() {
-        return getUsageList(ConnectivityManager.TYPE_MOBILE);
-    }
+    public List<AppUsage> getMobileUsageList() { return getUsageList(ConnectivityManager.TYPE_MOBILE); }
+
+    public List<AppUsage> getTotalUsageList() { return getOverallUsage(ConnectivityManager.TYPE_WIFI); }
+
 
     private List<AppUsage> getUsageList(final Integer networkType) {
         List<AppUsage> appUsages = getPackagesData();
@@ -127,6 +128,105 @@ public class NetworkUsageHelper {
         return appUsages;
     }
 
+
+    //<-- COMBINED APP USAGE -->//
+
+    private List<AppUsage> getOverallUsage(final Integer networkType) {
+        List<AppUsage> appUsages = getPackagesData();
+        List<AppUsage> temp = new ArrayList<>();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            long uploadedData = -1;
+            long downloadedData = -1;
+            long endTime = System.currentTimeMillis();
+            String subscriberId = getSubscriberId(context, ConnectivityManager.TYPE_MOBILE);
+            String subscriberId2 = getSubscriberId(context, ConnectivityManager.TYPE_WIFI);
+
+            try {
+                NetworkStats.Bucket bucket = networkStatsManager.querySummaryForDevice(networkType,
+                        subscriberId,
+                        0,
+                        endTime);
+                uploadedData = bucket.getTxBytes();
+                downloadedData = bucket.getRxBytes();
+            } catch (RemoteException e) {
+                return new ArrayList<>();
+            }
+            for (AppUsage appUsage : appUsages) {
+                try {
+                    NetworkStats stats = networkStatsManager.queryDetailsForUid(networkType,
+                            subscriberId,
+                            0,
+                            endTime,
+                            appUsage.uid);
+                    long txBytes = 0L;
+                    long rxBytes = 0L;
+                    NetworkStats.Bucket bucket = new NetworkStats.Bucket();
+                    while (stats.hasNextBucket()) {
+                        stats.getNextBucket(bucket);
+                        txBytes += bucket.getTxBytes();
+                        rxBytes += bucket.getRxBytes();
+                    }
+                    stats.close();
+                    NetworkStats stats2 = networkStatsManager.queryDetailsForUid(0,
+                            subscriberId,
+                            0,
+                            endTime,
+                            appUsage.uid);
+                    NetworkStats.Bucket bucket2 = new NetworkStats.Bucket();
+                    while (stats2.hasNextBucket()) {
+                        stats2.getNextBucket(bucket2);
+                        txBytes += bucket2.getTxBytes();
+                        rxBytes += bucket2.getRxBytes();
+                    }
+                    stats2.close();
+                    if(txBytes < 5242880 && rxBytes < 5242880){
+                        temp.add(appUsage);
+                        continue;
+                    }
+                    appUsage.setUploadedBytes(txBytes);
+                    appUsage.setUploadPercentage((float) txBytes / uploadedData);
+                    appUsage.setDownloadedBytes(rxBytes);
+                    appUsage.setDownloadPercentage((float) rxBytes / downloadedData);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            appUsages.removeAll(temp);
+            appUsages.sort(new Comparator<AppUsage>() {
+                @Override
+                public int compare(AppUsage appUsage, AppUsage t1) {
+                    if(appUsage.getDownloaded(DATA_B) > t1.getDownloaded(DATA_B)){
+                        return -1;
+                    } else if (appUsage.getDownloaded(DATA_B) < t1.getDownloaded(DATA_B)){
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
+        } else {
+            long uploadedData = -1;
+            long downloadedData = -1;
+            if (networkType == ConnectivityManager.TYPE_MOBILE) {
+                uploadedData = TrafficStats.getTotalTxBytes() + TrafficStats.getMobileTxBytes();
+                downloadedData = TrafficStats.getTotalRxBytes() + TrafficStats.getMobileTxBytes();
+            } else {
+                uploadedData = TrafficStats.getTotalTxBytes() + TrafficStats.getMobileTxBytes();
+                downloadedData = TrafficStats.getTotalRxBytes() + TrafficStats.getMobileTxBytes();
+            }
+            for (AppUsage appUsage : appUsages) {
+                long txBytes = TrafficStats.getUidTxBytes(appUsage.uid);
+                appUsage.setUploadedBytes(txBytes);
+                appUsage.setUploadPercentage((float) txBytes / uploadedData);
+                long rxBytes = TrafficStats.getUidRxBytes(appUsage.uid);
+                appUsage.setDownloadedBytes(rxBytes);
+                appUsage.setDownloadPercentage((float) rxBytes / downloadedData);
+            }
+        }
+        return appUsages;
+    }
+
+    //<-- end of combined app usage -->//
     private List<AppUsage> getPackagesData() {
         List<PackageInfo> packageInfoList = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
         Collections.sort(packageInfoList, new Comparator<PackageInfo>() {
