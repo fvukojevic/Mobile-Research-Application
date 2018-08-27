@@ -523,12 +523,12 @@ public class FirstPageActivity extends AppCompatActivity {
         switch (networkType) {
             case NETWORK_TYPE_2G:
                 CellInfoGsm gsm = (CellInfoGsm) cellinfo.get(0);
-                rssi_rsrp.setText("RSRP: " + String.format("%s dBm", String.valueOf(gsm.getCellSignalStrength().getDbm())));
+                rssi_rsrp.setText("\nRSRP: " + String.format("%s dBm", String.valueOf(gsm.getCellSignalStrength().getDbm())));
                 return;
             case NETWORK_TYPE_3G:
                 try {
                     CellInfoWcdma wcdma = (CellInfoWcdma) cellinfo.get(0);
-                    rssi_rsrp.setText("RSRP: " + String.format("%s dBm", String.valueOf(wcdma.getCellSignalStrength().getDbm())));
+                    rssi_rsrp.setText("\nRSRP: " + String.format("%s dBm", String.valueOf(wcdma.getCellSignalStrength().getDbm())));
                 } catch (ClassCastException e) {
                     CellInfoCdma cdma = (CellInfoCdma) cellinfo.get(0);
                     rssi_rsrp.setText(String.valueOf(cdma.getCellSignalStrength().getCdmaDbm()));
@@ -536,7 +536,7 @@ public class FirstPageActivity extends AppCompatActivity {
                 return;
             case NETWORK_TYPE_4G:
                 CellInfoLte lte = (CellInfoLte) cellinfo.get(0);
-                rssi_rsrp.setText("RSRP: " + String.format("%s dBm", String.valueOf(lte.getCellSignalStrength().getDbm())));
+                rssi_rsrp.setText("\nRSRP: " + String.format("%s dBm", String.valueOf(lte.getCellSignalStrength().getDbm())));
         }
     }
 
