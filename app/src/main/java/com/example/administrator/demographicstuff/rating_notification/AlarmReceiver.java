@@ -18,6 +18,9 @@ import static android.app.NotificationManager.IMPORTANCE_DEFAULT;
 public class AlarmReceiver extends BroadcastReceiver{
     private static final String CHANNEL_ID = "123";
 
+    /*
+     * On Recive se poziva nakon određenog vremena postavljenog u FirstPageActivity
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         Intent notificationIntent = new Intent(context, FirstPageActivity.class);
@@ -28,8 +31,11 @@ public class AlarmReceiver extends BroadcastReceiver{
 
         Notification.Builder builder = new Notification.Builder(context);
 
+        /*
+         * postavljanje notifikacije tako što joj dajemo remoteView koji je postavljen u FirstPageActivity-u
+         */
         Notification notification = builder.setCustomBigContentView(FirstPageActivity.remoteViews)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.ericsson_logo)
                 .setAutoCancel(true)
                 .setContentIntent(FirstPageActivity.pendingIntent).build();
 

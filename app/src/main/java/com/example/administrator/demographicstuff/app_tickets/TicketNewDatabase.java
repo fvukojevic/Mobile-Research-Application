@@ -29,6 +29,9 @@ public class TicketNewDatabase extends SQLiteOpenHelper {
         super(context, db_name, null, 1);
     }
 
+    /*
+     * Stvaranje lokalne baze za spremanje Tiket-a
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("Create table " + new_ticket_table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, ANDROID_ID TEXT, " +
@@ -41,7 +44,9 @@ public class TicketNewDatabase extends SQLiteOpenHelper {
         db.execSQL("drop table if exists " + new_ticket_table);
     }
 
-    //unosenje podataka za APP USAGE
+    /*
+     * Unošenje podataka u  Tikete
+     */
     public boolean insertTicket(String android_id, String category, String subcategory,
                                 String frequency, String question, String date, String time,
                                 double longitude, double lat, double altitude, String email)
@@ -68,7 +73,9 @@ public class TicketNewDatabase extends SQLiteOpenHelper {
         }
     }
 
-    //dohvacanje app_usage podataka
+    /*
+     * Dohvacanje svih tiketa
+     */
     public Cursor getMyTickets(String android_id)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -76,6 +83,9 @@ public class TicketNewDatabase extends SQLiteOpenHelper {
         return res;
     }
 
+    /*
+     * Dohvat zadnja 3 tiketa
+     */
     public Cursor getMyThreeTickets(String android_id)
     {
         SQLiteDatabase db = this.getWritableDatabase();

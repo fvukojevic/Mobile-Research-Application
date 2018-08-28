@@ -5,9 +5,13 @@ import android.net.Uri;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
- * Created by User on 10/2/2017.
+ * Created by FVukojrvić.
  */
 
+/*
+ * Place info klasa korištena u MapActivity-u
+ * Sadrži sve podatke koje prikupljamo kada dohvatimo neko mijesto putem PlaceAutocomplete klase
+ */
 public class PlaceInfo {
 
     private String name;

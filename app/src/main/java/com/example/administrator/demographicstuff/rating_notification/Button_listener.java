@@ -16,6 +16,10 @@ public class Button_listener extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        /*
+         * Kada kliknemo na ImageButton u našoj rating notifikaciji zatvara tu notifikacjiju
+         * DOES NOT WORK ATM
+         */
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(intent.getExtras().getInt("id"));
 
@@ -23,6 +27,12 @@ public class Button_listener extends BroadcastReceiver {
         String clicked = intent.toString();
         String subclicked = clicked.substring(92,95);
 
+        /*
+         * Ovisno na koji smo ImageButton kliknuli, na osnovu njegove lokacije saznajemo o kojemu je riječ
+         * Trenutno nisam mogao nači lakši način s obzirom da koristim CustomNotification view
+         * Što otežava način saznanja na koji je button klknuto
+         * Treba dodati funkcionalnost spremanja na bazu ovisno o kliknutom
+         */
         switch (subclicked){
             case "342" :
                 Toast.makeText(context, "Sorry to hear that", Toast.LENGTH_SHORT).show();
@@ -37,6 +47,9 @@ public class Button_listener extends BroadcastReceiver {
                 break;
         }
 
+        /*
+         * Povratna poruka na kraju svakog ocijenjivanja aplikacije
+         */
         Toast.makeText(context, "Thanks for your feedback", Toast.LENGTH_SHORT).show();
     }
 }

@@ -38,18 +38,23 @@ public class NetworkUsageHelper {
         this.context = context;
     }
 
-    public List<AppUsage> getWifiUsageList() {
-        return getUsageList(ConnectivityManager.TYPE_WIFI);
-    }
-
+    /*
+      Funkcije za dohvaćanje traženog prometa
+      Wifi,Mobile i Combined
+     */
+    public List<AppUsage> getWifiUsageList() { return getUsageList(ConnectivityManager.TYPE_WIFI); }
     public List<AppUsage> getMobileUsageList() { return getUsageList(ConnectivityManager.TYPE_MOBILE); }
-
     public List<AppUsage> getTotalUsageList() { return getOverallUsage(ConnectivityManager.TYPE_WIFI); }
 
 
+    /*
+     * Dohvat podataka ovisno o mobile ili wifi-u
+     * Poziv iz gornje funkcije
+     */
     private List<AppUsage> getUsageList(final Integer networkType) {
         List<AppUsage> appUsages = getPackagesData();
         List<AppUsage> temp = new ArrayList<>();
+        //Provjera SDK verzije
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             long uploadedData = -1;
             long downloadedData = -1;
@@ -129,7 +134,9 @@ public class NetworkUsageHelper {
     }
 
 
-    //<-- COMBINED APP USAGE -->//
+    /*
+     * Funkcija za ukupni promet podataka
+     */
 
     private List<AppUsage> getOverallUsage(final Integer networkType) {
         List<AppUsage> appUsages = getPackagesData();
@@ -225,8 +232,9 @@ public class NetworkUsageHelper {
         }
         return appUsages;
     }
-
     //<-- end of combined app usage -->//
+
+
     private List<AppUsage> getPackagesData() {
         List<PackageInfo> packageInfoList = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
         Collections.sort(packageInfoList, new Comparator<PackageInfo>() {
@@ -295,6 +303,9 @@ public class NetworkUsageHelper {
         return "";
     }
 
+    /*
+     * App usage klasa u koju su spremljeni svi podatci i njihove get i set metode
+     */
     class AppUsage {
         private int uid;
         private String packageName;

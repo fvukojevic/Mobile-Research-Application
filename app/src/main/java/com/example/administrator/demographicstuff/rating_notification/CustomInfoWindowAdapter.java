@@ -9,6 +9,15 @@ import com.example.administrator.demographicstuff.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
+/*
+ * Created by FVukojević.
+ */
+
+/*
+ * Ova klasa osigurava i nadjačava InfoWindow u Google Mapi
+ * Pronašao sam je na android developers stranici u sample-ima
+ * Manje promjene su napravljene da izgleda kako izgleda (nije ista kao verzija na int.)
+ */
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     private final View mWindow;

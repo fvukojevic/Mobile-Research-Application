@@ -21,6 +21,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
+
+    //local variables
     public static RadioGroup rg1, rg2, rg3, rg4;
     public static RadioButton rb1, rb2, rb3, rb4;
     public static EditText postal;
@@ -33,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //dohvacanje android _id-a i spajanje na bazu. Pokušava se pronaći korisnik sa tim
+        //android id-om, ukoliko se pronađe MainActivity se neće prikazati i prelazimo u
+        //FirstPageActivity
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         db = new DemograficDatabase(this);
         Cursor res = db.findByAndroidId(android_id);
@@ -56,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //<-- Funkcija za prikaz podataka u AlertDialog-u
     public void showMessage(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -65,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //<-- Funcija za on click listenere -->//
     public void inputChecker() {
         rg2 = findViewById(R.id.radioGroup);
         rg1 = findViewById(R.id.radioGroup2);
@@ -92,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //<-- Potvrđujemo i provjeravamo je li svako polje popunjeno -->//
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
                     rb3 = findViewById(ocuID);
                     rb4 = findViewById(broadbandID);
 
+                    //<-- Pohranjivanje demografskih podataka u JSON object
+                    //<-- Spremno za slanje na server
                     JSONObject postData = new JSONObject();
                     try {
                         postData.put("android_id", android_id);

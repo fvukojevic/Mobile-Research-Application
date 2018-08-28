@@ -62,7 +62,7 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.example.administrator.demographicstuff.models.PlaceInfo;
 
 /**
- * Created by User on 10/2/2017.
+ * Created by FVukojević.
  */
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback,
@@ -79,6 +79,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Log.d(TAG, "onMapReady: map is ready");
         mMap = googleMap;
 
+        //<-- Provjera permisija lokacije -->//
         if (mLocationPermissionsGranted) {
             getDeviceLocation();
 
@@ -92,11 +93,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             init();
         }
+        //<-- Postavljanje Marker Clusterera na markere -->//
         setUpClusterer();
     }
 
     private static final String TAG = "MapActivity";
 
+    //<-- Permisije + DEFAULT ZOOM aplikacije
+    //<-- Također i lat_lng bounds koji osigurava da karta obuhvaća cijelu zemlju
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -125,6 +129,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     // Inicijalizacija cluster managera.
     private ClusterManager<MyItem> mClusterManager;
 
+
+    //funckija za postavljanje map clusterera
     private void setUpClusterer() {
         mClusterManager = new ClusterManager<>(this, mMap);
         mClusterManager.setAnimation(false);
@@ -140,6 +146,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(mClusterManager);
     }
 
+    //Dodavanje testnih item-a u map clusterer
+    //Koristim ovo radi testiranja funckionalnosti
+    //uzeo sam koordinate mijesta u BiH jer ne želim ugrođavat testiranjem na koordinatama RH
     private void addItems() {
 
         LatLng stariTrzni = new LatLng(43.3453916, 17.8009922);
@@ -173,6 +182,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
+    //Inicijaliziranje GoogleMap-e i GoogleApi-a
+    //koristimo varijable sa vrha classe
     private void init(){
         Log.d(TAG, "init: initializing");
 
@@ -266,6 +277,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    //dohvacanje trenutne lokacije korisnika aplikacije
+    //kamera se pomiče na tu lokaciju
     private void getDeviceLocation(){
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
 
@@ -298,12 +311,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    //Dohvacanje svih korisnikovih tiketa
+    //prikaz na mapi
+    //spremanje u map cluster
     public void showTickets() {
         if (ticket_tester == 0)
             ticket_tester = 1;
         else
             ticket_tester = 0;
 
+        //Prvi i svaki neparni put kada pristisnemo button za prikaz tiketa
         if (ticket_tester == 1) {
             addItems();
             mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapActivity.this));
@@ -347,12 +364,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             Double.parseDouble(res.getString(8)), ticket_id, snippet));
                 }
             }
-        } else {
+        }//Drugi i svaki parni put kada pritisnemo na prikz tiketa
+        else {
             mMap.clear();
             mClusterManager.clearItems();
         }
     }
 
+    //Pomicanje kamere
+    //Dobiva latlng koordinate, zoom da zna koji zoom level koristiti
+    //Također i placeInfo klasu koja se nalazi u paketu 'modeli'
     private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo){
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
@@ -384,6 +405,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         hideSoftKeyboard();
     }
 
+    //Pomicanje kamere
+    //Za razliku od gornje ne prima place info već samo title koji postavlja na marker na koji se pomkne
     private void moveCamera(LatLng latLng, float zoom, String title){
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
@@ -398,6 +421,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         hideSoftKeyboard();
     }
 
+    //Inicijalizacija mape
     private void initMap(){
         Log.d(TAG, "initMap: initializing map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -405,6 +429,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(MapActivity.this);
     }
 
+    //Dohvacanje lokacijskih permisija
     private void getLocationPermission(){
         Log.d(TAG, "getLocationPermission: getting location permissions");
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
@@ -452,6 +477,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    //Nakon unosa skriva keyboard
+    //Tj nakon sto pritisnemo enter ili odaberemo nešto u placeinfo helperu
+    //tipokvnica bi se trebala ugasiti
     private void hideSoftKeyboard(){
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
@@ -515,6 +543,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     };
 
+    /*
+        My Item class-a koja je napravljena i u nju spremamo
+        informacije o mjestu koje želimo ubaciti u naš clusterer
+     */
     public class MyItem implements ClusterItem {
         private LatLng mPosition;
         private String mTitle = "";

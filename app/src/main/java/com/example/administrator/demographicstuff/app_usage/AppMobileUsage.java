@@ -69,6 +69,11 @@ public class AppMobileUsage extends AppCompatActivity {
         }
     }
 
+    /*
+     * Prelazak na Wifi promet
+     * Prilikom prelaska finish osigurava da kada kliknemo 'nazad' odlazimo u FirstPageActivity
+     * a ne ponovno u mobilni
+     */
     public void showWifiUsage()
     {
         wifi_btn = findViewById(R.id.wifi_btn);
@@ -84,21 +89,11 @@ public class AppMobileUsage extends AppCompatActivity {
         });
     }
 
-    public void showMobileUsage()
-    {
-        mobile_btn = findViewById(R.id.mobile_btn);
-        mobile_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.GONE);
-                Intent intent = new Intent(".AppMobileUsage");
-                startActivity(intent);
-                finish();
-            }
-        });
-    }
-
+    /*
+     * Prelazak na ukupni promet
+     * Prilikom prelaska finish osigurava da kada kliknemo 'nazad' odlazimo u FirstPageActivity
+     * a ne ponovno u mobilni
+     */
     public void showCombinedUsage()
     {
         combine_btn = findViewById(R.id.combined_btn);
@@ -114,6 +109,9 @@ public class AppMobileUsage extends AppCompatActivity {
         });
     }
 
+    /*
+     * Inicijalizacija i testiranje permisija
+     */
     private void initialize() {
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -132,6 +130,11 @@ public class AppMobileUsage extends AppCompatActivity {
         }
     }
 
+    /*
+     * Inicijalizacija uz pomoć App usage adaptera
+     * Tu se nalazi holder koji prikazuje podatke
+     * Povezan je sa item layout-om
+     */
     private void initializeRecyclerViewProperties() {
         list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         final AppUsageAdapter adapter = new AppUsageAdapter(getApplicationContext(), android_id);

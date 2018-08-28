@@ -65,6 +65,11 @@ public class AppCombinedUsage extends AppCompatActivity {
         }
     }
 
+    /*
+     * Prelazak na Wifi promet
+     * Prilikom prelaska finish osigurava da kada kliknemo 'nazad' odlazimo u FirstPageActivity
+     * a ne ponovno u combined
+     */
     public void showWifiUsage()
     {
         wifi_btn = findViewById(R.id.wifi_btn);
@@ -80,6 +85,11 @@ public class AppCombinedUsage extends AppCompatActivity {
         });
     }
 
+    /*
+     * Prelazak na Mobilni promet
+     * Prilikom prelaska finish osigurava da kada kliknemo 'nazad' odlazimo u FirstPageActivity
+     * a ne ponovno u combined
+     */
     public void showMobileUsage()
     {
         mobile_btn = findViewById(R.id.mobile_btn);
@@ -95,6 +105,9 @@ public class AppCombinedUsage extends AppCompatActivity {
         });
     }
 
+    /*
+     * Inicijalizacija i provjera permisija
+     */
     private void initialize() {
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -113,6 +126,11 @@ public class AppCombinedUsage extends AppCompatActivity {
         }
     }
 
+    /*
+     * Inicijalizacija uz pomoć App usage adaptera
+     * Tu se nalazi holder koji prikazuje podatke
+     * Povezan je sa item layout-om
+     */
     private void initializeRecyclerViewProperties() {
         list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         final AppUsageAdapter adapter = new AppUsageAdapter(getApplicationContext(), android_id);
@@ -134,6 +152,9 @@ public class AppCombinedUsage extends AppCompatActivity {
     }
 
 
+    /*
+     * Osiguravanje da imamo permisiju za čitanje povijesti internetkog prometa
+     */
     private boolean hasPermissionToReadNetworkHistory() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;

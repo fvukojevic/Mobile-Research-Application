@@ -31,11 +31,17 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
     private String android_id;
     private Context context;
 
+    /*
+     * Konstruktor klase, prima context i android_id korišten za spremanje u lokalnu bazu
+     */
     public AppUsageAdapter(Context context, String android_id) {
         this.context = context;
         this.android_id = android_id;
     }
 
+    /*
+     * Stvarane View Holdera i njegovo povezivanje sa item_layout-om
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -51,6 +57,9 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
         return holder;
     }
 
+    /*
+     * Postavljanje svih parametara holdera sa dobivenim podatcima AppUsage klase
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         NetworkUsageHelper.AppUsage usage = usageList.get(position);
@@ -75,6 +84,14 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
         holder.usage.setProgress(Float.valueOf(usage.getDownloadPercentage() * 100f).intValue());
 
 
+        /*
+         * Uvijeti spremanja u bazu
+         * Ukoliko je promet manji od 10MB ne sprema se u bazu
+         * Ukoliko je spremljen, zahtijeva minimalno još 10MB novog prometa
+         * Tek tada dolazi do update-a podataka u bazi
+         * Razlog ovoga je što postoje aplikacije koje jednom potroše promet i više nikad
+         * Takve Aplikacije nema smisla čuvati u App usage bazi
+         */
         if(downloaded_ALLMB > 10)
         {
             Cursor res = db.getAppUsage(android_id, usage.getAppName());
@@ -126,11 +143,17 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
         }
     }
 
+    /*
+     * Dohvaćanje veličine liste, tj broja item-a u listi
+     */
     @Override
     public int getItemCount() {
         return usageList.size();
     }
 
+    /*
+     * Od čega se naš ViewHolder sastoji
+     */
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView icon;
         TextView name;

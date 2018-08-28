@@ -10,7 +10,9 @@ public class AppUsageDatabase extends SQLiteOpenHelper {
 
     public static final String db_name = "app_usage_db";
 
-    //FOR APP USAGE
+    /*
+     * Vars za App usage lokalnu bazu
+     */
     public static final String app_usage_table = "usage_table";
     public static final String COL_1 = "ID";
     public static final String COL_2 = "ANDROID_ID";
@@ -21,6 +23,9 @@ public class AppUsageDatabase extends SQLiteOpenHelper {
         super(context, db_name, null, 1);
     }
 
+    /*
+     * Stvaranje baze
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("Create table " + app_usage_table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, ANDROID_ID TEXT, APP_NAME TEXT, USAGE REAL)");
@@ -31,7 +36,9 @@ public class AppUsageDatabase extends SQLiteOpenHelper {
         db.execSQL("drop table if exists " + app_usage_table);
     }
 
-    //unosenje podataka za APP USAGE
+    /*
+     * Unošenje podataka u lokalnu app usage bazu
+     */
     public boolean insertAppUsage(String android_id, String app_name, double usage)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -48,7 +55,9 @@ public class AppUsageDatabase extends SQLiteOpenHelper {
         }
     }
 
-    //update usage-a za aplikaciju
+    /*
+     * update postojećih podataka kada se uvijeti u AppUsageAdapteru zadovolje
+     */
     public boolean updateAppUsage(String android_id, String app_name, double usage)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -59,7 +68,9 @@ public class AppUsageDatabase extends SQLiteOpenHelper {
         db.update(app_usage_table, newValues, "ANDROID_ID=? AND APP_NAME=?", args);return true;
     }
 
-    //dohvacanje app_usage podataka
+    /*
+     * Dohvaćanje svih app usage podataka
+     */
     public Cursor getAppUsage(String android_id, String app_name)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -67,7 +78,9 @@ public class AppUsageDatabase extends SQLiteOpenHelper {
         return res;
     }
 
-    //dohvacanje 3 najkoristenije aplikacije
+    /*
+     * Dohvaćanje 3 najkorištenije aplikacije što se prometa tiče
+     */
     public Cursor getMostUsedApps(String android_id)
     {
         SQLiteDatabase db = this.getWritableDatabase();

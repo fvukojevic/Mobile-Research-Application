@@ -67,13 +67,15 @@ public class CreateTicketActivity extends AppCompatActivity{
         tb = new TicketNewDatabase(CreateTicketActivity.this);
 
         getTimeAndDate();
-        bottomGo();
         onSelect();
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         getLocation();
     }
 
+    /*
+     *  Dohvaćanje trenutne lokacije
+     */
     public void getLocation()
     {
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -99,6 +101,10 @@ public class CreateTicketActivity extends AppCompatActivity{
         }
     }
     }
+
+    /*
+        Dohvaćanje podataka o vremenu i datumu
+     */
     public void getTimeAndDate() {
         date_text = findViewById(R.id.date);
         time_text = findViewById(R.id.time);
@@ -113,35 +119,9 @@ public class CreateTicketActivity extends AppCompatActivity{
         time_text.setText(time);
     }
 
-    @SuppressLint("RestrictedApi")
-    public void bottomGo() {
-        bottom = findViewById(R.id.bottom);
-        BottomNavigationView bottom = (BottomNavigationView) findViewById(R.id.bottom);
-        BottomNavigationMenuView menuView = (BottomNavigationMenuView) bottom.getChildAt(0);
-        for (int i = 0; i < menuView.getChildCount(); i++) {
-            BottomNavigationItemView itemView = (BottomNavigationItemView) menuView.getChildAt(i);
-            itemView.setShifting(false);
-            itemView.setChecked(false);
-        }
-        bottom.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.nav_home:
-                        Intent home_intent = new Intent(".FirstPageActivity");
-                        startActivity(home_intent);
-                        return true;
-                    case R.id.nav_ticket:
-                        Intent ticket_intent = new Intent(".CreateTicketActivity");
-                        startActivity(ticket_intent);
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        });
-    }
-
+    /*
+     * Eventi koji se pokreću prilikom odabiranja određenog inputa
+     */
     public void onSelect() {
         category_spinner = findViewById(R.id.spinner);
         category_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -291,6 +271,9 @@ public class CreateTicketActivity extends AppCompatActivity{
                             }
                         }
 
+                        /*
+                         * Što se događa kada ništa nije izabrano
+                         */
                         @Override
                         public void onNothingSelected(AdapterView<?> adapterView) {
                             question_field = findViewById(R.id.question_field);

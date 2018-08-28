@@ -56,6 +56,12 @@ class OwnIconRendered extends DefaultClusterRenderer<MapActivity.MyItem> {
         super(context, map, clusterManager);
     }
 
+    /*
+        Funkcija naprvaljena za nadjačavanje Clustererove
+        Ono što radi je mijenja defaultni marker
+        sa onim koji mi sami odaberemo,
+        snipper i title dobiva iz klade MyItem koja se nalazi u MapActivity-u
+     */
     @Override
     protected void onBeforeClusterItemRendered(MapActivity.MyItem item, MarkerOptions markerOptions) {
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_ticket_icon));
