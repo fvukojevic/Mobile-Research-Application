@@ -50,7 +50,6 @@ public class AppMobileUsage extends AppCompatActivity {
         setContentView(R.layout.activity_app_mobile_usage);
         ButterKnife.bind(this);
         list = findViewById(R.id.list);
-        showMobileUsage();
         showWifiUsage();
         showCombinedUsage();
         initialize();

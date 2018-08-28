@@ -48,7 +48,6 @@ public class AppWifiUsage extends AppCompatActivity {
         ButterKnife.bind(this);
         list = findViewById(R.id.list);
         showMobileUsage();
-        showWifiUsage();
         showCombinedUsage();
         initialize();
     }
