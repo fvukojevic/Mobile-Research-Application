@@ -11,17 +11,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.administrator.demographicstuff.R;
-import com.example.administrator.demographicstuff.app_live_conditions.DataCollectionJobSchedule;
-
-import java.security.Provider;
 
 public class LocationService extends Service {
     private static final int LOCATION_DATA_COLLECTION_SCHEDULE_SERVICE = 8;
@@ -30,6 +27,8 @@ public class LocationService extends Service {
     private static final int LOCATION_DISTANCE = 10;
     private Location lastLocation;
 
+
+    //TODO Use Google Location API
     private class LocationListener implements android.location.LocationListener {
         String provider;
         public LocationListener(String provider) {
@@ -40,7 +39,6 @@ public class LocationService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             Log.i("Location Changed", location.toString());
-            Log.i("Provider", provider);
             collectData(location, provider);
         }
 
@@ -72,9 +70,6 @@ public class LocationService extends Service {
 
 
     public void startService(String provider){
-        Toast toast = Toast.makeText(getApplicationContext(), "Location updated", Toast.LENGTH_SHORT);
-        toast.show();
-
         JobScheduler jobScheduler;
         JobInfo jobInfo;
         jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
@@ -86,6 +81,7 @@ public class LocationService extends Service {
                 .setRequiresStorageNotLow(true)
                 .setMinimumLatency(20)
                 .setOverrideDeadline(200)
+                .setRequiredNetworkType(NetworkCapabilities.TRANSPORT_CELLULAR)
                 .build();
         if (jobScheduler != null) {
             jobScheduler.schedule(jobInfo);

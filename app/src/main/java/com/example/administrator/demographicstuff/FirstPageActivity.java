@@ -1,7 +1,9 @@
 package com.example.administrator.demographicstuff;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.job.JobInfo;
@@ -10,6 +12,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
@@ -24,6 +27,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -45,12 +49,22 @@ import android.widget.Toast;
 import com.example.administrator.demographicstuff.app_demographic.DemograficDatabase;
 import com.example.administrator.demographicstuff.app_live_conditions.DataCollectionJobSchedule;
 import com.example.administrator.demographicstuff.app_live_conditions.LocationService;
+import com.example.administrator.demographicstuff.app_tickets.CreateTicketActivity;
 import com.example.administrator.demographicstuff.app_tickets.TicketNewDatabase;
 import com.example.administrator.demographicstuff.app_usage.AppUsageDatabase;
 import com.example.administrator.demographicstuff.rating_notification.AlarmReceiver;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.Response;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -150,11 +164,11 @@ public class FirstPageActivity extends AppCompatActivity {
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         Cursor res = db.getMyId();
         StringBuffer buffer = new StringBuffer();
-            while (res.moveToNext()) {
+        while (res.moveToNext()) {
             user_id = Integer.parseInt(res.getString(0));
         }
         Log.d("MY ID", "onCreate: MY ID is " + user_id);
-            //<--                      -->//
+        //<--                      -->//
 
         new SetClickListeners().execute();
 
@@ -163,25 +177,25 @@ public class FirstPageActivity extends AppCompatActivity {
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         builder = new NotificationCompat.Builder(context);
 
-        remoteViews = new RemoteViews(getPackageName(),R.layout.custom_notification);
-        remoteViews.setImageViewResource(R.id.notif_icon,R.mipmap.ic_launcher);
-        remoteViews.setTextViewText(R.id.notif_title,"Rate us!");
+        remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification);
+        remoteViews.setImageViewResource(R.id.notif_icon, R.mipmap.ic_launcher);
+        remoteViews.setTextViewText(R.id.notif_title, "Rate us!");
 
         notification_id = (int) System.currentTimeMillis();
 
         Intent button_intent = new Intent("button_click");
-        button_intent.putExtra("id",notification_id);
-        PendingIntent button_pending_event = PendingIntent.getBroadcast(context,123,
-                button_intent,0);
+        button_intent.putExtra("id", notification_id);
+        PendingIntent button_pending_event = PendingIntent.getBroadcast(context, 123,
+                button_intent, 0);
 
-        remoteViews.setOnClickPendingIntent(R.id.rtg1,button_pending_event);
-        remoteViews.setOnClickPendingIntent(R.id.rtg2,button_pending_event);
-        remoteViews.setOnClickPendingIntent(R.id.rtg3,button_pending_event);
-        remoteViews.setOnClickPendingIntent(R.id.rtg4,button_pending_event);
-        remoteViews.setOnClickPendingIntent(R.id.rtg5,button_pending_event);
+        remoteViews.setOnClickPendingIntent(R.id.rtg1, button_pending_event);
+        remoteViews.setOnClickPendingIntent(R.id.rtg2, button_pending_event);
+        remoteViews.setOnClickPendingIntent(R.id.rtg3, button_pending_event);
+        remoteViews.setOnClickPendingIntent(R.id.rtg4, button_pending_event);
+        remoteViews.setOnClickPendingIntent(R.id.rtg5, button_pending_event);
 
-        Intent notification_intent = new Intent(context,FirstPageActivity.class);
-        pendingIntent = PendingIntent.getActivity(context,0,notification_intent,0);
+        Intent notification_intent = new Intent(context, FirstPageActivity.class);
+        pendingIntent = PendingIntent.getActivity(context, 0, notification_intent, 0);
         //<--     end of custom notification    -->//
 
         //<-- alarm menager -->//
@@ -214,8 +228,16 @@ public class FirstPageActivity extends AppCompatActivity {
         jobInfo = new JobInfo.Builder(DATA_COLLECTION_SCHEDULE_SERVICE, componentName)
                 .setPeriodic(TIME_UPDATE, JobInfo.getMinFlexMillis())
                 .setPersisted(true)
+                .setRequiredNetworkType(NetworkCapabilities.TRANSPORT_CELLULAR)
                 .build();
         jobScheduler.schedule(jobInfo);
+
+       /* if (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(FirstPageActivity.this, new String[]{Manifest.permission.INTERNET}, 16);
+        } else {
+            new net().execute();
+        }*/
 
         getData();
         getLocation();
@@ -223,6 +245,58 @@ public class FirstPageActivity extends AppCompatActivity {
 
 
     }
+
+   /* private class net extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            URL url = null;
+            URL testurl = null;
+
+            try {
+                url = new URL("http://192.168.107.126:34142/api/network/postnetwork");
+                testurl = new URL("http://www.google.com");
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            HttpURLConnection myConnection;
+            HttpURLConnection test;
+            try {
+                test = (HttpURLConnection) testurl.openConnection();
+                test.setRequestMethod("GET");
+                InputStream ins = test.getInputStream();
+                BufferedReader r = new BufferedReader(new InputStreamReader(ins));
+                StringBuilder total = new StringBuilder();
+                String line;
+                while ((line = r.readLine()) != null) {
+                    total.append(line).append('\n');
+                }
+                Log.i("AS", total.toString() );
+
+                ins.close();
+                test.disconnect();
+
+                myConnection = (HttpURLConnection) url.openConnection();
+                myConnection.setRequestMethod("POST");
+                myConnection.setRequestProperty("Content-Type", "application/json");
+                myConnection.setDoOutput(true);
+                OutputStream out = myConnection.getOutputStream();
+                String str = ("{\"acc\":\"60.0\",\"timestamp\":\"Tue Aug 28 16:27:48 GMT+02:00 2018\"," +
+                        "\"mnc\":\"1\",\"rsrq\":\"-11\",\"enodeb\":\"350150\",\"technology\":\"4G\",\"altitude\":\"565.0\"," +
+                        "\"rssi\":\"-88\",\"xarfcn\":\"1501\",\"cellid\":\"89638401\",\"mcc\":\"219\",\"ta\":\"2\",\"longitude\":\"15.948173236101866\"," +
+                        "\"speed\":\"2.99\",\"snr\":\"12\",\"tac\":\"2000\",\"pci\":\"70\",\"rspr\":\"-88\",\"cqi\":\"-1\"," +
+                        "\"latitude\":\"45.78691109083593\"}");
+                out.write(str.getBytes());
+                out.close();
+                InputStream in = myConnection.getInputStream();
+                Log.i("Response: ", in.toString());
+                myConnection.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }*/
+
 
     @Override
     protected void onStop() {
@@ -237,7 +311,7 @@ public class FirstPageActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         scrollView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
@@ -277,19 +351,18 @@ public class FirstPageActivity extends AppCompatActivity {
     };
 
 
-    public boolean isServicesOK(){
+    public boolean isServicesOK() {
 
         int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(FirstPageActivity.this);
 
-        if(available == ConnectionResult.SUCCESS){
+        if (available == ConnectionResult.SUCCESS) {
             //everything is fine and the user can make map requests
             return true;
-        }
-        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
             //an error occured but we can resolve it
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(FirstPageActivity.this, available, ERROR_DIALOG_REQUEST);
             dialog.show();
-        }else{
+        } else {
             Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
         }
         return false;

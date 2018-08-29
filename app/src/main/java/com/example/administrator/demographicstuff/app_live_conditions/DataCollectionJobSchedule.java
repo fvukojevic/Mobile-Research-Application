@@ -267,20 +267,22 @@ public class DataCollectionJobSchedule extends JobService {
     public void getLocation() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Location location = null;
+        Criteria crit = new Criteria();
+        crit.setAccuracy(Criteria.ACCURACY_FINE);
+        String provider;
         try {
-            location = locationManager.getLastKnownLocation(locationManager.getProvider(LocationManager.GPS_PROVIDER).toString());
+            provider = locationManager.getBestProvider(crit, true);
+            location = locationManager.getLastKnownLocation(provider);
             if (lastLocation == null) lastLocation = location;
         } catch (SecurityException | NullPointerException e) {
             e.printStackTrace();
         }
-
         if (location != null) {
             map.put("lat", String.valueOf(location.getLatitude()));
             map.put("long", String.valueOf(location.getLongitude()));
             map.put("alt", String.valueOf(location.getAltitude()));
             map.put("acc", String.valueOf(location.getAccuracy()));
             map.put("speed", String.valueOf(location.getSpeed()));
-
         }
     }
 }
