@@ -52,6 +52,7 @@ public class DataCollectionJobSchedule extends JobService {
     Location lastLocation;
     JSONObject json;
     boolean isWorking = false;
+    Location location;
 
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
@@ -64,6 +65,7 @@ public class DataCollectionJobSchedule extends JobService {
         map = new HashMap<>();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         lastLocation = null;
+        location = null;
 
         isWorking = true;
         new Thread(new Runnable() {
@@ -266,13 +268,8 @@ public class DataCollectionJobSchedule extends JobService {
 
     public void getLocation() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Location location = null;
-        Criteria crit = new Criteria();
-        crit.setAccuracy(Criteria.ACCURACY_FINE);
-        String provider;
         try {
-            provider = locationManager.getBestProvider(crit, true);
-            location = locationManager.getLastKnownLocation(provider);
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             if (lastLocation == null) lastLocation = location;
         } catch (SecurityException | NullPointerException e) {
             e.printStackTrace();

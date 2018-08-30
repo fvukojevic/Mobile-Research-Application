@@ -392,7 +392,7 @@ public class LiveConditions extends AppCompatActivity {
         String provider;
         try {
             provider = locationManager.getBestProvider(crit, true);
-            location = locationManager.getLastKnownLocation(provider);
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             if (lastLocation == null) lastLocation = location;
         } catch (SecurityException | NullPointerException e) {
             tvLocationAcc.setText(R.string.locationUnavailable);

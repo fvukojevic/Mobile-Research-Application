@@ -48,6 +48,7 @@ public class LocationDataCollectionJobSchedule extends JobService{
     String networkType;
     LocationManager locationManager;
     Location lastLocation;
+    Location location;
     JSONObject json;
     boolean isWorking = false;
 
@@ -62,6 +63,7 @@ public class LocationDataCollectionJobSchedule extends JobService{
         map = new HashMap<>();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         lastLocation = null;
+        location = null;
 
         isWorking = true;
         new Thread(new Runnable() {
@@ -265,7 +267,6 @@ public class LocationDataCollectionJobSchedule extends JobService{
     public void getLocation(String provider) {
         Log.i("Provider id LocationDataCollection", provider);
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Location location = null;
         try {
             location = locationManager.getLastKnownLocation(provider);
             if (lastLocation == null) lastLocation = location;
