@@ -1,12 +1,20 @@
 package com.example.administrator.demographicstuff.app_demographic;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +28,10 @@ import com.example.administrator.demographicstuff.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
 
     //local variables
@@ -28,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
     public static EditText postal;
     public static Button confirm;
     public static DemograficDatabase db;
-    public static String android_id;
+    public static String android_id, imei, imsi, model_number,manufacturer,release,device_name,android_version;
+    public static int sdkVersion;
     public static Button terms;
     public static Button privacy;
 
@@ -40,6 +53,22 @@ public class MainActivity extends AppCompatActivity {
         //android id-om, ukoliko se pronađe MainActivity se neće prikazati i prelazimo u
         //FirstPageActivity
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+
+            return;
+        }
+       imei = telephonyManager.getDeviceId();
+       imsi = telephonyManager.getSubscriberId();
+        manufacturer = Build.MANUFACTURER;
+        model_number = manufacturer + " " + Build.MODEL;
+        device_name = Build.DEVICE;
+
+        release = Build.VERSION.RELEASE;
+        sdkVersion = Build.VERSION.SDK_INT;
+        android_version = sdkVersion + " " + release;
+
         db = new DemograficDatabase(this);
         Cursor res = db.findByAndroidId(android_id);
 
@@ -69,6 +98,37 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle(title);
         builder.setMessage(message);
         builder.show();
+    }
+
+    public static String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        }
+        return capitalize(manufacturer) + " " + model;
+    }
+
+    private static String capitalize(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
+        char[] arr = str.toCharArray();
+        boolean capitalizeNext = true;
+
+        StringBuilder phrase = new StringBuilder();
+        for (char c : arr) {
+            if (capitalizeNext && Character.isLetter(c)) {
+                phrase.append(Character.toUpperCase(c));
+                capitalizeNext = false;
+                continue;
+            } else if (Character.isWhitespace(c)) {
+                capitalizeNext = true;
+            }
+            phrase.append(c);
+        }
+
+        return phrase.toString();
     }
 
 
@@ -135,7 +195,15 @@ public class MainActivity extends AppCompatActivity {
                         postData.put("age", rb2.getText().toString());
                         postData.put("occupation", rb3.getText().toString());
                         postData.put("nesto", rb4.getText().toString());
+                        postData.put("imei", imei);
+                        postData.put("imsi", imsi);
+                        postData.put("Model number", model_number);
+                        postData.put("Devica name", device_name);
+                        postData.put("Android version", android_version);
+                        writeToFile(postData);
                     } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                     Log.d("MyApp", postData.toString());
@@ -154,5 +222,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void writeToFile(JSONObject json) throws IOException {
+        FileOutputStream stream;
+        String file1 = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String filename = "demographic.txt";
+
+        File f = new File(file1 + File.separator + filename);
+
+        FileOutputStream fstream = new FileOutputStream(f, true);
+        fstream.write(json.toString().getBytes());
+        fstream.write("\r\n ".getBytes());
+        fstream.close();
     }
 }

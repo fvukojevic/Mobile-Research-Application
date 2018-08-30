@@ -75,5 +75,15 @@
         android:id="@+id/get_tickets"
         android:src="@drawable/ic_tickets"/>
 
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/relLayout1"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="110dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/get_signals"
+        android:src="@drawable/map_signals_icon"/>
+
 
 </RelativeLayout>
