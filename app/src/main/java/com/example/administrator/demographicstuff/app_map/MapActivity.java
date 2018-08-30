@@ -3,6 +3,7 @@ package com.example.administrator.demographicstuff.app_map;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -61,6 +62,10 @@ import com.google.maps.android.clustering.ClusterManager;
 
 import com.example.administrator.demographicstuff.models.PlaceInfo;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by FVukojević.
  */
@@ -111,7 +116,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     //widgets
     private AutoCompleteTextView mSearchText;
-    private ImageView mGps, mInfo, mTickets;
+    private ImageView mGps, mInfo, mTickets, mSignals;
 
 
     //vars
@@ -125,6 +130,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static TicketNewDatabase tb;
     public String android_id;
     public static int ticket_tester = 0;
+    public static int signal_tester = 0;
 
     // Inicijalizacija cluster managera.
     private ClusterManager<MyItem> mClusterManager;
@@ -173,6 +179,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mGps = (ImageView) findViewById(R.id.ic_gps);
         mInfo = (ImageView) findViewById(R.id.place_info);
         mTickets = (ImageView) findViewById(R.id.get_tickets);
+        mSignals = (ImageView) findViewById(R.id.get_signals);
 
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -230,6 +237,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 Toast.makeText(MapActivity.this, "Ticket button clicked", Toast.LENGTH_SHORT).show();
                 showTickets();
+            }
+        });
+
+        mSignals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MapActivity.this, "Signals button clicked", Toast.LENGTH_SHORT).show();
+                try {
+                    showSignals();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -311,9 +330,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    //Dohvacanje svih korisnikovih tiketa
-    //prikaz na mapi
-    //spremanje u map cluster
+    /*
+     * Dohvacanje svih korisnikovih tiketa
+     * prikaz na mapi
+     * spremanje u map cluster
+     */
     public void showTickets() {
         if (ticket_tester == 0)
             ticket_tester = 1;
@@ -365,6 +386,87 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             }
         }//Drugi i svaki parni put kada pritisnemo na prikz tiketa
+        else {
+            mMap.clear();
+            mClusterManager.clearItems();
+        }
+    }
+
+    public void showSignals() throws JSONException {
+
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapActivity.this));
+        if (signal_tester == 0)
+            signal_tester = 1;
+        else
+            signal_tester = 0;
+        if (signal_tester == 1){
+            JSONObject signal1 = new JSONObject();
+            JSONObject signal2 = new JSONObject();
+            JSONObject signal3 = new JSONObject();
+            try {
+                signal1.put("tehnology", "4G");
+                signal1.put("RSRP", "-75 dBm");
+                signal1.put("name", "signal1");
+                signal1.put("longitude", 16.283782 );
+                signal1.put("latitude", 45.784405);
+
+                signal2.put("tehnology", "3G");
+                signal2.put("RSRP", "-90 dBm");
+                signal2.put("name", "signal2");
+                signal2.put("longitude", 15.657840 );
+                signal2.put("latitude", 45.769080);
+
+                signal3.put("tehnology", "2G");
+                signal3.put("RSRP", "-120 dBm");
+                signal3.put("name", "signal3");
+                signal3.put("longitude", 16.025721 );
+                signal3.put("latitude", 45.588696);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JSONArray signals = new JSONArray();
+            signals.put(signal1);
+            signals.put(signal2);
+            signals.put(signal3);
+            String snippet;
+
+            for (int i = 0; i < signals.length(); i++) {
+                JSONObject row = signals.getJSONObject(i);
+                switch (row.getString("RSRP")){
+                    case "-75 dBm":
+                        snippet = "Tehnology: " + row.getString("tehnology") + "\n" +
+                                "RSRP: " + row.getString("RSRP") + "\n" +
+                                "Name: " + row.getString("name") + "\n" +
+                                "Lonitude: " + row.getDouble("longitude") + "\n" +
+                                "Latitude: " + row.getDouble("latitude");
+                        mClusterManager.addItem(new MyItem(45.7859513,
+                                15.950986, "Good RSRP", snippet));
+                        break;
+                    case "-90 dBm":
+                        snippet = "Tehnology: " + row.getString("tehnology") + "\n" +
+                                "RSRP: " + row.getString("RSRP") + "\n" +
+                                "Name: " + row.getString("name") + "\n" +
+                                "Lonitude: " + row.getDouble("longitude") + "\n" +
+                                "Latitude: " + row.getDouble("latitude");
+                        mClusterManager.addItem(new MyItem(45.7856354,
+                                15.949049, "Decent RSRP", snippet));
+                        mClusterManager.addItem(new MyItem(45.787261,
+                                15.955855, "Decent RSRP", snippet));
+                        mClusterManager.addItem(new MyItem(45.7840916,
+                                15.961171, "Decent RSRP", snippet));
+                        break;
+                    case "-120 dBm":
+                        snippet = "Tehnology: " + row.getString("tehnology") + "\n" +
+                                "RSRP: " + row.getString("RSRP") + "\n" +
+                                "Name: " + row.getString("name") + "\n" +
+                                "Longitude: " + row.getDouble("longitude") + "\n" +
+                                "Latitude: " + row.getDouble("latitude");
+                        mClusterManager.addItem(new MyItem(45.786607,
+                                15.950380, "Bad RSRP", snippet));
+                        break;
+                }
+            }
+        }
         else {
             mMap.clear();
             mClusterManager.clearItems();

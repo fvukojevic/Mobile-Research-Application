@@ -433,7 +433,7 @@ public class FirstPageActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     progressBar.setVisibility(View.VISIBLE);
                     scrollView.setVisibility(View.GONE);
-                    Intent intent = new Intent(".AppWifiUsage");
+                    Intent intent = new Intent(".AppCombinedUsage");
                     startActivity(intent);
                 }
             });

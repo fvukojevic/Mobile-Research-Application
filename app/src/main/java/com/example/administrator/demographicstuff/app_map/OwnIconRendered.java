@@ -64,9 +64,30 @@ class OwnIconRendered extends DefaultClusterRenderer<MapActivity.MyItem> {
      */
     @Override
     protected void onBeforeClusterItemRendered(MapActivity.MyItem item, MarkerOptions markerOptions) {
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_ticket_icon));
-        markerOptions.snippet(item.getSnippet());
-        markerOptions.title(item.getTitle());
-        super.onBeforeClusterItemRendered(item, markerOptions);
+
+        String title = item.getTitle();
+        switch (title){
+            case "Good RSRP":
+                markerOptions.title(title)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_good_signal_dot));
+                super.onBeforeClusterItemRendered(item, markerOptions);
+                break;
+            case "Decent RSRP":
+                markerOptions.title(title)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_decent_signal_dot));
+                super.onBeforeClusterItemRendered(item, markerOptions);
+                break;
+            case "Bad RSRP":
+                markerOptions.title(title)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_bad_signal_dot));
+                super.onBeforeClusterItemRendered(item, markerOptions);
+                break;
+            default:
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_ticket_icon));
+                markerOptions.snippet(item.getSnippet());
+                markerOptions.title(item.getTitle());
+                super.onBeforeClusterItemRendered(item, markerOptions);
+                break;
+        }
     }
 }
