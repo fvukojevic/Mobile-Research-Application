@@ -39,6 +39,7 @@ public class DataCollectionJobSchedule extends JobService {
     private static final String NETWORK_TYPE_2G = "2G";
     private static final String NETWORK_TYPE_3G = "3G";
     private static final String NETWORK_TYPE_4G = "4G";
+    private static final String NETWORK_TYPE_WIFI = "Wi-Fi";
 
     JobParameters params;
     ConnectivityManager connectivityManager;
@@ -52,6 +53,7 @@ public class DataCollectionJobSchedule extends JobService {
     Location lastLocation;
     JSONObject json;
     boolean isWorking = false;
+    Location location;
 
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
@@ -64,6 +66,7 @@ public class DataCollectionJobSchedule extends JobService {
         map = new HashMap<>();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         lastLocation = null;
+        location = null;
 
         isWorking = true;
         new Thread(new Runnable() {
@@ -83,8 +86,7 @@ public class DataCollectionJobSchedule extends JobService {
     public void dataCollect(JobParameters params) {
         getData();
         getLocation();
-        map.put("aaupdated", "byTime");
-        map.put("aaTimestamp", Calendar.getInstance().getTime().toString());
+        map.put("timestamp", Calendar.getInstance().getTime().toString());
         json = new JSONObject(map);
         try {
             writeToFile(json);
@@ -165,7 +167,7 @@ public class DataCollectionJobSchedule extends JobService {
                         case TelephonyManager.NETWORK_TYPE_IDEN:
                         case TelephonyManager.NETWORK_TYPE_GSM:
                             networkType = NETWORK_TYPE_2G;
-                            map.put("mobileTechnology", "2G");
+                            map.put("technology", "2G");
                             getMobileParameters();
                             return;
                         case TelephonyManager.NETWORK_TYPE_UMTS:
@@ -179,12 +181,12 @@ public class DataCollectionJobSchedule extends JobService {
                         case TelephonyManager.NETWORK_TYPE_HSPAP:
                         case TelephonyManager.NETWORK_TYPE_TD_SCDMA:
                             networkType = NETWORK_TYPE_3G;
-                            map.put("mobileTechnology", NETWORK_TYPE_3G);
+                            map.put("technology", NETWORK_TYPE_3G);
                             getMobileParameters();
                             return;
                         case TelephonyManager.NETWORK_TYPE_LTE:
                             networkType = NETWORK_TYPE_4G;
-                            map.put("mobileTechnology", NETWORK_TYPE_4G);
+                            map.put("technology", NETWORK_TYPE_4G);
                             getMobileParameters();
                     }
                 }
@@ -194,8 +196,9 @@ public class DataCollectionJobSchedule extends JobService {
 
     public void getWiFiParameters() {
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        map.put("WiFiSSID", String.valueOf(wifiInfo.getSSID()));
-        map.put("WiFiRSSI", String.valueOf(wifiInfo.getRssi()));
+        map.put("technology", NETWORK_TYPE_WIFI);
+        map.put("ssid", String.valueOf(wifiInfo.getSSID()));
+        map.put("rssi", String.valueOf(wifiInfo.getRssi()));
     }
 
     public void getMobileParameters() {
@@ -209,78 +212,75 @@ public class DataCollectionJobSchedule extends JobService {
         switch (networkType) {
             case NETWORK_TYPE_2G:
                 CellInfoGsm gsm = (CellInfoGsm) cellinfo.get(0);
-                map.put("cellId", String.valueOf(gsm.getCellIdentity().getCid()));
-                map.put("MCC", String.valueOf(gsm.getCellIdentity().getMcc()));
-                map.put("MNC", String.valueOf(gsm.getCellIdentity().getMnc()));
+                map.put("cellid", String.valueOf(gsm.getCellIdentity().getCid()));
+                map.put("mcc", String.valueOf(gsm.getCellIdentity().getMcc()));
+                map.put("mnc", String.valueOf(gsm.getCellIdentity().getMnc()));
                 map.put("mobileRSSI", String.valueOf(gsm.getCellSignalStrength().getDbm()));
-                map.put("rfcn", String.valueOf(gsm.getCellIdentity().getArfcn()));
-                map.put("SNR", "-");
-                map.put("RSRP", "-");
-                map.put("RSRQ", "-");
-                map.put("TAC", String.valueOf(gsm.getCellIdentity().getLac()));
-                map.put("CQI", "-");
-                map.put("TA", String.valueOf(gsm.getCellSignalStrength().getTimingAdvance()));
+                map.put("xarfcn", String.valueOf(gsm.getCellIdentity().getArfcn()));
+                map.put("snr", "");
+                map.put("rsrp", "");
+                map.put("rsrq", "");
+                map.put("tac", String.valueOf(gsm.getCellIdentity().getLac()));
+                map.put("cqi", "");
+                map.put("ta", String.valueOf(gsm.getCellSignalStrength().getTimingAdvance()));
                 return;
             case NETWORK_TYPE_3G:
                 try {
                     CellInfoWcdma wcdma = (CellInfoWcdma) cellinfo.get(0);
-                    map.put("cellId", String.valueOf(wcdma.getCellIdentity().getCid()));
-                    map.put("MCC", String.valueOf(wcdma.getCellIdentity().getMcc()));
-                    map.put("MNC", String.valueOf(wcdma.getCellIdentity().getMnc()));
-                    map.put("mobileRSSI", String.valueOf(wcdma.getCellSignalStrength().getDbm()));
-                    map.put("rfcn", String.valueOf(wcdma.getCellIdentity().getUarfcn()));
-                    map.put("SNR", "-");
-                    map.put("RSRP", "-");
-                    map.put("RSRQ", "-");
-                    map.put("TAC", String.valueOf(wcdma.getCellIdentity().getLac()));
-                    map.put("CQI", "-");
-                    map.put("TA", "-");
-                    map.put("ENodeB", String.valueOf(wcdma.getCellIdentity().getCid() >> 8));
+                    map.put("cellid", String.valueOf(wcdma.getCellIdentity().getCid()));
+                    map.put("mcc", String.valueOf(wcdma.getCellIdentity().getMcc()));
+                    map.put("mnc", String.valueOf(wcdma.getCellIdentity().getMnc()));
+                    map.put("rssi", String.valueOf(wcdma.getCellSignalStrength().getDbm()));
+                    map.put("xarfcn", String.valueOf(wcdma.getCellIdentity().getUarfcn()));
+                    map.put("snr", "");
+                    map.put("rsrp", "");
+                    map.put("rsrq", "");
+                    map.put("tac", String.valueOf(wcdma.getCellIdentity().getLac()));
+                    map.put("cqi", "");
+                    map.put("ta", "");
+                    map.put("enodeb", String.valueOf(wcdma.getCellIdentity().getCid() >> 8));
                     map.put("PCI", String.valueOf(wcdma.getCellIdentity().getPsc()));
                 } catch (ClassCastException e) {
                     CellInfoCdma cdma = (CellInfoCdma) cellinfo.get(0);
-                    map.put("cellId", String.valueOf(cdma.getCellIdentity().getBasestationId()));
-                    map.put("mobileRSSI", String.valueOf(cdma.getCellSignalStrength().getCdmaDbm()));
+                    map.put("cellid", String.valueOf(cdma.getCellIdentity().getBasestationId()));
+                    map.put("rssi", String.valueOf(cdma.getCellSignalStrength().getCdmaDbm()));
                 }
                 return;
             case NETWORK_TYPE_4G:
                 CellInfoLte lte = (CellInfoLte) cellinfo.get(0);
                 map.put("cellId", String.valueOf(lte.getCellIdentity().getCi()));
-                map.put("MCC", String.valueOf(lte.getCellIdentity().getMcc()));
-                map.put("MNC", String.valueOf(lte.getCellIdentity().getMnc()));
-                map.put("mobileRSSI", String.valueOf(lte.getCellSignalStrength().getDbm()));
-                map.put("rfcn", String.valueOf(lte.getCellIdentity().getEarfcn()));
-                map.put("SNR", String.valueOf(lte.getCellSignalStrength().getRssnr()));
-                map.put("RSRP", String.valueOf(lte.getCellSignalStrength().getRsrp()));
-                map.put("RSRQ", String.valueOf(lte.getCellSignalStrength().getRsrq()));
+                map.put("mcc", String.valueOf(lte.getCellIdentity().getMcc()));
+                map.put("mnc", String.valueOf(lte.getCellIdentity().getMnc()));
+                map.put("rssi", String.valueOf(lte.getCellSignalStrength().getDbm()));
+                map.put("xarfcn", String.valueOf(lte.getCellIdentity().getEarfcn()));
+                map.put("snr", String.valueOf(lte.getCellSignalStrength().getRssnr()));
+                map.put("rsrp", String.valueOf(lte.getCellSignalStrength().getRsrp()));
+                map.put("rsrq", String.valueOf(lte.getCellSignalStrength().getRsrq()));
                 map.put("TAC", String.valueOf(lte.getCellIdentity().getTac()));
-                map.put("CQI", String.valueOf(lte.getCellSignalStrength().getCqi()));
+                map.put("cqi", String.valueOf(lte.getCellSignalStrength().getCqi()));
                 if (lte.getCellSignalStrength().getCqi() > 30) {
-                    map.put("CQI", "-1");
+                    map.put("cqi", "-1");
                 }
-                map.put("TA", String.valueOf(lte.getCellSignalStrength().getTimingAdvance()));
-                map.put("ENodeB", String.valueOf(lte.getCellIdentity().getCi() >> 8));
-                map.put("PCI", String.valueOf(lte.getCellIdentity().getPci()));
+                map.put("ta", String.valueOf(lte.getCellSignalStrength().getTimingAdvance()));
+                map.put("enodeb", String.valueOf(lte.getCellIdentity().getCi() >> 8));
+                map.put("pci", String.valueOf(lte.getCellIdentity().getPci()));
         }
     }
 
     public void getLocation() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Location location = null;
         try {
-            location = locationManager.getLastKnownLocation(locationManager.getProvider(LocationManager.GPS_PROVIDER).toString());
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             if (lastLocation == null) lastLocation = location;
         } catch (SecurityException | NullPointerException e) {
             e.printStackTrace();
         }
-
         if (location != null) {
-            map.put("lat", String.valueOf(location.getLatitude()));
-            map.put("long", String.valueOf(location.getLongitude()));
-            map.put("alt", String.valueOf(location.getAltitude()));
-            map.put("acc", String.valueOf(location.getAccuracy()));
+            map.put("latitude", String.valueOf(location.getLatitude()));
+            map.put("longitude", String.valueOf(location.getLongitude()));
+            map.put("altitude", String.valueOf(location.getAltitude()));
+            map.put("acuracy", String.valueOf(location.getAccuracy()));
             map.put("speed", String.valueOf(location.getSpeed()));
-
         }
     }
 }
