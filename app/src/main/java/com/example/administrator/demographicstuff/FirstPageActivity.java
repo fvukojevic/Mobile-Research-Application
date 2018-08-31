@@ -620,8 +620,11 @@ public class FirstPageActivity extends AppCompatActivity {
         crit.setAccuracy(Criteria.ACCURACY_FINE);
         String provider;
         try {
-            provider = locationManager.getBestProvider(crit, true);
-            location = locationManager.getLastKnownLocation(provider);
+            provider = locationManager != null ? locationManager.getBestProvider(crit, true) : null;
+            if (provider == null){
+                provider = LocationManager.NETWORK_PROVIDER;
+            }
+            location = locationManager != null ? locationManager.getLastKnownLocation(provider) : null;
             if (lastLocation == null) lastLocation = location;
         } catch (SecurityException | NullPointerException e) {
             e.printStackTrace();

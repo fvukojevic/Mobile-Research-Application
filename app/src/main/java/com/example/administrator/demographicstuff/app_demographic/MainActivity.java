@@ -40,27 +40,37 @@ public class MainActivity extends AppCompatActivity {
     public static EditText postal;
     public static Button confirm;
     public static DemograficDatabase db;
-    public static String android_id, imei, imsi, model_number,manufacturer,release,device_name,android_version;
+    public static String android_id, imei, imsi, model_number, manufacturer, release, device_name, android_version;
     public static int sdkVersion;
     public static Button terms;
     public static Button privacy;
+    public TelephonyManager telephonyManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //dohvacanje android _id-a i spajanje na bazu. Pokušava se pronaći korisnik sa tim
         //android id-om, ukoliko se pronađe MainActivity se neće prikazati i prelazimo u
         //FirstPageActivity
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
 
-            return;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+        } else {
+            startApp();
         }
-       imei = telephonyManager.getDeviceId();
-       imsi = telephonyManager.getSubscriberId();
+    }
+
+    public void startApp() {
+        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        try {
+            imei = telephonyManager.getDeviceId();
+            imsi = telephonyManager.getSubscriberId();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
         manufacturer = Build.MANUFACTURER;
         model_number = manufacturer + " " + Build.MODEL;
         device_name = Build.DEVICE;
@@ -83,7 +93,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class Task extends AsyncTask<Intent, Void, Void>{
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startApp();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
+    private class Task extends AsyncTask<Intent, Void, Void> {
         @Override
         protected Void doInBackground(Intent... intents) {
             startActivity(intents[0]);
