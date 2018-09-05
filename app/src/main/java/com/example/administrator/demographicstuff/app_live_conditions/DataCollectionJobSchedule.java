@@ -3,8 +3,6 @@ package com.example.administrator.demographicstuff.app_live_conditions;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
-import android.content.Intent;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -21,6 +19,8 @@ import android.telephony.CellInfoWcdma;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.example.administrator.demographicstuff.R;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -30,10 +30,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.security.Provider;
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class DataCollectionJobSchedule extends JobService {
     private static final String NETWORK_TYPE_2G = "2G";
@@ -86,7 +87,8 @@ public class DataCollectionJobSchedule extends JobService {
     public void dataCollect(JobParameters params) {
         getData();
         getLocation();
-        map.put("timestamp", Calendar.getInstance().getTime().toString());
+        map.put("timestamp", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).format(new Date()));
+        map.put("appuserid", getApplicationContext().getSharedPreferences(getString(R.string.APP_USER_PREFERENCES), Context.MODE_PRIVATE).getString("APP_USER_ID", ""));
         json = new JSONObject(map);
         try {
             writeToFile(json);
@@ -100,17 +102,19 @@ public class DataCollectionJobSchedule extends JobService {
 
     }
 
-
+    //TODO don't use this location for .txt file(manje bitno) ili koristi bazu za spremanje ovih podataka
+    //also look in SendNetworkData.java under sendData AsyncTask
     public void writeToFile(JSONObject json) throws IOException {
-        FileOutputStream stream;
         String file1 = Environment.getExternalStorageDirectory().getAbsolutePath();
         String filename = "data.txt";
 
         File f = new File(file1 + File.separator + filename);
 
         FileOutputStream fstream = new FileOutputStream(f, true);
+        if(f.length() > 0){
+            fstream.write(",".getBytes());
+        }
         fstream.write(json.toString().getBytes());
-        fstream.write("\r\n ".getBytes());
         fstream.close();
     }
 

@@ -28,7 +28,7 @@ public class LocationService extends Service {
     private Location lastLocation;
 
 
-    //TODO Use Google Location API
+    //TODO Use Google Location API (manje bitno)(nema vremena)
     private class LocationListener implements android.location.LocationListener {
         String provider;
         public LocationListener(String provider) {

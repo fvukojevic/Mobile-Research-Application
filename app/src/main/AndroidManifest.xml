@@ -12,7 +12,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.INTERNET" />
 
 
     <uses-feature android:name="android.hardware.location.gps" />
@@ -34,7 +33,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDSxWIBN-w_IAhnkUkbtSv_MtQKqv5wkto" />
+            android:value="AIzaSyBmOT0zJi_oRpAUiWq-GvxOZQrLiPiCYco" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -144,7 +143,15 @@
             android:name=".app_live_conditions.LocationDataCollectionJobSchedule"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".send_data.SendNetworkData"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service android:name=".app_live_conditions.LocationService" />
+        <service
+            android:name=".send_data.SendAppUserData"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
 
     </application>

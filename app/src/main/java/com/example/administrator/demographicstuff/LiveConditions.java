@@ -34,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LiveConditions extends AppCompatActivity {
+    private static final String TAG = "SDLiveConditions";
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_NETWORK_STATE = 2;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_WIFI_STATE = 3;

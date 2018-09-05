@@ -157,7 +157,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp">
-
+               <!-- TODO fix layout alignment -->
                 <TextView
                     android:id="@+id/date_text"
                     android:layout_width="56dp"
@@ -206,15 +206,6 @@
                     android:text="GPS"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@android:color/background_dark" />
-
-                <TextView
-                    android:id="@+id/GPScoordinates"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/textView6"
-                    android:layout_alignParentEnd="true"
-                    android:layout_gravity="right"
-                    android:text="-" />
 
                 <TextView
                     android:id="@+id/textView7"

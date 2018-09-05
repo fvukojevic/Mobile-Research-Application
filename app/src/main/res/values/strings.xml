@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Mobile Research App</string>
-
-    <string name="api_key">AIzaSyDSxWIBN-w_IAhnkUkbtSv_MtQKqv5wkto</string>
+    <string name="APP_USER_PREFERENCES">App user preferences</string>
+    <string name="api_key">AIzaSyBmOT0zJi_oRpAUiWq-GvxOZQrLiPiCYco</string>
 
     <string-array name="spinner_category">
         <item></item>

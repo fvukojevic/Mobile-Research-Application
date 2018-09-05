@@ -1,14 +1,19 @@
 package com.example.administrator.demographicstuff.app_demographic;
 
 import android.Manifest;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -18,12 +23,16 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.example.administrator.demographicstuff.FirstPageActivity;
 import com.example.administrator.demographicstuff.R;
+import com.example.administrator.demographicstuff.send_data.SendAppUserData;
+import com.example.administrator.demographicstuff.send_data.SendNetworkData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,33 +43,49 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int SEND_DATA_TO_SERVER = 1;
+    private static final int REQUEST_INTERNET_PERMISSION = 2;
     //local variables
     public static RadioGroup rg1, rg2, rg3, rg4;
     public static RadioButton rb1, rb2, rb3, rb4;
     public static EditText postal;
     public static Button confirm;
     public static DemograficDatabase db;
-    public static String android_id, imei, imsi, model_number,manufacturer,release,device_name,android_version;
+    public static String android_id, imei, imsi, model_number, manufacturer, release, device_name, android_version;
     public static int sdkVersion;
     public static Button terms;
     public static Button privacy;
+    public CheckBox checkBox;
+    public TelephonyManager telephonyManager;
+    JobScheduler jobScheduler;
+    JobInfo sendDataJobInfo;
+    ComponentName sendDataComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //dohvacanje android _id-a i spajanje na bazu. Pokušava se pronaći korisnik sa tim
         //android id-om, ukoliko se pronađe MainActivity se neće prikazati i prelazimo u
         //FirstPageActivity
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
 
-            return;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+        } else {
+            startApp();
         }
-        imei = telephonyManager.getDeviceId();
-        imsi = telephonyManager.getSubscriberId();
+    }
+
+    public void startApp() {
+        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        try {
+            imei = telephonyManager.getDeviceId();
+            imsi = telephonyManager.getSubscriberId();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
         manufacturer = Build.MANUFACTURER;
         model_number = manufacturer + " " + Build.MODEL;
         device_name = Build.DEVICE;
@@ -83,7 +108,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class Task extends AsyncTask<Intent, Void, Void>{
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startApp();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
+    private class Task extends AsyncTask<Intent, Void, Void> {
         @Override
         protected Void doInBackground(Intent... intents) {
             startActivity(intents[0]);
@@ -142,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         confirm = findViewById(R.id.confirm);
         terms = findViewById(R.id.termsOfUse);
         privacy = findViewById(R.id.privacyBtn);
-
+        checkBox = findViewById(R.id.agree);
 
         terms.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,6 +219,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Answer last question", Toast.LENGTH_SHORT).show();
                 } else if (postal.getText().toString().equals("")) {
                     Toast.makeText(MainActivity.this, "Enter postal code information", Toast.LENGTH_SHORT).show();
+                }else if (!checkBox.isChecked()){
+                    Toast.makeText(MainActivity.this, "You must agree to terms of service", Toast.LENGTH_SHORT).show();
                 } else {
                     int genderID = rg1.getCheckedRadioButtonId();
                     int ageID = rg2.getCheckedRadioButtonId();
@@ -190,23 +237,41 @@ public class MainActivity extends AppCompatActivity {
                     //<-- Spremno za slanje na server
                     JSONObject postData = new JSONObject();
                     try {
-                        postData.put("android_id", android_id);
+                        postData.put("androidid", android_id);
                         postData.put("gender", rb1.getText().toString());
                         postData.put("age", rb2.getText().toString());
                         postData.put("occupation", rb3.getText().toString());
-                        postData.put("nesto", rb4.getText().toString());
+                        postData.put("homephone", rb4.getText().toString());
                         postData.put("imei", imei);
                         postData.put("imsi", imsi);
-                        postData.put("Model number", model_number);
-                        postData.put("Devica name", device_name);
-                        postData.put("Android version", android_version);
+                        postData.put("modelnumber", model_number);
+                        postData.put("devicename", device_name);
+                        postData.put("androidversion", android_version);
                         writeToFile(postData);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     Log.d("MyApp", postData.toString());
+
+                    PersistableBundle bundle = new PersistableBundle();
+                    bundle.putString("DATA", postData.toString());
+                    jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                    sendDataComponent = new ComponentName(MainActivity.this,SendAppUserData.class);
+                    sendDataJobInfo = new JobInfo.Builder(SEND_DATA_TO_SERVER, sendDataComponent)
+                            .setRequiresBatteryNotLow(true)
+                            .setExtras(bundle)
+                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                            .build();
+                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.INTERNET}, REQUEST_INTERNET_PERMISSION);
+                        return;
+                    } else {
+                        jobScheduler.schedule(sendDataJobInfo);
+                    }
 
                     boolean check = db.insertDemographicData(android_id, rb1.getText().toString(), rb2.getText().toString(),
                             rb3.getText().toString(), rb4.getText().toString(), postal.getText().toString());

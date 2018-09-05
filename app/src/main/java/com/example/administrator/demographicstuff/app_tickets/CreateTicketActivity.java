@@ -2,10 +2,14 @@ package com.example.administrator.demographicstuff.app_tickets;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
@@ -30,6 +34,9 @@ import android.widget.Toast;
 import com.example.administrator.demographicstuff.FirstPageActivity;
 import com.example.administrator.demographicstuff.LiveConditions;
 import com.example.administrator.demographicstuff.R;
+import com.example.administrator.demographicstuff.app_demographic.MainActivity;
+import com.example.administrator.demographicstuff.send_data.SendAppUserData;
+import com.example.administrator.demographicstuff.send_data.SendTicketData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +49,8 @@ import java.util.Calendar;
 public class CreateTicketActivity extends AppCompatActivity{
 
     static final int REQUEST_LOCATION = 1;
+    private static final int SEND_DATA_TO_SERVER = 2;
+    private static final int REQUEST_INTERNET_PERMISSION = 3;
 
     public static Spinner category_spinner, subcategory_spinner, frequency_spinner;
     public static EditText question_field;
@@ -54,7 +63,9 @@ public class CreateTicketActivity extends AppCompatActivity{
     public static TextView date_text, time_text, long_text, lat_text;
     public static LocationManager locationManager;
     public static Button permission;
-
+    JobScheduler jobScheduler;
+    JobInfo sendDataJobInfo;
+    ComponentName sendDataComponent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,6 +159,7 @@ public class CreateTicketActivity extends AppCompatActivity{
                     submit = findViewById(R.id.btn_ticket);
                     submit.setVisibility(View.VISIBLE);
 
+                    //TODO drop down menu fix options spacing (nebitno)
                     subcategory_spinner = findViewById(R.id.spinner2);
                     subcategory_spinner.setVisibility(View.VISIBLE);
 
@@ -174,22 +186,26 @@ public class CreateTicketActivity extends AppCompatActivity{
                         subcategory_strings.add("Voice calls can not connect");
                         subcategory_strings.add("Voice calls drop unexpectedly");
                         subcategory_strings.add("Bad quality of voice calls");
+                        subcategory_strings.add("Other");
                     } else if (category.equals("Coverage")) {
                         subcategory_text.setText("What type of Coverage issue");
                         subcategory_strings.add("I lost connection the the network");
                         subcategory_strings.add("I have a weak network signal");
                         subcategory_strings.add("I can never connect to 4G");
+                        subcategory_strings.add("Other");
                     } else if (category.equals("Mobile Data")) {
                         subcategory_text.setText("What type of Mobile Data issue");
                         subcategory_strings.add("No access to internet");
                         subcategory_strings.add("Slow speed on mobile data");
                         subcategory_strings.add("Web pages always time out");
                         subcategory_strings.add("No 4G connection available");
+                        subcategory_strings.add("Other");
                     } else {
                         subcategory_text.setText("What type of Device issue");
                         subcategory_strings.add("My battery is draining quickly");
                         subcategory_strings.add("My device runs warm");
                         subcategory_strings.add("My device is slow, lagging");
+                        subcategory_strings.add("Other");
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(CreateTicketActivity.this, android.R.layout.simple_spinner_item, subcategory_strings);
@@ -226,11 +242,13 @@ public class CreateTicketActivity extends AppCompatActivity{
                                                 public void onClick(View view) {
                                                     //<--      Json obj -->//
                                                     JSONObject postData = new JSONObject();
+                                                    //TODO make timestamp in yyyy-mm-dd hh:mm:ss format (bitno, da mozemo slat tickete)
                                                     Long tsLong = System.currentTimeMillis()/1000;
                                                     String ts = tsLong.toString();
                                                     try {
-                                                        postData.put("appuserid", FirstPageActivity.user_id);
+                                                        postData.put("appuserid", getApplicationContext().getSharedPreferences(getString(R.string.APP_USER_PREFERENCES), Context.MODE_PRIVATE).getString("APP_USER_ID", ""));
                                                         postData.put("category", category_spinner.getSelectedItem().toString());
+                                                        postData.put("subcategory", subcategory);
                                                         postData.put("frequency", frequency_spinner.getSelectedItem().toString());
                                                         postData.put("comment", question_field.getText().toString());
                                                         postData.put("longitude", Double.parseDouble(long_text.getText().toString()));
@@ -245,8 +263,25 @@ public class CreateTicketActivity extends AppCompatActivity{
                                                     }
                                                     Log.d("MyApp", postData.toString());
 
+                                                    PersistableBundle bundle = new PersistableBundle();
+                                                    bundle.putString("DATA", postData.toString());
+                                                    jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                                                    sendDataComponent = new ComponentName(CreateTicketActivity.this,SendTicketData.class);
+                                                    sendDataJobInfo = new JobInfo.Builder(SEND_DATA_TO_SERVER, sendDataComponent)
+                                                            .setExtras(bundle)
+                                                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                                                            .build();
+                                                    if (ActivityCompat.checkSelfPermission(CreateTicketActivity.this, Manifest.permission.INTERNET)
+                                                            != PackageManager.PERMISSION_GRANTED) {
+                                                        ActivityCompat.requestPermissions(CreateTicketActivity.this, new String[]{Manifest.permission.INTERNET}, REQUEST_INTERNET_PERMISSION);
+                                                        return;
+                                                    } else {
+                                                        //TODO get data from db (bitno)(budem ja ako se ne snadete)
+                                                        //jobScheduler.schedule(sendDataJobInfo);
+                                                    }
+
                                                     //<--End of json obj. Local storage below -->//
-                                                    boolean check = tb.insertTicket(android_id, category_spinner.getSelectedItem().toString() ,
+                                                    boolean check = tb.insertTicket(getApplicationContext().getSharedPreferences(getString(R.string.APP_USER_PREFERENCES), Context.MODE_PRIVATE).getString("APP_USER_ID", ""), category_spinner.getSelectedItem().toString() ,
                                                             subcategory_spinner.getSelectedItem().toString()
                                                     , frequency_spinner.getSelectedItem().toString(), question_field.getText().toString(), date_text.getText().toString(),
                                                             time_text.getText().toString(), Double.parseDouble(long_text.getText().toString()),

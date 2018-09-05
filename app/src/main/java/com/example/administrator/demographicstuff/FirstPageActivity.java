@@ -3,7 +3,6 @@ package com.example.administrator.demographicstuff;
 import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Dialog;
-import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.job.JobInfo;
@@ -12,6 +11,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Criteria;
@@ -25,7 +25,9 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
@@ -49,25 +51,25 @@ import android.widget.Toast;
 import com.example.administrator.demographicstuff.app_demographic.DemograficDatabase;
 import com.example.administrator.demographicstuff.app_live_conditions.DataCollectionJobSchedule;
 import com.example.administrator.demographicstuff.app_live_conditions.LocationService;
-import com.example.administrator.demographicstuff.app_tickets.CreateTicketActivity;
 import com.example.administrator.demographicstuff.app_tickets.TicketNewDatabase;
 import com.example.administrator.demographicstuff.app_usage.AppUsageDatabase;
 import com.example.administrator.demographicstuff.rating_notification.AlarmReceiver;
+import com.example.administrator.demographicstuff.send_data.SendNetworkData;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.Response;
 
-import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -132,7 +134,10 @@ public class FirstPageActivity extends AppCompatActivity {
     private String networkType = "";
     private String typeNet = "";
     private static final int DATA_COLLECTION_SCHEDULE_SERVICE = 7;
+    private static final int SEND_DATA_TO_SERVER = 8;
+    private static final int REQUEST_INTERNET_PERMISSION = 16;
     private static final int TIME_UPDATE = 1200000;
+    private static final int SEND_DATA_INTERVAL = 3600000;
     private Location lastLocation = null;
 
     public static int user_id;
@@ -146,8 +151,10 @@ public class FirstPageActivity extends AppCompatActivity {
     Location location;
     Handler handler;
     JobScheduler jobScheduler;
-    JobInfo jobInfo;
+    JobInfo dataCollectionJobInfo, sendDataJobInfo;
     Criteria crit;
+    ComponentName dataCollectionComponent, sendDataComponent;
+    SharedPreferences sharedPreferences;
 
 
     @Override
@@ -158,7 +165,6 @@ public class FirstPageActivity extends AppCompatActivity {
         ab = new AppUsageDatabase(FirstPageActivity.this);
         db = new DemograficDatabase(FirstPageActivity.this);
         ButterKnife.bind(this);
-
 
         //getting id-s for local and server database
         android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -173,6 +179,7 @@ public class FirstPageActivity extends AppCompatActivity {
         new SetClickListeners().execute();
 
         //<-- GETTING CUSTOM NOTIFICATION LAYOUT -->//
+        //TODO get permission as done in MainActivity (jako bitno)
         context = FirstPageActivity.this;
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         builder = new NotificationCompat.Builder(context);
@@ -224,20 +231,42 @@ public class FirstPageActivity extends AppCompatActivity {
         startForegroundService(new Intent(this, LocationService.class));
 
         jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        ComponentName componentName = new ComponentName(this, DataCollectionJobSchedule.class);
-        jobInfo = new JobInfo.Builder(DATA_COLLECTION_SCHEDULE_SERVICE, componentName)
+        dataCollectionComponent = new ComponentName(this, DataCollectionJobSchedule.class);
+        dataCollectionJobInfo = new JobInfo.Builder(DATA_COLLECTION_SCHEDULE_SERVICE, dataCollectionComponent)
                 .setPeriodic(TIME_UPDATE, JobInfo.getMinFlexMillis())
                 .setPersisted(true)
-                .setRequiredNetworkType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .setRequiresBatteryNotLow(true)
                 .build();
-        jobScheduler.schedule(jobInfo);
+        jobScheduler.schedule(dataCollectionJobInfo);
 
-       /* if (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
+        sendDataComponent = new ComponentName(this, SendNetworkData.class);
+        sendDataJobInfo = new JobInfo.Builder(SEND_DATA_TO_SERVER, sendDataComponent)
+                .setPeriodic(SEND_DATA_INTERVAL)
+                .setPersisted(true)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                .setRequiresBatteryNotLow(true)
+                .build();
+
+        String file1 = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String filename = "data.txt";
+        File f = new File(file1 + File.separator + filename);
+        if (!f.exists()) {
+            FileOutputStream fstream;
+            try {
+                fstream = new FileOutputStream(f, true);
+                fstream.write("".getBytes());
+                fstream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(FirstPageActivity.this, new String[]{Manifest.permission.INTERNET}, 16);
+            ActivityCompat.requestPermissions(FirstPageActivity.this, new String[]{Manifest.permission.INTERNET}, REQUEST_INTERNET_PERMISSION);
+            return;
         } else {
-            new net().execute();
-        }*/
+            jobScheduler.schedule(sendDataJobInfo);
+        }
 
         getData();
         getLocation();
@@ -246,56 +275,7 @@ public class FirstPageActivity extends AppCompatActivity {
 
     }
 
-   /* private class net extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            URL url = null;
-            URL testurl = null;
 
-            try {
-                url = new URL("http://192.168.107.126:34142/api/network/postnetwork");
-                testurl = new URL("http://www.google.com");
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            HttpURLConnection myConnection;
-            HttpURLConnection test;
-            try {
-                test = (HttpURLConnection) testurl.openConnection();
-                test.setRequestMethod("GET");
-                InputStream ins = test.getInputStream();
-                BufferedReader r = new BufferedReader(new InputStreamReader(ins));
-                StringBuilder total = new StringBuilder();
-                String line;
-                while ((line = r.readLine()) != null) {
-                    total.append(line).append('\n');
-                }
-                Log.i("AS", total.toString() );
-
-                ins.close();
-                test.disconnect();
-
-                myConnection = (HttpURLConnection) url.openConnection();
-                myConnection.setRequestMethod("POST");
-                myConnection.setRequestProperty("Content-Type", "application/json");
-                myConnection.setDoOutput(true);
-                OutputStream out = myConnection.getOutputStream();
-                String str = ("{\"acc\":\"60.0\",\"timestamp\":\"Tue Aug 28 16:27:48 GMT+02:00 2018\"," +
-                        "\"mnc\":\"1\",\"rsrq\":\"-11\",\"enodeb\":\"350150\",\"technology\":\"4G\",\"altitude\":\"565.0\"," +
-                        "\"rssi\":\"-88\",\"xarfcn\":\"1501\",\"cellid\":\"89638401\",\"mcc\":\"219\",\"ta\":\"2\",\"longitude\":\"15.948173236101866\"," +
-                        "\"speed\":\"2.99\",\"snr\":\"12\",\"tac\":\"2000\",\"pci\":\"70\",\"rspr\":\"-88\",\"cqi\":\"-1\"," +
-                        "\"latitude\":\"45.78691109083593\"}");
-                out.write(str.getBytes());
-                out.close();
-                InputStream in = myConnection.getInputStream();
-                Log.i("Response: ", in.toString());
-                myConnection.disconnect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }*/
 
 
     @Override
@@ -404,7 +384,8 @@ public class FirstPageActivity extends AppCompatActivity {
                 buffer.append("\n");
             }
             //show all data
-            appUsage.setText(buffer.toString());
+            //TODO this button crashes "Only the original thread that created a view hierarchy can touch its views." (jako bitno)
+            //appUsage.setText(buffer.toString());
 
 
             //Otvaranje prozora za pravljenje novog ticketa
@@ -481,7 +462,8 @@ public class FirstPageActivity extends AppCompatActivity {
             Cursor res3 = tb.getMyThreeTickets(android_id);
             if (res3.getCount() == 0) {
                 //Show message
-                tickets.setText("No tickets found");
+                //TODO fix line below :"Only the original thread that created a view hierarchy can touch its views." (jako bitno)
+                //tickets.setText("No tickets found");
             } else {
                 StringBuffer buffer2 = new StringBuffer();
                 while (res3.moveToNext()) {
@@ -620,8 +602,11 @@ public class FirstPageActivity extends AppCompatActivity {
         crit.setAccuracy(Criteria.ACCURACY_FINE);
         String provider;
         try {
-            provider = locationManager.getBestProvider(crit, true);
-            location = locationManager.getLastKnownLocation(provider);
+            provider = locationManager != null ? locationManager.getBestProvider(crit, true) : null;
+            if (provider == null){
+                provider = LocationManager.NETWORK_PROVIDER;
+            }
+            location = locationManager != null ? locationManager.getLastKnownLocation(provider) : null;
             if (lastLocation == null) lastLocation = location;
         } catch (SecurityException | NullPointerException e) {
             e.printStackTrace();
