@@ -62,14 +62,17 @@ public class SendTicketData extends JobService {
                 outStream = sendDataHttpConnection.getOutputStream();
 
 
+                stringBuilder.append("[");
                 //TODO get data from db (bitno)(budem ja ako se ne snadete)
                 try {
                     json = new JSONObject(data);
+                    stringBuilder.append(json);
                     Log.i("DATA", json.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                outStream.write(json.toString().getBytes());
+                stringBuilder.append("]");
+                outStream.write(stringBuilder.toString().getBytes());
 
                 responseCode = sendDataHttpConnection.getResponseCode();
                 if (responseCode == 200) {
