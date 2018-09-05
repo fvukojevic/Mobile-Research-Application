@@ -5,6 +5,9 @@ import android.app.job.JobService;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,11 +25,15 @@ public class SendTicketData extends JobService {
     StringBuilder stringBuilder;
     int responseCode;
     boolean running;
+    String data;
+    JSONObject json;
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
         sendDataUrl = null;
         running  = true;
+        data = jobParameters.getExtras().getString("DATA");
+        stringBuilder = new StringBuilder();
         new SendTicketData.sendData().execute();
         return false;
     }
@@ -40,7 +47,7 @@ public class SendTicketData extends JobService {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                sendDataUrl = new URL("http://cued.azurewebsites.net/api/ticket/postticket");
+                sendDataUrl = new URL("http://cued.azurewebsites.net/api/ticket/posttickets");
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -56,26 +63,20 @@ public class SendTicketData extends JobService {
 
 
                 //TODO get data from db (bitno)(budem ja ako se ne snadete)
-                String str = ("{\"appuserid\":\"\"," +
-                        "\"category\":\"\"," +
-                        "\"subcategory\":\"\"," +
-                        "\"frequency\":\"\"," +
-                        "\"comment\":\"\"," +
-                        "\"longitude\":\"\"," +
-                        "\"latitude\":\"\"," +
-                        "\"altitude\":\"\"," +
-                        "\"timestamp\":\"\"," +
-                        "\"email\":\"\"," +
-                        "\"acceptance\":\"\"" +
-                        "}");
-
-                outStream.write(str.getBytes());
+                try {
+                    json = new JSONObject(data);
+                    Log.i("DATA", json.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                outStream.write(json.toString().getBytes());
 
                 responseCode = sendDataHttpConnection.getResponseCode();
                 if (responseCode == 200) {
                     //post successful
                     Log.i("Response code: ", Integer.toString(responseCode));
                     inStreamReader = new BufferedReader(new InputStreamReader(sendDataHttpConnection.getInputStream()));
+                    Log.i("Response code: ", inStreamReader.toString());
                 } else {
                     Log.i("Response code: ", Integer.toString(responseCode));
                     inStreamReader = new BufferedReader(new InputStreamReader(sendDataHttpConnection.getErrorStream()));

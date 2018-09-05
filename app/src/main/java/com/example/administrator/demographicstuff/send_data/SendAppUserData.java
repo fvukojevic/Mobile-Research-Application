@@ -72,7 +72,6 @@ public class SendAppUserData extends JobService {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                //TODO some parameters are '0' (postalcode, homephone, acceptance)
                 outStream.write(json.toString().getBytes());
 
                 responseCode = sendDataHttpConnection.getResponseCode();

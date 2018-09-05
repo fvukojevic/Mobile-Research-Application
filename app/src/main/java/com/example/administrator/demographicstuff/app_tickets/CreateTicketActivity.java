@@ -45,6 +45,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class CreateTicketActivity extends AppCompatActivity{
 
@@ -159,7 +161,6 @@ public class CreateTicketActivity extends AppCompatActivity{
                     submit = findViewById(R.id.btn_ticket);
                     submit.setVisibility(View.VISIBLE);
 
-                    //TODO drop down menu fix options spacing (nebitno)
                     subcategory_spinner = findViewById(R.id.spinner2);
                     subcategory_spinner.setVisibility(View.VISIBLE);
 
@@ -242,9 +243,7 @@ public class CreateTicketActivity extends AppCompatActivity{
                                                 public void onClick(View view) {
                                                     //<--      Json obj -->//
                                                     JSONObject postData = new JSONObject();
-                                                    //TODO make timestamp in yyyy-mm-dd hh:mm:ss format (bitno, da mozemo slat tickete)
-                                                    Long tsLong = System.currentTimeMillis()/1000;
-                                                    String ts = tsLong.toString();
+                                                    String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).format(new Date());
                                                     try {
                                                         postData.put("appuserid", getApplicationContext().getSharedPreferences(getString(R.string.APP_USER_PREFERENCES), Context.MODE_PRIVATE).getString("APP_USER_ID", ""));
                                                         postData.put("category", category_spinner.getSelectedItem().toString());
@@ -254,7 +253,7 @@ public class CreateTicketActivity extends AppCompatActivity{
                                                         postData.put("longitude", Double.parseDouble(long_text.getText().toString()));
                                                         postData.put("latitude", Double.parseDouble(lat_text.getText().toString()));
                                                         postData.put("altitude", LiveConditions.altitude);
-                                                        postData.put("timestamp", ts);
+                                                        postData.put("timestamp", timestamp);
                                                         postData.put("email", email_text.getText().toString());
                                                         postData.put("acceptance", true);
 
@@ -269,15 +268,14 @@ public class CreateTicketActivity extends AppCompatActivity{
                                                     sendDataComponent = new ComponentName(CreateTicketActivity.this,SendTicketData.class);
                                                     sendDataJobInfo = new JobInfo.Builder(SEND_DATA_TO_SERVER, sendDataComponent)
                                                             .setExtras(bundle)
-                                                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                                                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                                                             .build();
                                                     if (ActivityCompat.checkSelfPermission(CreateTicketActivity.this, Manifest.permission.INTERNET)
                                                             != PackageManager.PERMISSION_GRANTED) {
                                                         ActivityCompat.requestPermissions(CreateTicketActivity.this, new String[]{Manifest.permission.INTERNET}, REQUEST_INTERNET_PERMISSION);
                                                         return;
                                                     } else {
-                                                        //TODO get data from db (bitno)(budem ja ako se ne snadete)
-                                                        //jobScheduler.schedule(sendDataJobInfo);
+                                                        jobScheduler.schedule(sendDataJobInfo);
                                                     }
 
                                                     //<--End of json obj. Local storage below -->//

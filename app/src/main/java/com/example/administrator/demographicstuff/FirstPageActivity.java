@@ -118,6 +118,7 @@ public class FirstPageActivity extends AppCompatActivity {
     public static RemoteViews remoteViews;
     private Context context;
     public static PendingIntent pendingIntent;
+    public StringBuffer buffer;
     //<--              -->//
 
 
@@ -212,7 +213,7 @@ public class FirstPageActivity extends AppCompatActivity {
         PendingIntent broadcast = PendingIntent.getBroadcast(context, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.SECOND, 5);
+        cal.add(Calendar.SECOND, 50);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
         //<-- End of alarm menager -->//
 
@@ -377,7 +378,7 @@ public class FirstPageActivity extends AppCompatActivity {
             //dohvacanje najkoristenijih aplikacija
             String data = "No Apps found";
             Cursor res = ab.getMostUsedApps(android_id);
-            StringBuffer buffer = new StringBuffer();
+            buffer = new StringBuffer();
             while (res.moveToNext()) {
                 buffer.append(res.getString(2) + "\n");
                 buffer.append(res.getString(3) + " MB\n");
@@ -385,7 +386,14 @@ public class FirstPageActivity extends AppCompatActivity {
             }
             //show all data
             //TODO this button crashes "Only the original thread that created a view hierarchy can touch its views." (jako bitno)
-            //appUsage.setText(buffer.toString());
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    appUsage.setText(buffer.toString());
+                }
+            });
+
 
 
             //Otvaranje prozora za pravljenje novog ticketa
@@ -463,17 +471,28 @@ public class FirstPageActivity extends AppCompatActivity {
             if (res3.getCount() == 0) {
                 //Show message
                 //TODO fix line below :"Only the original thread that created a view hierarchy can touch its views." (jako bitno)
-                //tickets.setText("No tickets found");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tickets.setText("No tickets found");
+                    }
+                });
             } else {
-                StringBuffer buffer2 = new StringBuffer();
+                buffer = new StringBuffer();
                 while (res3.moveToNext()) {
-                    buffer2.append("ID: " + res3.getString(0) + " - " + res3.getString(2) + "\n");
-                    buffer2.append("Date: " + res3.getString(6) + "\n");
-                    buffer2.append("\n");
+                    buffer.append("ID: " + res3.getString(0) + " - " + res3.getString(2) + "\n");
+                    buffer.append("Date: " + res3.getString(6) + "\n");
+                    buffer.append("\n");
                 }
 
                 //show all data
-                tickets.setText(buffer2.toString());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tickets.setText(buffer.toString());
+                    }
+                });
+
             }
             return null;
         }

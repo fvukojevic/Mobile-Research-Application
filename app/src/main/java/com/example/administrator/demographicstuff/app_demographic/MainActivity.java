@@ -241,7 +241,9 @@ public class MainActivity extends AppCompatActivity {
                         postData.put("gender", rb1.getText().toString());
                         postData.put("age", rb2.getText().toString());
                         postData.put("occupation", rb3.getText().toString());
-                        postData.put("homephone", rb4.getText().toString());
+                        postData.put("homephone", true);
+                        postData.put("acceptance", true);
+                        postData.put("postalcode", postal.getText().toString());
                         postData.put("imei", imei);
                         postData.put("imsi", imsi);
                         postData.put("modelnumber", model_number);
