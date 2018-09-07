@@ -116,7 +116,7 @@ public class SendNetworkData extends JobService {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if(json==null) {
+            if(json!=null) {
                 outStream.write(json.toString().getBytes());
             }
             responseCode = sendDataHttpConnection.getResponseCode();
