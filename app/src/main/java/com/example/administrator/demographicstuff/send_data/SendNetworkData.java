@@ -82,6 +82,10 @@ public class SendNetworkData extends JobService {
                 String filename = "data.txt";
 
                 File f = new File(file1 + File.separator + filename);
+                if(f.length() == 0 ){
+                    running = false;
+                    jobFinished(params, true);
+                }
                 inStream = new FileInputStream(f);
                 stringBuilder.append("[");
                 if (inStream != null) {
@@ -108,14 +112,13 @@ public class SendNetworkData extends JobService {
             }
 
             try {
-                Log.i("Data in string ", data);
                 json = new JSONArray(data);
-                Log.i("Data in json ", json.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            outStream.write(json.toString().getBytes());
-
+            if(json==null) {
+                outStream.write(json.toString().getBytes());
+            }
             responseCode = sendDataHttpConnection.getResponseCode();
             if (responseCode == 200) {
                 //post successful

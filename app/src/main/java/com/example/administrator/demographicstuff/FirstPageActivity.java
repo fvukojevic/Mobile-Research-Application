@@ -31,6 +31,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.CellInfo;
@@ -49,6 +50,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.demographicstuff.app_demographic.DemograficDatabase;
+import com.example.administrator.demographicstuff.app_demographic.MainActivity;
 import com.example.administrator.demographicstuff.app_live_conditions.DataCollectionJobSchedule;
 import com.example.administrator.demographicstuff.app_live_conditions.LocationService;
 import com.example.administrator.demographicstuff.app_tickets.TicketNewDatabase;
@@ -65,6 +67,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -118,7 +121,7 @@ public class FirstPageActivity extends AppCompatActivity {
     public static RemoteViews remoteViews;
     private Context context;
     public static PendingIntent pendingIntent;
-    public StringBuffer buffer;
+    public StringBuffer buffer, app_buffer;
     //<--              -->//
 
 
@@ -137,6 +140,7 @@ public class FirstPageActivity extends AppCompatActivity {
     private static final int DATA_COLLECTION_SCHEDULE_SERVICE = 7;
     private static final int SEND_DATA_TO_SERVER = 8;
     private static final int REQUEST_INTERNET_PERMISSION = 16;
+    private static final int MULTIPLE_PERMISSIONS = 17;
     private static final int TIME_UPDATE = 1200000;
     private static final int SEND_DATA_INTERVAL = 3600000;
     private Location lastLocation = null;
@@ -156,6 +160,15 @@ public class FirstPageActivity extends AppCompatActivity {
     Criteria crit;
     ComponentName dataCollectionComponent, sendDataComponent;
     SharedPreferences sharedPreferences;
+    String[] permissions = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.ACCESS_NETWORK_STATE};
+
+
+    public static String real_id;
 
 
     @Override
@@ -176,8 +189,6 @@ public class FirstPageActivity extends AppCompatActivity {
         }
         Log.d("MY ID", "onCreate: MY ID is " + user_id);
         //<--                      -->//
-
-        new SetClickListeners().execute();
 
         //<-- GETTING CUSTOM NOTIFICATION LAYOUT -->//
         //TODO get permission as done in MainActivity (jako bitno)
@@ -213,11 +224,51 @@ public class FirstPageActivity extends AppCompatActivity {
         PendingIntent broadcast = PendingIntent.getBroadcast(context, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.SECOND, 50);
+        cal.add(Calendar.SECOND, 500);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
         //<-- End of alarm menager -->//
 
+        if (checkPermissions()) {
+            start();
+        }
 
+
+    }
+
+    public boolean checkPermissions() {
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String permission : permissions) {
+            result = ContextCompat.checkSelfPermission(this, permission);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(permission);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
+
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MULTIPLE_PERMISSIONS: {
+                if (grantResults.length > 0) {
+                    for(int result: grantResults){
+                        if (result != PackageManager.PERMISSION_GRANTED){
+                            return;
+                        }
+                    }
+                    start();
+                }
+            }
+        }
+    }
+
+    public void start() {
+        new SetClickListeners().execute();
         connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
         boolean isConnected = activeNetworkInfo != null &&
@@ -244,7 +295,7 @@ public class FirstPageActivity extends AppCompatActivity {
         sendDataJobInfo = new JobInfo.Builder(SEND_DATA_TO_SERVER, sendDataComponent)
                 .setPeriodic(SEND_DATA_INTERVAL)
                 .setPersisted(true)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setRequiresBatteryNotLow(true)
                 .build();
 
@@ -275,9 +326,6 @@ public class FirstPageActivity extends AppCompatActivity {
 
 
     }
-
-
-
 
     @Override
     protected void onStop() {
@@ -377,23 +425,22 @@ public class FirstPageActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             //dohvacanje najkoristenijih aplikacija
             String data = "No Apps found";
-            Cursor res = ab.getMostUsedApps(android_id);
-            buffer = new StringBuffer();
+            Cursor res = ab.getMostUsedApps(getApplicationContext().getSharedPreferences(getString(R.string.APP_USER_PREFERENCES), Context.MODE_PRIVATE).getString("APP_USER_ID", ""));
+            real_id = getApplicationContext().getSharedPreferences(getString(R.string.APP_USER_PREFERENCES), Context.MODE_PRIVATE).getString("APP_USER_ID", "");
+            app_buffer = new StringBuffer();
             while (res.moveToNext()) {
-                buffer.append(res.getString(2) + "\n");
-                buffer.append(res.getString(3) + " MB\n");
-                buffer.append("\n");
+                app_buffer.append(res.getString(2) + "\n");
+                app_buffer.append(res.getString(3) + " MB\n");
+                app_buffer.append("\n");
             }
             //show all data
             //TODO this button crashes "Only the original thread that created a view hierarchy can touch its views." (jako bitno)
             runOnUiThread(new Runnable() {
-
                 @Override
                 public void run() {
-                    appUsage.setText(buffer.toString());
+                    appUsage.setText(app_buffer.toString());
                 }
             });
-
 
 
             //Otvaranje prozora za pravljenje novog ticketa
@@ -439,7 +486,7 @@ public class FirstPageActivity extends AppCompatActivity {
             show_tickets.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Cursor res = tb.getMyTickets(android_id);
+                    Cursor res = tb.getMyTickets(getApplicationContext().getSharedPreferences(getString(R.string.APP_USER_PREFERENCES), Context.MODE_PRIVATE).getString("APP_USER_ID", ""));
                     if (res.getCount() == 0) {
                         //Show message
                         showMessage("Empty", "No tickets found");
@@ -467,7 +514,7 @@ public class FirstPageActivity extends AppCompatActivity {
             });
 
             //dohvacanje prva tri ticketa
-            Cursor res3 = tb.getMyThreeTickets(android_id);
+            Cursor res3 = tb.getMyThreeTickets(getApplicationContext().getSharedPreferences(getString(R.string.APP_USER_PREFERENCES), Context.MODE_PRIVATE).getString("APP_USER_ID", ""));
             if (res3.getCount() == 0) {
                 //Show message
                 //TODO fix line below :"Only the original thread that created a view hierarchy can touch its views." (jako bitno)
@@ -496,6 +543,7 @@ public class FirstPageActivity extends AppCompatActivity {
             }
             return null;
         }
+
     }
 
     //prikaz svih tiketaa u Alert Dialogu
@@ -622,7 +670,7 @@ public class FirstPageActivity extends AppCompatActivity {
         String provider;
         try {
             provider = locationManager != null ? locationManager.getBestProvider(crit, true) : null;
-            if (provider == null){
+            if (provider == null) {
                 provider = LocationManager.NETWORK_PROVIDER;
             }
             location = locationManager != null ? locationManager.getLastKnownLocation(provider) : null;

@@ -38,7 +38,6 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
     public List<NetworkUsageHelper.AppUsage> usageList = new ArrayList<>();
     private String android_id;
     private Context context;
-
     /*
      * Konstruktor klase, prima context i android_id korišten za spremanje u lokalnu bazu
      */
@@ -102,7 +101,7 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
          */
         if(downloaded_ALLMB > 10)
         {
-            Cursor res = db.getAppUsage(android_id, usage.getAppName());
+            Cursor res = db.getAppUsage(FirstPageActivity.real_id, usage.getAppName());
             if(res.getCount() == 0)
             {
                 //Json for server database
@@ -110,7 +109,7 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
                 String currentDateandTime = sdf.format(new Date());
                 try {
-                    postData.put("appuserid", FirstPageActivity.user_id);
+                    postData.put("appuserid", FirstPageActivity.real_id);
                     postData.put("name", usage.getAppName());
                     postData.put("data", downloaded_ALLMB);
                     postData.put("timestamp", currentDateandTime);
@@ -125,7 +124,7 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
                 }
 
                 //Show message
-                db.insertAppUsage(android_id, usage.getAppName(), downloaded_ALLMB);
+                db.insertAppUsage(FirstPageActivity.real_id, usage.getAppName(), downloaded_ALLMB);
                 Toast.makeText(context, usage.getAppName() + " is now inserted", Toast.LENGTH_SHORT).show();
             }
             else{
@@ -139,7 +138,7 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
                         Long tsLong = System.currentTimeMillis()/1000;
                         String ts = tsLong.toString();
                         try {
-                            postData.put("appuserid", FirstPageActivity.user_id);
+                            postData.put("appuserid", FirstPageActivity.real_id);
                             postData.put("name", usage.getAppName());
                             postData.put("data", downloaded_ALLMB);
                             postData.put("timestamp", ts);
@@ -153,7 +152,7 @@ public class AppUsageAdapter extends RecyclerView.Adapter<AppUsageAdapter.ViewHo
                             e.printStackTrace();
                         }
 
-                        db.updateAppUsage(android_id, usage.getAppName(), downloaded_ALLMB);
+                        db.updateAppUsage(FirstPageActivity.real_id, usage.getAppName(), downloaded_ALLMB);
                         Toast.makeText(context, usage.getAppName() + " is updated", Toast.LENGTH_SHORT).show();
                     }
                 }

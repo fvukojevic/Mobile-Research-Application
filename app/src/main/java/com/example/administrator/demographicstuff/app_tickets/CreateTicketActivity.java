@@ -262,35 +262,33 @@ public class CreateTicketActivity extends AppCompatActivity{
                                                     }
                                                     Log.d("MyApp", postData.toString());
 
-                                                    PersistableBundle bundle = new PersistableBundle();
-                                                    bundle.putString("DATA", postData.toString());
-                                                    jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-                                                    sendDataComponent = new ComponentName(CreateTicketActivity.this,SendTicketData.class);
-                                                    sendDataJobInfo = new JobInfo.Builder(SEND_DATA_TO_SERVER, sendDataComponent)
-                                                            .setExtras(bundle)
-                                                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                                                            .build();
-                                                    if (ActivityCompat.checkSelfPermission(CreateTicketActivity.this, Manifest.permission.INTERNET)
-                                                            != PackageManager.PERMISSION_GRANTED) {
-                                                        ActivityCompat.requestPermissions(CreateTicketActivity.this, new String[]{Manifest.permission.INTERNET}, REQUEST_INTERNET_PERMISSION);
-                                                        return;
-                                                    } else {
-                                                        jobScheduler.schedule(sendDataJobInfo);
-                                                    }
+                                                    /*
+                                                     * Local check
+                                                     */
+
 
                                                     //<--End of json obj. Local storage below -->//
                                                     boolean check = tb.insertTicket(getApplicationContext().getSharedPreferences(getString(R.string.APP_USER_PREFERENCES), Context.MODE_PRIVATE).getString("APP_USER_ID", ""), category_spinner.getSelectedItem().toString() ,
                                                             subcategory_spinner.getSelectedItem().toString()
-                                                    , frequency_spinner.getSelectedItem().toString(), question_field.getText().toString(), date_text.getText().toString(),
+                                                            , frequency_spinner.getSelectedItem().toString(), question_field.getText().toString(), date_text.getText().toString(),
                                                             time_text.getText().toString(), Double.parseDouble(long_text.getText().toString()),
                                                             Double.parseDouble(lat_text.getText().toString()),alti, email_text.getText().toString());
                                                     if (check == false) {
                                                         Toast.makeText(CreateTicketActivity.this, "Ticket not submitted", Toast.LENGTH_SHORT).show();
                                                     } else {
                                                         Toast.makeText(CreateTicketActivity.this, "Ticket submited!", Toast.LENGTH_SHORT).show();
+                                                        PersistableBundle bundle = new PersistableBundle();
+                                                        bundle.putString("DATA", postData.toString());
+                                                        sendToServer(bundle);
                                                         Intent intent = new Intent(".FirstPageActivity");
                                                         startActivity(intent);
                                                     }
+
+                                                    /*
+                                                     *
+                                                     */
+
+
                                                 }
                                             });
                                         }
@@ -336,5 +334,21 @@ public class CreateTicketActivity extends AppCompatActivity{
                 break;
         }
     }
-}
 
+    public void sendToServer(PersistableBundle bundle){
+
+        jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        sendDataComponent = new ComponentName(CreateTicketActivity.this,SendTicketData.class);
+        sendDataJobInfo = new JobInfo.Builder(SEND_DATA_TO_SERVER, sendDataComponent)
+                .setExtras(bundle)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .build();
+        if (ActivityCompat.checkSelfPermission(CreateTicketActivity.this, Manifest.permission.INTERNET)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(CreateTicketActivity.this, new String[]{Manifest.permission.INTERNET}, REQUEST_INTERNET_PERMISSION);
+            return;
+        } else {
+            jobScheduler.schedule(sendDataJobInfo);
+        }
+    }
+}

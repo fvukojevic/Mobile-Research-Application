@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrator.demographicstuff.FirstPageActivity;
 import com.example.administrator.demographicstuff.rating_notification.CustomInfoWindowAdapter;
 import com.example.administrator.demographicstuff.R;
 import com.example.administrator.demographicstuff.app_tickets.TicketNewDatabase;
@@ -50,7 +52,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +67,11 @@ import com.google.maps.android.clustering.ClusterManager;
 
 import com.example.administrator.demographicstuff.models.PlaceInfo;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -128,9 +138,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private PlaceInfo mPlace;
     private Marker mMarker;
     private static TicketNewDatabase tb;
-    public String android_id;
     public static int ticket_tester = 0;
     public static int signal_tester = 0;
+    public InputStream isr;
+    public String result;
 
     // Inicijalizacija cluster managera.
     private ClusterManager<MyItem> mClusterManager;
@@ -180,8 +191,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mInfo = (ImageView) findViewById(R.id.place_info);
         mTickets = (ImageView) findViewById(R.id.get_tickets);
         mSignals = (ImageView) findViewById(R.id.get_signals);
-
-        android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         tb = new TicketNewDatabase(MapActivity.this);
 
@@ -244,11 +253,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Toast.makeText(MapActivity.this, "Signals button clicked", Toast.LENGTH_SHORT).show();
-                try {
-                    showSignals();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                showSignals();
             }
         });
 
@@ -345,7 +350,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (ticket_tester == 1) {
             addItems();
             mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapActivity.this));
-            Cursor res = tb.getMyTickets(android_id);
+            Cursor res = tb.getMyTickets(FirstPageActivity.real_id);
             if (res.getCount() == 0) {
                 Toast.makeText(MapActivity.this, "No tickets", Toast.LENGTH_SHORT).show();
                 return;
@@ -392,85 +397,87 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    public void showSignals() throws JSONException {
-
-        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapActivity.this));
-        if (signal_tester == 0)
+    public void showSignals(){
+        if(signal_tester == 0){
             signal_tester = 1;
-        else
+            mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapActivity.this));
+            new getData().execute("");
+        }else{
             signal_tester = 0;
-        if (signal_tester == 1){
-            JSONObject signal1 = new JSONObject();
-            JSONObject signal2 = new JSONObject();
-            JSONObject signal3 = new JSONObject();
-            try {
-                signal1.put("tehnology", "4G");
-                signal1.put("RSRP", "-75 dBm");
-                signal1.put("name", "signal1");
-                signal1.put("longitude", 16.283782 );
-                signal1.put("latitude", 45.784405);
-
-                signal2.put("tehnology", "3G");
-                signal2.put("RSRP", "-90 dBm");
-                signal2.put("name", "signal2");
-                signal2.put("longitude", 15.657840 );
-                signal2.put("latitude", 45.769080);
-
-                signal3.put("tehnology", "2G");
-                signal3.put("RSRP", "-120 dBm");
-                signal3.put("name", "signal3");
-                signal3.put("longitude", 16.025721 );
-                signal3.put("latitude", 45.588696);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            JSONArray signals = new JSONArray();
-            signals.put(signal1);
-            signals.put(signal2);
-            signals.put(signal3);
-            String snippet;
-
-            for (int i = 0; i < signals.length(); i++) {
-                JSONObject row = signals.getJSONObject(i);
-                switch (row.getString("RSRP")){
-                    case "-75 dBm":
-                        snippet = "Tehnology: " + row.getString("tehnology") + "\n" +
-                                "RSRP: " + row.getString("RSRP") + "\n" +
-                                "Name: " + row.getString("name") + "\n" +
-                                "Lonitude: " + row.getDouble("longitude") + "\n" +
-                                "Latitude: " + row.getDouble("latitude");
-                        mClusterManager.addItem(new MyItem(45.7859513,
-                                15.950986, "Good RSRP", snippet));
-                        break;
-                    case "-90 dBm":
-                        snippet = "Tehnology: " + row.getString("tehnology") + "\n" +
-                                "RSRP: " + row.getString("RSRP") + "\n" +
-                                "Name: " + row.getString("name") + "\n" +
-                                "Lonitude: " + row.getDouble("longitude") + "\n" +
-                                "Latitude: " + row.getDouble("latitude");
-                        mClusterManager.addItem(new MyItem(45.7856354,
-                                15.949049, "Decent RSRP", snippet));
-                        mClusterManager.addItem(new MyItem(45.787261,
-                                15.955855, "Decent RSRP", snippet));
-                        mClusterManager.addItem(new MyItem(45.7840916,
-                                15.961171, "Decent RSRP", snippet));
-                        break;
-                    case "-120 dBm":
-                        snippet = "Tehnology: " + row.getString("tehnology") + "\n" +
-                                "RSRP: " + row.getString("RSRP") + "\n" +
-                                "Name: " + row.getString("name") + "\n" +
-                                "Longitude: " + row.getDouble("longitude") + "\n" +
-                                "Latitude: " + row.getDouble("latitude");
-                        mClusterManager.addItem(new MyItem(45.786607,
-                                15.950380, "Bad RSRP", snippet));
-                        break;
-                }
-            }
-        }
-        else {
             mMap.clear();
             mClusterManager.clearItems();
         }
+
+    }
+    private class getData extends AsyncTask<String, Void, String> {
+        String name;
+
+        @Override
+        protected String doInBackground(String... params) {
+            result = "";
+            isr = null;
+            try {
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpGet httpget = new HttpGet("http://cued.azurewebsites.net/api/network/getnetwork/"
+                        + String.valueOf(FirstPageActivity.real_id));
+                HttpResponse response = httpclient.execute(httpget);
+                HttpEntity entity = response.getEntity();
+                isr = entity.getContent();
+                Log.i("Data", isr.toString());
+            } catch (Exception e) {
+                Log.e("log_tag", "Error in http connection " + e.toString());
+
+            }
+            //convert response to string
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(isr, "utf-8"));
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                String data = sb.toString();
+
+                String data_sub = data.substring(1,data.length()-1);
+                Log.i("Data_bad_string", data_sub);
+
+                JSONArray jsonArray = new JSONArray(data_sub.replaceAll("\\\\",""));
+                Log.i("Data_array", jsonArray.toString());
+                for(int i=0; i<=jsonArray.length();i++){
+                    JSONObject signal = jsonArray.getJSONObject(i);
+                    String snippet = signal.get("technology") + "\n" + signal.get("rsrp") + "\n"
+                            + signal.get("longitude") + "\n" + signal.get("latitude");
+                    int rsrp = Integer.parseInt(signal.get("rsrp").toString());
+                    if(rsrp > -85 ){
+                        mClusterManager.addItem(new MyItem(Double.parseDouble(signal.get("latitude").toString()),
+                                Double.parseDouble(signal.get("longitude").toString()), "Good RSRP",
+                                snippet));
+                    }
+                    else if(rsrp <= -85 && rsrp >= -110){
+                        mClusterManager.addItem(new MyItem(Double.parseDouble(signal.get("latitude").toString()),
+                                Double.parseDouble(signal.get("longitude").toString()), "Decent RSRP",
+                                snippet));
+                    }else{
+                        mClusterManager.addItem(new MyItem(Double.parseDouble(signal.get("latitude").toString()),
+                                Double.parseDouble(signal.get("longitude").toString()), "Bad RSRP",
+                                snippet));
+                    }
+
+                }
+            } catch (Exception e) {
+                Log.e("log_tag", "Error  converting result " + e.toString());
+            }
+            return "Executed";
+        }
+        @Override
+        protected void onPostExecute(String result) {
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
 
     //Pomicanje kamere
